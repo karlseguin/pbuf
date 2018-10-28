@@ -78,7 +78,7 @@ defmodule Pbuf.Protoc do
     name = message.name
     fields = generate_fields(message.field, context)
     context = Context.fields(context, fields)
-    acc = [acc, Template.message(name, fields, enums, context)]
+    acc = [acc, trim_template(Template.message(name, fields, enums, context))]
 
     message.nested_type
     |> Enum.filter(&(&1.options == nil))
@@ -100,11 +100,15 @@ defmodule Pbuf.Protoc do
 
   @spec generate_enumeration(Enumeration.t) :: iodata
   defp generate_enumeration(e) do
-    Template.enumeration(e, false)
+    trim_template(Template.enumeration(e, false))
   end
 
   def capitalize_first(word) do
     {char, rest} = String.Casing.titlecase_once(word, :default)
     char <> rest
+  end
+
+  defp trim_template(template) do
+    String.replace(template, "\n\n", "\n")
   end
 end

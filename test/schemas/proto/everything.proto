@@ -3,7 +3,11 @@ syntax = "proto3";
 import 'google/protobuf/descriptor.proto';
 
 extend google.protobuf.EnumValueOptions {
-  string erlang_atom = 4369;
+  ErlangEnumValueOptions erlang = 4369;
+}
+
+message ErlangEnumValueOptions {
+  string atom = 1;
 }
 
 package pbuf.tests;
@@ -29,13 +33,13 @@ message Everything {
   Child struct = 16;
   EverythingType type = 17;
   enum Corpus {
-    UNIVERSAL = 0 [(erlang_atom) = "universal"];
-    WEB = 1;
-    IMAGES = 2;
-    LOCAL = 3;
-    NEWS = 4;
-    PRODUCTS = 5;
-    VIDEO = 6;
+    UNIVERSAL = 0 [(erlang).atom = "universal"];
+    WEB = 1 [(erlang).atom = "web"];
+    IMAGES = 2 [(erlang).atom = "images"];
+    LOCAL = 3 [(erlang).atom = "local"];
+    NEWS = 4 [(erlang).atom = "news"];
+    PRODUCTS = 5 [(erlang).atom = "products"];
+    VIDEO = 6 [(erlang).atom = "video"];
   }
   Corpus corpus = 18;
   oneof choice {

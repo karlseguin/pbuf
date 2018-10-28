@@ -21,21 +21,33 @@ defmodule Pbuf.Protoc.Enumeration do
 
   @spec new(Protoc.proto_enum, String.t) :: t
   def new(desc, namespace) do
-    {values, default} = Enum.reduce(desc.value, {%{}, 0}, fn v, {acc, default} ->
-      name = String.to_atom(v.name)
+    {values, default, typespec} =
+    Enum.reduce(desc.value, {%{}, 0, []}, fn v, {acc, default, typespec} ->
+      name = case v.options do
+        %{erlang: %{atom: atom}} -> String.to_atom(atom)
+        _ -> String.to_atom(v.name)
+      end
+
       default = case v.number do
         0 -> name
         _ -> default
       end
-      {Map.put(acc, name, v.number), default}
+
+      typespec = [typespec, " | :", to_string(name), " | ", to_string(v.number)]
+      {Map.put(acc, name, v.number), default, typespec}
     end)
+
+    typespec = case :erlang.iolist_to_binary(typespec) do
+      <<" | ", typespec::binary>> -> typespec
+      typespec -> typespec
+    end
 
     %Enumeration{
       name: desc.name,
       values: values,
       default: default,
+      typespec: typespec,
       full_name: namespace <> "." <> desc.name,
-      typespec: ":" <> Enum.join(Map.keys(values), " | :") <> " | non_neg_integer" # ugly, but whatever
     }
   end
 end

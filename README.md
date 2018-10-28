@@ -2,9 +2,11 @@
 
 **Warning:** only protocol buffers 3 is supported. Use [protobuf-elixir](https://github.com/tony612/protobuf-elixir) if you need support for version 2 (protobuf-elixir was a major inspiration for this project).
 
-This is a protocol buffer encoder and decoder. Its goal is to be fast at the cost of larger generated files. This is achieved by generate a significant part of the encoding and decoding logic at generation time with the protoc plugin.
+This is a protocol buffer encoder and decoder. Its goal is to be fast at the cost of larger generated files. This is achieved by generating a significant part of the encoding and decoding logic at generation time with the protoc plugin.
 
-Encoding and decoding performance is ~3-4x times faster yhan protobuf-elixir. For example, if we take our test `%Everything` structure, which has all field types, including all array types (with 2 values per array) and a few maps, `pbuf` takes ~14µs to encode and ~24µs to decode, versus 66µs and 67µs. However, the .beam file is 19K vs 7K.
+Encoding and decoding performance is ~3-4x times faster than protobuf-elixir. For example, if we take the `%Everything` structure used in our tests, which has all field types, including all array types (with 2 values per array) and a few maps, `pbuf` takes ~14µs to encode and ~24µs to decode, versus 66µs and 67µs. However, the .beam file is quite a bit larger: 19K vs 7K.
+
+(Note that there _is_ limited support for version 2 syntax, but only enough to allow the protoc plugin to bootstrap itself. This may may or may not provide all the version 2 support you need).
 
 ## Installation
 Assuming you already have protoc installed, you'll want to run:
@@ -70,6 +72,30 @@ Should be used as:
     user = User.new(type: 1)
 
 (casing is preserved from the proto file)
+
+#### Advanced Enums
+You'll likely want to map your protocol buffer enums to specific atoms. With a bit of work, the generator can do this for you.
+
+First, you'll need to specify a custom option:
+
+    import 'google/protobuf/descriptor.proto';
+    extend google.protobuf.EnumValueOptions {
+      ErlangEnumValueOptions erlang = 4369;
+    }
+    message ErlangEnumValueOptions {
+      string atom = 1;
+    }
+
+Note that, for this to work, `protoc` will need to be told the path to the google .proto files, such as: `protoc -I=/usr/local/include`. If you don't already have them, they're part of the `protoc` source: [https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protoc-3.6.1-osx-x86_64.zip](https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protoc-3.6.1-osx-x86_64.zip).
+
+Next, use the custom option to specific an atom name:
+
+    enum HTTPMethod {
+      HTTP_METHOD_GET = 0 [(erlang).atom = "get"];
+      HTTP_METHOD_POST = 1 [(erlang).atom = "post"];
+    }
+
+The value will now be `:get` and `:post` rather than `:HTTP_METHOD_GET` and `:HTTP_METHOD_POST`.
 
 ### Oneofs
 The value of a oneof field must be set to a tuple where the first element is the name of the field and the second is the value. Given:

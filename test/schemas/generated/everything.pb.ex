@@ -1,10 +1,78 @@
+defmodule Pbuf.Tests.ErlangEnumValueOptions do
+  @moduledoc false
+  alias Pbuf.{Decoder, Encoder}
+  import Bitwise, only: [bsr: 2, band: 2]
+  alias __MODULE__
+  defstruct [
+    __pbuf__: true,
+    atom: ""
+  ]
+  @type t :: %ErlangEnumValueOptions{
+    atom: String.t
+  }
+
+  @spec new(Enum.t) :: t
+  def new(data) do
+    struct(__MODULE__, data)
+  end
+  @spec encode_to_iodata!(t | map) :: iodata
+  def encode_to_iodata!(data) do
+    alias Elixir.Pbuf.Encoder
+    [
+      Encoder.field(:string, data.atom, <<10>>),
+    ]
+  end
+  @spec encode!(t | map) :: binary
+  def encode!(data) do
+    :erlang.iolist_to_binary(encode_to_iodata!(data))
+  end
+  @spec decode!(binary) :: t
+  def decode!(data) do
+    case Pbuf.Decoder.decode(__MODULE__, data) do
+      {:ok, decoded} -> decoded
+      {:error, err} -> raise err
+    end
+  end
+  @spec decode(binary) :: {:ok, t} | :error
+  def decode(data) do
+    Pbuf.Decoder.decode(__MODULE__, data)
+  end
+  @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
+  
+  def decode(acc, <<10, data::binary>>) do
+    Decoder.field(:string, :atom, acc, data)
+  end
+
+  # failed to decode, either this is an unknown tag (which we can skip), or
+  # it's a wrong type (which is an error)
+  def decode(acc, data) do
+    {prefix, data} = Decoder.varint(data)
+    tag = bsr(prefix, 3)
+    type = band(prefix, 7)
+    case tag in [1] do
+      false -> {acc, Decoder.skip(type, data)}
+      true ->
+        err = %Decoder.Error{
+          tag: tag,
+          module: __MODULE__,
+          message: "#{__MODULE__} tag #{tag} has an incorrect write type of #{type}"
+        }
+        {:error, err}
+    end
+  end
+
+  def __finalize_decode__(args) do
+    struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
+            {k, v}, acc -> Map.put(acc, k, v)
+    end)
+    struct
+  end
+end
 defmodule Pbuf.Tests.Everything do
   @moduledoc false
   alias Pbuf.{Decoder, Encoder}
   import Bitwise, only: [bsr: 2, band: 2]
-
   alias __MODULE__
-
   defstruct [
     __pbuf__: true,
     choice: nil,
@@ -50,7 +118,6 @@ defmodule Pbuf.Tests.Everything do
     map2: %{},
     map3: %{}
   ]
-
   @type t :: %Everything{
     choice: {:choice_int32, integer} | {:choice_string, String.t},
     bool: boolean,
@@ -95,24 +162,23 @@ defmodule Pbuf.Tests.Everything do
     map2: %{optional(integer) => any},
     map3: %{optional(non_neg_integer) => any}
   }
-
 defmodule Corpus do
   @moduledoc false
-  @type t :: :IMAGES | :LOCAL | :NEWS | :PRODUCTS | :UNIVERSAL | :VIDEO | :WEB | non_neg_integer
+  @type t :: :universal | 0 | :web | 1 | :images | 2 | :local | 3 | :news | 4 | :products | 5 | :video | 6
   @spec to_int(t | non_neg_integer) :: integer
-  def to_int(:IMAGES), do: 2
+  def to_int(:images), do: 2
   def to_int(2), do: 2
-  def to_int(:LOCAL), do: 3
+  def to_int(:local), do: 3
   def to_int(3), do: 3
-  def to_int(:NEWS), do: 4
+  def to_int(:news), do: 4
   def to_int(4), do: 4
-  def to_int(:PRODUCTS), do: 5
+  def to_int(:products), do: 5
   def to_int(5), do: 5
-  def to_int(:UNIVERSAL), do: 0
+  def to_int(:universal), do: 0
   def to_int(0), do: 0
-  def to_int(:VIDEO), do: 6
+  def to_int(:video), do: 6
   def to_int(6), do: 6
-  def to_int(:WEB), do: 1
+  def to_int(:web), do: 1
   def to_int(1), do: 1
   def to_int(invalid) do
     raise Pbuf.Encoder.Error,
@@ -121,24 +187,21 @@ defmodule Corpus do
       tag: nil,
       message: "#{inspect(invalid)} is not a valid enum value for #{__MODULE__}"
   end
-
   @spec from_int(integer) :: t
-  def from_int(2), do: :IMAGES
-  def from_int(3), do: :LOCAL
-  def from_int(4), do: :NEWS
-  def from_int(5), do: :PRODUCTS
-  def from_int(0), do: :UNIVERSAL
-  def from_int(6), do: :VIDEO
-  def from_int(1), do: :WEB
+  def from_int(2), do: :images
+  def from_int(3), do: :local
+  def from_int(4), do: :news
+  def from_int(5), do: :products
+  def from_int(0), do: :universal
+  def from_int(6), do: :video
+  def from_int(1), do: :web
   def from_int(_unknown), do: :invalid
 end
-
 
   @spec new(Enum.t) :: t
   def new(data) do
     struct(__MODULE__, data)
   end
-
   @spec encode_to_iodata!(t | map) :: iodata
   def encode_to_iodata!(data) do
     alias Elixir.Pbuf.Encoder
@@ -188,12 +251,10 @@ end
       Encoder.map_field(<<8>>, :uint32, <<18>>, :struct, data.map3, <<250, 3>>),
     ]
   end
-
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
-
   @spec decode!(binary) :: t
   def decode!(data) do
     case Pbuf.Decoder.decode(__MODULE__, data) do
@@ -201,12 +262,10 @@ end
       {:error, err} -> raise err
     end
   end
-
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
     Pbuf.Decoder.decode(__MODULE__, data)
   end
-
   @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
   
   def decode(acc, <<8, data::binary>>) do
@@ -381,14 +440,12 @@ end
     post_map(:map3, 63, Decoder.map_field(8, :uint32, 0, 18, Pbuf.Tests.Child, nil, :map3, acc, data))
   end
 
-
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it's a wrong type (which is an error)
   def decode(acc, data) do
     {prefix, data} = Decoder.varint(data)
     tag = bsr(prefix, 3)
     type = band(prefix, 7)
-
     case tag in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,61,62,63] do
       false -> {acc, Decoder.skip(type, data)}
       true ->
@@ -400,7 +457,6 @@ end
         {:error, err}
     end
   end
-
   defp post_map(name, tag, {:error, %{tag: nil, message: message}}) do
     err = %Decoder.Error{
       tag: tag,
@@ -409,13 +465,11 @@ end
     }
     {:error, err}
   end
-
   # either valid data or a complete error (which would happen if our value
   # was a struct and the error happened decoding it)
   defp post_map(_name, _prefix, data) do
     data
   end
-
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
       {:map1, {c, v}}, acc -> Map.update(acc, :map1, %{c => v}, fn m -> Map.put(m, c, v) end)
@@ -423,13 +477,10 @@ end
       {:map3, {c, v}}, acc -> Map.update(acc, :map3, %{c => v}, fn m -> Map.put(m, c, v) end)
       
       {:strings, v}, acc -> Map.update(acc, :strings, [v], fn e -> [v | e] end)
-
       {:bytess, v}, acc -> Map.update(acc, :bytess, [v], fn e -> [v | e] end)
-
       {:structs, v}, acc -> Map.update(acc, :structs, [v], fn e -> [v | e] end)
       {k, v}, acc -> Map.put(acc, k, v)
     end)
-
     struct = Map.put(struct, :strings, Elixir.Enum.reverse(struct.strings))
     struct = Map.put(struct, :bytess, Elixir.Enum.reverse(struct.bytess))
     struct = Map.put(struct, :structs, Elixir.Enum.reverse(struct.structs))
@@ -440,26 +491,21 @@ defmodule Pbuf.Tests.Child do
   @moduledoc false
   alias Pbuf.{Decoder, Encoder}
   import Bitwise, only: [bsr: 2, band: 2]
-
   alias __MODULE__
-
   defstruct [
     __pbuf__: true,
     id: 0,
     name: ""
   ]
-
   @type t :: %Child{
     id: non_neg_integer,
     name: String.t
   }
 
-
   @spec new(Enum.t) :: t
   def new(data) do
     struct(__MODULE__, data)
   end
-
   @spec encode_to_iodata!(t | map) :: iodata
   def encode_to_iodata!(data) do
     alias Elixir.Pbuf.Encoder
@@ -468,12 +514,10 @@ defmodule Pbuf.Tests.Child do
       Encoder.field(:string, data.name, <<18>>),
     ]
   end
-
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
-
   @spec decode!(binary) :: t
   def decode!(data) do
     case Pbuf.Decoder.decode(__MODULE__, data) do
@@ -481,12 +525,10 @@ defmodule Pbuf.Tests.Child do
       {:error, err} -> raise err
     end
   end
-
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
     Pbuf.Decoder.decode(__MODULE__, data)
   end
-
   @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
   
   def decode(acc, <<8, data::binary>>) do
@@ -497,14 +539,12 @@ defmodule Pbuf.Tests.Child do
     Decoder.field(:string, :name, acc, data)
   end
 
-
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it's a wrong type (which is an error)
   def decode(acc, data) do
     {prefix, data} = Decoder.varint(data)
     tag = bsr(prefix, 3)
     type = band(prefix, 7)
-
     case tag in [1,2] do
       false -> {acc, Decoder.skip(type, data)}
       true ->
@@ -517,18 +557,16 @@ defmodule Pbuf.Tests.Child do
     end
   end
 
-
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
             {k, v}, acc -> Map.put(acc, k, v)
     end)
-
     struct
   end
 end
 defmodule Pbuf.Tests.EverythingType do
   @moduledoc false
-  @type t :: :EVERYTHING_TYPE_SAND | :EVERYTHING_TYPE_SPICE | :EVERYTHING_TYPE_UNKNOWN | non_neg_integer
+  @type t :: :EVERYTHING_TYPE_UNKNOWN | 0 | :EVERYTHING_TYPE_SAND | 1 | :EVERYTHING_TYPE_SPICE | 2
   @spec to_int(t | non_neg_integer) :: integer
   def to_int(:EVERYTHING_TYPE_SAND), do: 1
   def to_int(1), do: 1
@@ -543,7 +581,6 @@ defmodule Pbuf.Tests.EverythingType do
       tag: nil,
       message: "#{inspect(invalid)} is not a valid enum value for #{__MODULE__}"
   end
-
   @spec from_int(integer) :: t
   def from_int(1), do: :EVERYTHING_TYPE_SAND
   def from_int(2), do: :EVERYTHING_TYPE_SPICE

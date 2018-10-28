@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package pbuf.tests.sub;
+
+message User {
+  uint32 id = 1;
+  UserStatus status = 2;
+}
+
+enum UserStatus {
+  USER_STATUS_UNKNOWN = 0;
+  USER_STATUS_NORMAL = 1;
+  USER_STATUS_DELETED = 2;
+}

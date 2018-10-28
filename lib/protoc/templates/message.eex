@@ -1,0 +1,135 @@
+defmodule <%= context.namespace %>.<%= name %> do
+  @moduledoc false
+  alias Pbuf.{Decoder, Encoder}
+  import Bitwise, only: [bsr: 2, band: 2]
+
+  alias __MODULE__
+  <%
+    # Oneof fields are "hidden" behind their parent. We don't want to generate
+    # a field/typespec for it, only for the parent. But we do want to generate
+    # an encoder for it which is why it isn't filtered already
+    hidden_oneofs = fields
+    |> Enum.reject(fn f -> f.hidden end)
+
+    # now merge the pseudo parent fields of the oneofs
+    hidden_oneofs = context.oneofs
+    |> Enum.map(fn {_idx, oneof} -> oneof end)
+    |> Kernel.++(hidden_oneofs)
+    |> Enum.with_index()
+
+    last_index = Enum.count(hidden_oneofs) - 1
+  %>
+
+  defstruct [
+    __pbuf__: true,
+  <%= for {field, i} <- hidden_oneofs do %>
+    <%= field.name %>: <%= field.default %><%= if_neq(i, last_index, ",") %>
+  <% end %>
+  ]
+
+  @type t :: %<%= name %>{
+  <%= for {field, i} <- hidden_oneofs do %>
+    <%= field.name %>: <%= field.typespec %><%= if_neq(i, last_index, ",") %>
+  <% end %>
+  }
+
+  <%= for e <- enums do %>
+<%= Pbuf.Protoc.Template.enumeration(e, true) %>
+  <% end %>
+
+  @spec new(Enum.t) :: t
+  def new(data) do
+    struct(__MODULE__, data)
+  end
+
+  <% last_index = Enum.count(fields) %>
+  @spec encode_to_iodata!(t | map) :: iodata
+  def encode_to_iodata!(data) do
+    alias Elixir.Pbuf.Encoder
+    [
+    <%= for {field, i} <- Enum.with_index(fields) do %>
+      <%= field.encode_fun %><%= if_neq(i, last_index, ",") %>
+    <% end %>
+    ]
+  end
+
+  @spec encode!(t | map) :: binary
+  def encode!(data) do
+    :erlang.iolist_to_binary(encode_to_iodata!(data))
+  end
+
+  @spec decode(binary) :: {:ok, t} | :error
+  def decode(data) do
+    Pbuf.Decoder.decode(__MODULE__, data)
+  end
+
+  @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
+  <%= for {field, _i} <- Enum.with_index(fields) do %>
+  <% prefix = String.replace(field.prefix, ">>" , "") %>
+  def decode(acc, <%= prefix %>, data::binary>>) do
+    <%= "    " <> field.decode_fun <> "\n" %>
+  end
+  <% end %>
+
+  <% tag_list = fields
+     |> Enum.map(fn f -> f.tag end)
+     |> Enum.join(",")
+  %>
+
+  # failed to decode, either this is an unknown tag (which we can skip), or
+  # it's a wrong type (which is an error)
+  def decode(acc, data) do
+    {prefix, data} = Decoder.varint(data)
+    tag = bsr(prefix, 3)
+    type = band(prefix, 7)
+
+    case tag in [<%= tag_list %>] do
+      false -> {acc, Decoder.skip(type, data)}
+      true ->
+        err = %Decoder.Error{
+          tag: tag,
+          module: __MODULE__,
+          message: "#{__MODULE__} tag #{tag} has an incorrect write type of #{type}"
+        }
+        {:error, err}
+    end
+  end
+
+  <%= if Enum.any?(fields, fn f -> f.post_decode == :map end) do %>
+  defp post_map(name, tag, {:error, %{tag: nil, message: message}}) do
+    err = %Decoder.Error{
+      tag: tag,
+      module: __MODULE__,
+      message: "#{__MODULE__}.#{name} tag #{tag} " <> message
+    }
+    {:error, err}
+  end
+
+  # either valid data or a complete error (which would happen if our value
+  # was a struct and the error happened decoding it)
+  defp post_map(_name, _prefix, data) do
+    data
+  end
+  <% end %>
+
+  <%
+    maps = Enum.filter(fields, fn f -> f.post_decode == :map end)
+    repack = Enum.filter(fields, fn f -> f.post_decode == :repack end)
+  %>
+  def __finalize_decode__(args) do
+    struct = Enum.reduce(args, %__MODULE__{}, fn
+      <%= for field <- maps do %>
+      {:<%= field.name %>, {c, v}}, acc -> Map.update(acc, :<%= field.name %>, %{c => v}, fn m -> Map.put(m, c, v) end)
+      <% end %>
+      <%= for field <- repack do %>
+      {:<%= field.name %>, v}, acc -> Map.update(acc, :<%= field.name %>, [v], fn e -> [v | e] end)
+      <% end %>
+      {k, v}, acc -> Map.put(acc, k, v)
+    end)
+
+    <%= for field <- repack do %>
+    struct = Map.put(struct, :<%=field.name%>, Enum.reverse(struct.<%=field.name%>))
+    <% end %>
+    struct
+  end
+end

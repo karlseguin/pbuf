@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package pbuf.tests;
+
+import 'test/schemas/proto/user.proto';
+
+message Everything {
+  bool bool = 1;
+  int32 int32 = 2;
+  int64 int64 = 3;
+  uint32 uint32 = 4;
+  uint64 uint64 = 5;
+  sint32 sint32 = 6;
+  sint64 sint64 = 7;
+  fixed32 fixed32 = 8;
+  fixed64 fixed64 = 9;
+  sfixed32 sfixed32 = 10;
+  sfixed64 sfixed64 = 11;
+  float float = 12;
+  double double = 13;
+  string string = 14;
+  bytes bytes = 15;
+  Child struct = 16;
+  EverythingType type = 17;
+  enum Corpus {
+    UNIVERSAL = 0;
+    WEB = 1;
+    IMAGES = 2;
+    LOCAL = 3;
+    NEWS = 4;
+    PRODUCTS = 5;
+    VIDEO = 6;
+  }
+  Corpus corpus = 18;
+  oneof choice {
+    int32 choice_int32 = 19;
+    string choice_string = 20;
+  }
+  pbuf.tests.sub.User user = 21;
+  pbuf.tests.sub.UserStatus user_status = 22;
+
+  repeated bool bools = 31;
+  repeated int32 int32s = 32;
+  repeated int64 int64s = 33;
+  repeated uint32 uint32s = 34;
+  repeated uint64 uint64s = 35;
+  repeated sint32 sint32s = 36;
+  repeated sint64 sint64s = 37;
+  repeated fixed32 fixed32s = 38;
+  repeated sfixed32 sfixed32s = 39;
+  repeated fixed64 fixed64s = 40;
+  repeated sfixed64 sfixed64s = 41;
+  repeated float floats = 42;
+  repeated double doubles = 43;
+  repeated string strings = 44;
+  repeated bytes bytess = 45;
+  repeated Child structs = 46;
+  repeated EverythingType types = 47;
+  repeated Corpus corpuss = 48;
+
+  map<string, int32> map1 = 61;
+  map<int64, float> map2 = 62;
+  map<uint32, Child> map3 = 63;
+}
+
+message Child {
+  uint32 id = 1;
+  string name = 2;
+}
+
+enum EverythingType {
+  EVERYTHING_TYPE_UNKNOWN = 0;
+  EVERYTHING_TYPE_SAND = 1;
+  EVERYTHING_TYPE_SPICE = 2;
+}

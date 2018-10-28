@@ -1,14 +1,14 @@
 defmodule Pbuf.Protoc.Fields.Simple do
   use Pbuf.Protoc.Field
 
-  def new(desc, _context) do
+  def new(desc, context) do
     typespec = typespec(desc)
     repeated = is_repeated?(desc)
     {tag, name, type, prefix} = extract_core(desc)
 
     {encode_fun, typespec, default} =
     case repeated do
-      false -> {"field", typespec, default(type)}
+      false -> {"field", typespec, default(context, type)}
       true -> {"repeated_field", "[" <> typespec <> "]", "[]"}
     end
 
@@ -43,7 +43,7 @@ defmodule Pbuf.Protoc.Fields.Simple do
   end
 
   @spec typespec(Protoc.proto_field | atom) :: String.t
-  def typespec(%{type_name: t} = desc) when t != nil do
+  def typespec(%{type_name: t} = desc) when t not in [nil, ""] do
     module_name(desc) <> ".t"
   end
 
@@ -61,11 +61,13 @@ defmodule Pbuf.Protoc.Fields.Simple do
     typespec(internal_type(type))
   end
 
-  def default(:bool), do: false
-  def default(:bytes), do: "<<>>"
-  def default(:string), do: ~s("")
-  def default(:double), do: 0.0
-  def default(:float), do: 0.0
-  def default(:struct), do: "nil"
-  def default(_other), do: 0
+  def default(%{version: 2}, _), do: "nil"
+
+  def default(_, :bool), do: false
+  def default(_, :bytes), do: "<<>>"
+  def default(_, :string), do: ~s("")
+  def default(_, :double), do: 0.0
+  def default(_, :float), do: 0.0
+  def default(_, :struct), do: "nil"
+  def default(_, _other), do: 0
 end

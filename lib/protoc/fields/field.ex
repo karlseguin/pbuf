@@ -1,7 +1,6 @@
 defmodule Pbuf.Protoc.Field do
   alias Pbuf.Protoc
   alias Pbuf.Protoc.Fields
-  alias Google.Protobuf.FieldDescriptorProto
 
   @enforce_keys [:tag, :name, :prefix, :typespec, :encode_fun, :decode_fun, :default]
   defstruct @enforce_keys ++ [
@@ -44,7 +43,7 @@ defmodule Pbuf.Protoc.Field do
   @spec get_type(Protoc.proto_field, Context.t) :: :map | :oneof | :enum | :simple
   defp get_type(desc, context) do
     with {false, _} <- {is_map?(desc.type_name, context.maps), :map},
-         {false, _} <- {is_oneof?(desc.oneof_index), :oneof},
+         {false, _} <- {is_oneof?(desc.oneof_index, context), :oneof},
          {false, _} <- {is_enum?(desc.type), :enum}
     do
       :simple
@@ -57,8 +56,16 @@ defmodule Pbuf.Protoc.Field do
     internal_type(type) == :enum
   end
 
-  defp is_oneof?(index) do
-    index != nil
+  defp is_oneof?(nil, _ctx) do
+    false
+  end
+
+  defp is_oneof?(0, %{oneofs: m}) when map_size(m) == 0 do
+    false
+  end
+
+  defp is_oneof?(_index, _ctx) do
+    true
   end
 
   defp is_map?(nil, _maps) do
@@ -81,7 +88,7 @@ defmodule Pbuf.Protoc.Field do
 
   @spec is_repeated?(Protoc.proto_field) :: boolean
   def is_repeated?(desc) do
-    FieldDescriptorProto.Label.key(desc.label) == :LABEL_REPEATED
+    desc.label == :LABEL_REPEATED
   end
 
   @spec extract_core(Protoc.proto_field) :: {non_neg_integer, String.t, atom, binary}
@@ -115,10 +122,6 @@ defmodule Pbuf.Protoc.Field do
   def internal_type(:TYPE_UINT64), do: :uint64
   def internal_type(:TYPE_MESSAGE), do: :struct
   def internal_type(:TYPE_ENUM), do: :enum
-
-  def internal_type(type) do
-    internal_type(FieldDescriptorProto.Type.key(type))
-  end
 
   def stringify_binary(bin) do
     s = bin

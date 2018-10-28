@@ -29,8 +29,8 @@ defmodule Pbuf.Protoc.Fields.Map do
     skprefix = stringify_binary(kprefix)
     svprefix = stringify_binary(vprefix)
 
-    kdefault = Simple.default(ktype)
-    vdefault = Simple.default(vtype)
+    kdefault = Simple.default(context, ktype)
+    vdefault = Simple.default(context, vtype)
 
     # don't have enough information on vtype to know the actual value type
     # (the only reason we have enough for the key is that, as per the specs,

@@ -125,7 +125,7 @@ defmodule <%= context.namespace %>.<%= name %> do
     repack = Enum.filter(fields, fn f -> f.post_decode == :repack end)
   %>
   def __finalize_decode__(args) do
-    struct = Enum.reduce(args, %__MODULE__{}, fn
+    struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
       <%= for field <- maps do %>
       {:<%= field.name %>, {c, v}}, acc -> Map.update(acc, :<%= field.name %>, %{c => v}, fn m -> Map.put(m, c, v) end)
       <% end %>
@@ -136,7 +136,7 @@ defmodule <%= context.namespace %>.<%= name %> do
     end)
 
     <%= for field <- repack do %>
-    struct = Map.put(struct, :<%=field.name%>, Enum.reverse(struct.<%=field.name%>))
+    struct = Map.put(struct, :<%=field.name%>, Elixir.Enum.reverse(struct.<%=field.name%>))
     <% end %>
     struct
   end

@@ -4,12 +4,28 @@ defmodule Sanity.Pbuf.Tests.Sub.User do
 
   @type t :: %__MODULE__{
           id: non_neg_integer,
-          status: integer
+          status: integer,
+          name: Sanity.Pbuf.Tests.Sub.User.Name.t()
         }
-  defstruct [:id, :status]
+  defstruct [:id, :status, :name]
 
   field :id, 1, type: :uint32
   field :status, 2, type: Sanity.Pbuf.Tests.Sub.UserStatus, enum: true
+  field :name, 3, type: Sanity.Pbuf.Tests.Sub.User.Name
+end
+
+defmodule Sanity.Pbuf.Tests.Sub.User.Name do
+  @moduledoc false
+  use Protobuf, syntax: :proto3
+
+  @type t :: %__MODULE__{
+          first: String.t(),
+          last: String.t()
+        }
+  defstruct [:first, :last]
+
+  field :first, 1, type: :string
+  field :last, 2, type: :string
 end
 
 defmodule Sanity.Pbuf.Tests.Sub.UserStatus do

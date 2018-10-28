@@ -21,10 +21,10 @@ defmodule Pbuf.Protoc do
   def main(_) do
     :io.setopts(:standard_io, encoding: :latin1)
     input = IO.binread(:all)
-    request = Protobuf.Decoder.decode(input, Compiler.CodeGeneratorRequest)
+    request = Pbuf.decode!(Compiler.CodeGeneratorRequest, input)
 
-   {files, err} = try do
-      files = Enum.map(request.proto_file, &generate/1)
+    {files, err} = try do
+      files = Enum.map(request.proto_file, &(generate/1))
       {files, nil}
     rescue
       e -> {nil, {e, __STACKTRACE__}}
@@ -35,7 +35,7 @@ defmodule Pbuf.Protoc do
       {err, st} -> Compiler.CodeGeneratorResponse.new(error: Exception.message(err) <> "\n" <> Exception.format_stacktrace(st))
     end
 
-    IO.binwrite(Protobuf.Encoder.encode(response))
+    IO.binwrite(Pbuf.encode!(response))
   end
 
   @spec generate(proto_file) :: Compiler.CodeGeneratorResponse.File.t
@@ -44,7 +44,7 @@ defmodule Pbuf.Protoc do
 
     templates = Enum.reduce(input.message_type, [], fn message, acc ->
       {context, enum} = Context.message(context, message)
-      [acc, generate_message(message, enum, context)]
+      generate_message(message, enum, context, acc)
     end)
 
     templates = Enum.reduce(context.enums, templates, fn e, acc ->
@@ -58,15 +58,37 @@ defmodule Pbuf.Protoc do
     }
   end
 
-  defp generate(%{syntax: _unsupported}) do
-    raise "This generator only supports proto3. Use https://hex.pm/packages/protobuf"
+  defp generate(input) do
+    context = Context.new(input)
+
+    templates = Enum.reduce(input.message_type, [], fn message, acc ->
+      {context, enum} = Context.message(context, message)
+      generate_message(message, enum, context, acc)
+    end)
+
+    %Compiler.CodeGeneratorResponse.File{
+      insertion_point: "",
+      content: :erlang.iolist_to_binary(templates),
+      name: String.replace(input.name, ".proto", ".pb.ex"),
+    }
   end
 
-  @spec generate_message(Google.Protobuf.DescriptorProto.t, %{optional(String.t) => Enumeration.t}, Context.t) :: iodata
-  defp generate_message(message, enums, context) do
+  @spec generate_message(Google.Protobuf.DescriptorProto.t, %{optional(String.t) => Enumeration.t}, Context.t, iolist) :: iolist
+  defp generate_message(message, enums, context, acc) do
+    name = message.name
     fields = generate_fields(message.field, context)
     context = Context.fields(context, fields)
-    Template.message(message.name, fields, enums, context)
+    acc = [acc, Template.message(name, fields, enums, context)]
+
+    message.nested_type
+    |> Enum.filter(&(&1.options == nil))
+    |> Enum.reduce(acc, fn message, acc ->
+      namespace = context.namespace
+      {context, enums} = Context.message(context, message)
+      # ugly, but feeling extra lazy
+      context = %Context{context | namespace: namespace <> "." <> name}
+      generate_message(message, enums, context, acc)
+    end)
   end
 
   @spec generate_fields([proto_field], Context.t) :: [{field, non_neg_integer}]

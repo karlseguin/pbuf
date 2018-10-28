@@ -9,10 +9,12 @@ defmodule Pbuf.Protoc.Context do
   alias Pbuf.Protoc
   alias Pbuf.Protoc.{OneOf, Enumeration}
 
-  @enforce_keys [:package, :namespace, :enums, :maps, :oneofs]
+  @enforce_keys [:package, :namespace, :enums, :maps, :oneofs, :version]
   defstruct @enforce_keys
 
   @type t :: %Context{
+    version: 2 | 3,
+
     # The package as presented in the .proto file. We keep this around because
     # references within the description use it everywhere. When looking for an
     # enumeration (and maybe more) we can just use the reference as-is for our
@@ -39,6 +41,7 @@ defmodule Pbuf.Protoc.Context do
       oneofs: %{},  # only exists at the message level
       package: package,
       namespace: namespace(package),
+      version: version(input.syntax),
       enums: extract_enums(input.enum_type, package)
     }
   end
@@ -74,6 +77,15 @@ defmodule Pbuf.Protoc.Context do
     %Context{context | oneofs: oneofs}
   end
 
+
+  defp version("proto3") do
+    3
+  end
+
+  defp version(_) do
+    2
+  end
+
   @spec namespace(String.t) :: String.t
   defp namespace(package) do
     package
@@ -91,7 +103,9 @@ defmodule Pbuf.Protoc.Context do
   end
 
   defp maps(desc) do
-    Enum.reduce(desc.nested_type, %{}, fn type, maps ->
+    desc.nested_type
+    |> Enum.filter(&(&1.options))
+    |> Enum.reduce(%{}, fn type, maps ->
       case type.options.map_entry do
         false -> maps
         true ->

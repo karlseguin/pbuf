@@ -417,7 +417,7 @@ end
   end
 
   def __finalize_decode__(args) do
-    struct = Enum.reduce(args, %__MODULE__{}, fn
+    struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
       {:map1, {c, v}}, acc -> Map.update(acc, :map1, %{c => v}, fn m -> Map.put(m, c, v) end)
       {:map2, {c, v}}, acc -> Map.update(acc, :map2, %{c => v}, fn m -> Map.put(m, c, v) end)
       {:map3, {c, v}}, acc -> Map.update(acc, :map3, %{c => v}, fn m -> Map.put(m, c, v) end)
@@ -430,9 +430,9 @@ end
       {k, v}, acc -> Map.put(acc, k, v)
     end)
 
-    struct = Map.put(struct, :strings, Enum.reverse(struct.strings))
-    struct = Map.put(struct, :bytess, Enum.reverse(struct.bytess))
-    struct = Map.put(struct, :structs, Enum.reverse(struct.structs))
+    struct = Map.put(struct, :strings, Elixir.Enum.reverse(struct.strings))
+    struct = Map.put(struct, :bytess, Elixir.Enum.reverse(struct.bytess))
+    struct = Map.put(struct, :structs, Elixir.Enum.reverse(struct.structs))
     struct
   end
 end
@@ -519,7 +519,7 @@ defmodule Pbuf.Tests.Child do
 
 
   def __finalize_decode__(args) do
-    struct = Enum.reduce(args, %__MODULE__{}, fn
+    struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
             {k, v}, acc -> Map.put(acc, k, v)
     end)
 

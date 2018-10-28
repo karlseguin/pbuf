@@ -23,7 +23,7 @@ defmodule Pbuf.MixProject do
   end
 
   defp paths(:test), do: paths(:prod) ++ ["test/support", "test/schemas/generated"]
-  defp paths(_), do: ["lib", "web"]
+  defp paths(_), do: ["lib"]
 
   defp escript do
     [main_module: Pbuf.Protoc, name: "protoc-gen-fast-elixir", app: nil]
@@ -37,9 +37,9 @@ defmodule Pbuf.MixProject do
 
   defp deps do
     [
-      {:poison, "~> 3.1"},
-      {:protobuf, "~> 0.5.4"},
-      {:ex_doc, ">= 0.0.0", only: :dev}
+      {:poison, "~> 4.0.1", only: :dev},
+      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:protobuf, "~> 0.5.4", only: [:test]}
     ]
   end
 end

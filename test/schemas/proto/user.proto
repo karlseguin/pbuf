@@ -5,6 +5,11 @@ package pbuf.tests.sub;
 message User {
   uint32 id = 1;
   UserStatus status = 2;
+  message Name {
+    string first = 1;
+    string last = 2;
+  }
+  Name name = 3;
 }
 
 enum UserStatus {

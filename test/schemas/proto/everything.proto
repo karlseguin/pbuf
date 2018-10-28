@@ -1,5 +1,11 @@
 syntax = "proto3";
 
+import 'google/protobuf/descriptor.proto';
+
+extend google.protobuf.EnumValueOptions {
+  string erlang_atom = 4369;
+}
+
 package pbuf.tests;
 
 import 'test/schemas/proto/user.proto';
@@ -23,7 +29,7 @@ message Everything {
   Child struct = 16;
   EverythingType type = 17;
   enum Corpus {
-    UNIVERSAL = 0;
+    UNIVERSAL = 0 [(erlang_atom) = "universal"];
     WEB = 1;
     IMAGES = 2;
     LOCAL = 3;

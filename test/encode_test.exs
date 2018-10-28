@@ -1,6 +1,7 @@
 defmodule Pbuf.Tests.Encode do
   use Pbuf.Tests.Base
 
+  alias Pbuf.Tests.Sub.User
   alias Pbuf.Tests.Everything
 
   test "raises on invalid type" do
@@ -49,6 +50,11 @@ defmodule Pbuf.Tests.Encode do
     assert Pbuf.encode!(Everything.new(bytes: [65, [2, 3]])) == <<122, 3, 65, 2, 3>>
   end
 
+  test "nested messages" do
+    user = User.new(name: User.Name.new(first: "leto", last: "atreides"))
+    user = User.decode!(User.encode!(user))
+    assert user.name == %User.Name{first: "leto", last: "atreides"}
+  end
 
   defp assert_scalar_invalid(type, values, tag) do
     assert_values_invalid(type, [[], %{}, ~D[2018-07-01]] ++ values, tag)

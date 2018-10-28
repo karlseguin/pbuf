@@ -4,3 +4,4 @@ deps/
 .DS_Store
 erl_crash.dump
 /config/prod.exs
+protoc-gen-fast-elixir

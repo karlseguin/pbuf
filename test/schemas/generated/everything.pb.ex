@@ -194,6 +194,14 @@ end
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
 
+  @spec decode!(binary) :: t
+  def decode!(data) do
+    case Pbuf.Decoder.decode(__MODULE__, data) do
+      {:ok, decoded} -> decoded
+      {:error, err} -> raise err
+    end
+  end
+
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
     Pbuf.Decoder.decode(__MODULE__, data)
@@ -464,6 +472,14 @@ defmodule Pbuf.Tests.Child do
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
+  end
+
+  @spec decode!(binary) :: t
+  def decode!(data) do
+    case Pbuf.Decoder.decode(__MODULE__, data) do
+      {:ok, decoded} -> decoded
+      {:error, err} -> raise err
+    end
   end
 
   @spec decode(binary) :: {:ok, t} | :error

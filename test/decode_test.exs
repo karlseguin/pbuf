@@ -13,6 +13,7 @@ defmodule Pbuf.Tests.Decode do
 
   test "ignores unknown fields" do
     assert {:ok, _everything} = Everything.decode(<<210, 10>>)
+    assert Everything.decode!(<<210, 10>>) == %Everything{}
   end
 
   test "error on unexpected map data" do
@@ -20,5 +21,9 @@ defmodule Pbuf.Tests.Decode do
     assert err.tag == 61
     assert err.module == Everything
     assert err.message == "Elixir.Pbuf.Tests.Everything.map1 tag 61 unexpected map data: <<2>>"
+
+    assert_raise Pbuf.Decoder.Error, "Elixir.Pbuf.Tests.Everything.map1 tag 61 unexpected map data: <<2>>", fn ->
+      Everything.decode!(<<234, 3, 2, 1, 2, 3, 4>>)
+    end
   end
 end

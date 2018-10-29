@@ -47,7 +47,7 @@ defmodule Pbuf.Protoc.Enumeration do
       values: values,
       default: default,
       typespec: typespec,
-      full_name: namespace <> "." <> desc.name,
+      full_name: namespace <> desc.name,
     }
   end
 end

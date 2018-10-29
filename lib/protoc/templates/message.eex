@@ -1,4 +1,4 @@
-defmodule <%= context.namespace %>.<%= name %> do
+defmodule <%= context.namespace %><%= name %> do
   @moduledoc false
   alias Pbuf.{Decoder, Encoder}
   import Bitwise, only: [bsr: 2, band: 2]

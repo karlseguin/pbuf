@@ -18,8 +18,7 @@ gen:
 	find ${SCHEMA_DIR}generated -name '*.bak' -delete
 
 	protoc -I=${GOOGLE_PROTO_ROOT} -I=. --fast-elixir_out=. --plugin=protoc-gen-fast-elixir ${SCHEMA_DIR}proto/*.proto
-	mv ${SCHEMA_DIR}proto/user.pb.ex ${SCHEMA_DIR}generated/user.pb.ex
-	mv ${SCHEMA_DIR}proto/everything.pb.ex ${SCHEMA_DIR}generated/everything.pb.ex
+	mv ${SCHEMA_DIR}proto/*.pb.ex ${SCHEMA_DIR}generated/
 
 t:
 	mix test ${F}

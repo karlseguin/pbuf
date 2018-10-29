@@ -56,6 +56,12 @@ defmodule Pbuf.Tests.Encode do
     assert user.name == %User.Name{first: "leto", last: "atreides"}
   end
 
+  test "packageless messages" do
+    a = %A{b: %A.B{c: %A.B.C{d: 3}}}
+    a = A.decode!(A.encode!(a))
+    assert a.b.c.d == 3
+  end
+
   defp assert_scalar_invalid(type, values, tag) do
     assert_values_invalid(type, [[], %{}, ~D[2018-07-01]] ++ values, tag)
   end

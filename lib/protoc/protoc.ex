@@ -86,7 +86,7 @@ defmodule Pbuf.Protoc do
       namespace = context.namespace
       {context, enums} = Context.message(context, message)
       # ugly, but feeling extra lazy
-      context = %Context{context | namespace: namespace <> "." <> name}
+      context = %Context{context | namespace: namespace <> name <> "."}
       generate_message(message, enums, context, acc)
     end)
   end

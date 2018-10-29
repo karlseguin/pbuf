@@ -76,26 +76,43 @@ Should be used as:
 #### Advanced Enums
 You'll likely want to map your protocol buffer enums to specific atoms. With a bit of work, the generator can do this for you.
 
-First, you'll need to specify a custom option:
+First, you'll need to specify a custom option, say in `options.proto`:
 
-    import 'google/protobuf/descriptor.proto';
-    extend google.protobuf.EnumValueOptions {
-      ErlangEnumValueOptions erlang = 4369;
-    }
-    message ErlangEnumValueOptions {
-      string atom = 1;
-    }
+```
+syntax = "proto2";
 
-Note that, for this to work, `protoc` will need to be told the path to the google .proto files, such as: `protoc -I=/usr/local/include`. If you don't already have them, they're part of the `protoc` source: [https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protoc-3.6.1-osx-x86_64.zip](https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protoc-3.6.1-osx-x86_64.zip).
+import 'google/protobuf/descriptor.proto';
 
-Next, use the custom option to specific an atom name:
+extend google.protobuf.EnumValueOptions {
+  optional ErlangEnumValueOptions erlang = 4369;
+}
 
-    enum HTTPMethod {
-      HTTP_METHOD_GET = 0 [(erlang).atom = "get"];
-      HTTP_METHOD_POST = 1 [(erlang).atom = "post"];
-    }
+message ErlangEnumValueOptions {
+  optional string atom = 1;
+}
+```
+
+You can them import this .proto file like any other and use the option:
+
+```
+import 'options.proto';
+
+enum HTTPMethod {
+  HTTP_METHOD_GET = 0 [(erlang).atom = 'get'];
+  HTTP_METHOD_POST = 1 [(erlang).atom = 'post'];
+}
+```
 
 The value will now be `:get` and `:post` rather than `:HTTP_METHOD_GET` and `:HTTP_METHOD_POST`.
+
+For this to work, Google's proto definitions must be available when you run `protoc`:
+
+```
+protoc -I=/usr/local/include/proto/ -I=. ...
+```
+
+They are available from the protocol buffer source: [https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protoc-3.6.1-osx-x86_64.zip](https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protoc-3.6.1-osx-x86_64.zip).
+
 
 ### Oneofs
 The value of a oneof field must be set to a tuple where the first element is the name of the field and the second is the value. Given:

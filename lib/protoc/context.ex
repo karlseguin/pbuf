@@ -36,6 +36,11 @@ defmodule Pbuf.Protoc.Context do
 
   @spec new(Protoc.proto_file) :: t
   def new(%{package: package} = input) do
+    package = case package == nil do
+      true -> ""
+      false -> package <> "."
+    end
+
     %Context{
       maps: %{},    # only exists at the message level
       oneofs: %{},  # only exists at the message level
@@ -86,7 +91,11 @@ defmodule Pbuf.Protoc.Context do
     2
   end
 
-  @spec namespace(String.t) :: String.t
+  @spec namespace(nil | String.t) :: String.t
+  defp namespace(nil) do
+    ""
+  end
+
   defp namespace(package) do
     package
     |> String.split(".")

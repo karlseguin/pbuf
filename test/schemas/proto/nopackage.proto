@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+message A {
+  B b = 1;
+
+  message B {
+    C c = 1;
+
+    message C {
+      int32 d = 2;
+    }
+  }
+}

@@ -19,6 +19,7 @@ gen:
 
 	protoc -I=${GOOGLE_PROTO_ROOT} -I=. --fast-elixir_out=. --plugin=protoc-gen-fast-elixir ${SCHEMA_DIR}proto/*.proto
 	mv ${SCHEMA_DIR}proto/*.pb.ex ${SCHEMA_DIR}generated/
+	rm -fr google
 
 t:
 	mix test ${F}

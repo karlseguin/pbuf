@@ -4,7 +4,6 @@ defmodule Pbuf.Tests.ErlangEnumValueOptions do
   import Bitwise, only: [bsr: 2, band: 2]
   alias __MODULE__
   defstruct [
-    __pbuf__: true,
     atom: ""
   ]
   @type t :: %ErlangEnumValueOptions{
@@ -74,7 +73,6 @@ defmodule Pbuf.Tests.Everything do
   import Bitwise, only: [bsr: 2, band: 2]
   alias __MODULE__
   defstruct [
-    __pbuf__: true,
     choice: nil,
     bool: false,
     int32: 0,
@@ -493,7 +491,6 @@ defmodule Pbuf.Tests.Child do
   import Bitwise, only: [bsr: 2, band: 2]
   alias __MODULE__
   defstruct [
-    __pbuf__: true,
     id: 0,
     name: ""
   ]

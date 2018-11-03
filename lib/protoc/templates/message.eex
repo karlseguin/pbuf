@@ -21,7 +21,6 @@ defmodule <%= context.namespace %><%= name %> do
   %>
 
   defstruct [
-    __pbuf__: true,
   <%= for {field, i} <- hidden_oneofs do %>
     <%= field.name %>: <%= field.default %><%= if_neq(i, last_index, ",") %>
   <% end %>

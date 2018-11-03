@@ -4,7 +4,6 @@ defmodule Pbuf.Tests.Sub.User do
   import Bitwise, only: [bsr: 2, band: 2]
   alias __MODULE__
   defstruct [
-    __pbuf__: true,
     id: 0,
     status: 0,
     name: nil
@@ -88,7 +87,6 @@ defmodule Pbuf.Tests.Sub.User.Name do
   import Bitwise, only: [bsr: 2, band: 2]
   alias __MODULE__
   defstruct [
-    __pbuf__: true,
     first: "",
     last: ""
   ]

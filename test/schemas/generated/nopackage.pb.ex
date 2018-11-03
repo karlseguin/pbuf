@@ -4,7 +4,6 @@ defmodule A do
   import Bitwise, only: [bsr: 2, band: 2]
   alias __MODULE__
   defstruct [
-    __pbuf__: true,
     b: nil
   ]
   @type t :: %A{
@@ -74,7 +73,6 @@ defmodule A.B do
   import Bitwise, only: [bsr: 2, band: 2]
   alias __MODULE__
   defstruct [
-    __pbuf__: true,
     c: nil
   ]
   @type t :: %B{
@@ -144,7 +142,6 @@ defmodule A.B.C do
   import Bitwise, only: [bsr: 2, band: 2]
   alias __MODULE__
   defstruct [
-    __pbuf__: true,
     d: 0
   ]
   @type t :: %C{

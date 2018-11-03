@@ -1,14 +1,14 @@
 defmodule Pbuf.Tests.Sub.User do
   @moduledoc false
-  alias Pbuf.{Decoder, Encoder}
+  alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
-  alias __MODULE__
+
   defstruct [
     id: 0,
     status: 0,
     name: nil
   ]
-  @type t :: %User{
+  @type t :: %__MODULE__{
     id: non_neg_integer,
     status: Pbuf.Tests.Sub.UserStatus.t,
     name: Pbuf.Tests.Sub.User.Name.t
@@ -33,14 +33,14 @@ defmodule Pbuf.Tests.Sub.User do
   end
   @spec decode!(binary) :: t
   def decode!(data) do
-    case Pbuf.Decoder.decode(__MODULE__, data) do
+    case Decoder.decode(__MODULE__, data) do
       {:ok, decoded} -> decoded
       {:error, err} -> raise err
     end
   end
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
-    Pbuf.Decoder.decode(__MODULE__, data)
+    Decoder.decode(__MODULE__, data)
   end
   @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
   
@@ -83,14 +83,14 @@ defmodule Pbuf.Tests.Sub.User do
 end
 defmodule Pbuf.Tests.Sub.User.Name do
   @moduledoc false
-  alias Pbuf.{Decoder, Encoder}
+  alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
-  alias __MODULE__
+
   defstruct [
     first: "",
     last: ""
   ]
-  @type t :: %Name{
+  @type t :: %__MODULE__{
     first: String.t,
     last: String.t
   }
@@ -113,14 +113,14 @@ defmodule Pbuf.Tests.Sub.User.Name do
   end
   @spec decode!(binary) :: t
   def decode!(data) do
-    case Pbuf.Decoder.decode(__MODULE__, data) do
+    case Decoder.decode(__MODULE__, data) do
       {:ok, decoded} -> decoded
       {:error, err} -> raise err
     end
   end
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
-    Pbuf.Decoder.decode(__MODULE__, data)
+    Decoder.decode(__MODULE__, data)
   end
   @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
   

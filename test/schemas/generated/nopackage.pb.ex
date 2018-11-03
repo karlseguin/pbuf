@@ -1,12 +1,12 @@
 defmodule A do
   @moduledoc false
-  alias Pbuf.{Decoder, Encoder}
+  alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
-  alias __MODULE__
+
   defstruct [
     b: nil
   ]
-  @type t :: %A{
+  @type t :: %__MODULE__{
     b: A.B.t
   }
 
@@ -27,14 +27,14 @@ defmodule A do
   end
   @spec decode!(binary) :: t
   def decode!(data) do
-    case Pbuf.Decoder.decode(__MODULE__, data) do
+    case Decoder.decode(__MODULE__, data) do
       {:ok, decoded} -> decoded
       {:error, err} -> raise err
     end
   end
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
-    Pbuf.Decoder.decode(__MODULE__, data)
+    Decoder.decode(__MODULE__, data)
   end
   @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
   
@@ -69,13 +69,13 @@ defmodule A do
 end
 defmodule A.B do
   @moduledoc false
-  alias Pbuf.{Decoder, Encoder}
+  alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
-  alias __MODULE__
+
   defstruct [
     c: nil
   ]
-  @type t :: %B{
+  @type t :: %__MODULE__{
     c: A.B.C.t
   }
 
@@ -96,14 +96,14 @@ defmodule A.B do
   end
   @spec decode!(binary) :: t
   def decode!(data) do
-    case Pbuf.Decoder.decode(__MODULE__, data) do
+    case Decoder.decode(__MODULE__, data) do
       {:ok, decoded} -> decoded
       {:error, err} -> raise err
     end
   end
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
-    Pbuf.Decoder.decode(__MODULE__, data)
+    Decoder.decode(__MODULE__, data)
   end
   @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
   
@@ -138,13 +138,13 @@ defmodule A.B do
 end
 defmodule A.B.C do
   @moduledoc false
-  alias Pbuf.{Decoder, Encoder}
+  alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
-  alias __MODULE__
+
   defstruct [
     d: 0
   ]
-  @type t :: %C{
+  @type t :: %__MODULE__{
     d: integer
   }
 
@@ -165,14 +165,14 @@ defmodule A.B.C do
   end
   @spec decode!(binary) :: t
   def decode!(data) do
-    case Pbuf.Decoder.decode(__MODULE__, data) do
+    case Decoder.decode(__MODULE__, data) do
       {:ok, decoded} -> decoded
       {:error, err} -> raise err
     end
   end
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
-    Pbuf.Decoder.decode(__MODULE__, data)
+    Decoder.decode(__MODULE__, data)
   end
   @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
   

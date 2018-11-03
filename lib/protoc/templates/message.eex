@@ -1,9 +1,9 @@
 defmodule <%= context.namespace %><%= name %> do
   @moduledoc false
-  alias Pbuf.{Decoder, Encoder}
+
+  alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
 
-  alias __MODULE__
   <%
     # Oneof fields are "hidden" behind their parent. We don't want to generate
     # a field/typespec for it, only for the parent. But we do want to generate
@@ -26,7 +26,7 @@ defmodule <%= context.namespace %><%= name %> do
   <% end %>
   ]
 
-  @type t :: %<%= name %>{
+  @type t :: %__MODULE__{
   <%= for {field, i} <- hidden_oneofs do %>
     <%= field.name %>: <%= field.typespec %><%= if_neq(i, last_index, ",") %>
   <% end %>
@@ -59,7 +59,7 @@ defmodule <%= context.namespace %><%= name %> do
 
   @spec decode!(binary) :: t
   def decode!(data) do
-    case Pbuf.Decoder.decode(__MODULE__, data) do
+    case Decoder.decode(__MODULE__, data) do
       {:ok, decoded} -> decoded
       {:error, err} -> raise err
     end
@@ -67,7 +67,7 @@ defmodule <%= context.namespace %><%= name %> do
 
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
-    Pbuf.Decoder.decode(__MODULE__, data)
+    Decoder.decode(__MODULE__, data)
   end
 
   @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}

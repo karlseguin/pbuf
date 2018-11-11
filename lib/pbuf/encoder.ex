@@ -29,8 +29,6 @@ defmodule Pbuf.Encoder do
   def wire_type(_), do: 0 # varint
 
   @spec varint(integer) :: iodata
-  # def varint(0), do: <<>>
-
   for n <- (0..127) do
     def varint(unquote(n)) do
       <<unquote(n)>>

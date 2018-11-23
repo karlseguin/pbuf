@@ -34,7 +34,10 @@ defmodule Pbuf.Decoder do
   end
 
   defp do_decode({acc, data}, mod) do
-    do_decode(mod.decode(acc, data), mod)
+    case mod.decode(acc, data) do
+      {{:error, _} = err, _rest} -> err
+      acc -> do_decode(acc, mod)
+    end
   end
 
   # used when we have an unknown field and we want to skip the bytes
@@ -150,8 +153,10 @@ defmodule Pbuf.Decoder do
 
   @spec field(atom, atom, Keyword.t, binary) :: {Keyword.t, binary}
   def field(type, name, acc, data) do
-    {value, data} = field(type, data)
-    {[{name, value} | acc], data}
+    case field(type, data) do
+      {:error, _} = err -> err
+      {value, data} -> {[{name, value} | acc], data}
+    end
   end
 
   @spec struct_field(atom, atom, Keyword.t, binary) :: {Keyword.t, binary} | {:error, any}
@@ -170,6 +175,10 @@ defmodule Pbuf.Decoder do
   end
 
   @spec oneof_field(atom, {Keyword.t, binary}) :: {Keyword.t, binary}
+  def oneof_field(_name, {{:error, _} = err, _data}) do
+    err
+  end
+
   def oneof_field(name, {acc, data}) do
     # pop the last k=>v added to our acc, which is the hidden oneof field
     # and replace it with a the same value, but with our exposed key names

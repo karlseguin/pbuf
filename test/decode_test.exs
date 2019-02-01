@@ -8,7 +8,7 @@ defmodule Pbuf.Tests.Decode do
     assert {:error, %Error{} = err} = Everything.decode(<<9, 10>>)
     assert err.tag == 1
     assert err.module == Everything
-    assert err.message == "Elixir.Pbuf.Tests.Everything tag 1 has an incorrect write type of 1"
+    assert err.message == "Elixir.Pbuf.Tests.Everything tag 1 has an incorrect type of 1"
   end
 
   test "ignores unknown fields" do

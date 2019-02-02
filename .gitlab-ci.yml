@@ -2,10 +2,11 @@ stages:
   - test_image
   - test
 
+variables:
+  IMAGE_NAME: $CI_REGISTRY/karl/pbuf:latest
+
 test_image:
   image: docker:git
-  variables:
-    IMAGE_NAME: $CI_REGISTRY/karl/pbuf:latest
   services:
   - name: docker:dind
     entrypoint: ["dockerd-entrypoint.sh"]

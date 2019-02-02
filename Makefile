@@ -2,6 +2,9 @@ F=
 SCHEMA_DIR=test/schemas/
 GOOGLE_PROTO_ROOT=/usr/local/include
 
+bench:
+	MIX_ENV=test mix run test/benchmark.exs
+
 # generate files necessary using a protoc generator built from this source
 gen:
 	mix escript.build

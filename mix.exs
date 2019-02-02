@@ -15,7 +15,7 @@ defmodule Pbuf.MixProject do
       package: [
         licenses: ["MIT"],
         links: %{
-          "GitHub" => "https://github.com/karlseguin/pbuf"
+          "git" => "https://src.openmymind.net/karl/pbuf"
         },
         maintainers: ["Karl Seguin"],
       ],
@@ -39,7 +39,8 @@ defmodule Pbuf.MixProject do
     [
       {:poison, "~> 4.0.1", only: :dev},
       {:ex_doc, ">= 0.0.0", only: :dev},
-      {:protobuf, "~> 0.5.4", only: [:test]}
+      {:benchee, "~> 0.13.2", only: :test},
+      {:protobuf, "~> 0.5.4", only: [:test]},
     ]
   end
 end

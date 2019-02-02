@@ -33,16 +33,12 @@ defmodule Pbuf.Tests.Sub.User do
   end
   @spec decode!(binary) :: t
   def decode!(data) do
-    case Decoder.decode(__MODULE__, data) do
-      {:ok, decoded} -> decoded
-      {:error, err} -> raise err
-    end
+    Decoder.decode!(__MODULE__, data)
   end
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-  @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
   
   def decode(acc, <<8, data::binary>>) do
     Decoder.field(:uint32, :id, acc, data)
@@ -57,7 +53,7 @@ defmodule Pbuf.Tests.Sub.User do
   end
 
   # failed to decode, either this is an unknown tag (which we can skip), or
-  # it's a wrong type (which is an error)
+  # it is a wrong type (which is an error)
   def decode(acc, data) do
     {prefix, data} = Decoder.varint(data)
     tag = bsr(prefix, 3)
@@ -68,7 +64,7 @@ defmodule Pbuf.Tests.Sub.User do
         err = %Decoder.Error{
           tag: tag,
           module: __MODULE__,
-          message: "#{__MODULE__} tag #{tag} has an incorrect write type of #{type}"
+          message: "#{__MODULE__} tag #{tag} has an incorrect type of #{type}"
         }
         {:error, err}
     end
@@ -113,16 +109,12 @@ defmodule Pbuf.Tests.Sub.User.Name do
   end
   @spec decode!(binary) :: t
   def decode!(data) do
-    case Decoder.decode(__MODULE__, data) do
-      {:ok, decoded} -> decoded
-      {:error, err} -> raise err
-    end
+    Decoder.decode!(__MODULE__, data)
   end
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-  @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
   
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :first, acc, data)
@@ -133,7 +125,7 @@ defmodule Pbuf.Tests.Sub.User.Name do
   end
 
   # failed to decode, either this is an unknown tag (which we can skip), or
-  # it's a wrong type (which is an error)
+  # it is a wrong type (which is an error)
   def decode(acc, data) do
     {prefix, data} = Decoder.varint(data)
     tag = bsr(prefix, 3)
@@ -144,7 +136,7 @@ defmodule Pbuf.Tests.Sub.User.Name do
         err = %Decoder.Error{
           tag: tag,
           module: __MODULE__,
-          message: "#{__MODULE__} tag #{tag} has an incorrect write type of #{type}"
+          message: "#{__MODULE__} tag #{tag} has an incorrect type of #{type}"
         }
         {:error, err}
     end

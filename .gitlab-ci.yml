@@ -11,15 +11,15 @@ test_image:
     entrypoint: ["dockerd-entrypoint.sh"]
     command: ["--insecure-registry", "172.17.0.1:5000"]
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker login -u $CI_REGISTRY_USER -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker pull ${IMAGE_NAME}
-    - cd test && docker build --cache-from ${IMAGE_NAME}:latest -t IMAGE_NAME .
-    - docker push IMAGE_NAME
+    - cd test && docker build --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} .
+    - docker push ${IMAGE_NAME}
   only:
     - master
 
 test:
-  image: $CI_REGISTRY/karl/pbuf:latest
+  image: ${IMAGE_NAME}
 
   before_script:
     - MIX_ENV=test mix deps.get

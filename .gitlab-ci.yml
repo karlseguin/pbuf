@@ -1,17 +1,32 @@
-image: elixir:1.8.1-slim
+stages:
+  - test_image
+  - test
 
-before_script:
-  - apt-get update && apt-get -y install wget unzip build-essential
-  - wget -q https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0rc1/protoc-3.7.0-rc1-linux-x86_64.zip
-  - unzip protoc-3.7.0-rc1-linux-x86_64.zip
-  - mv bin/protoc /usr/local/bin
-  - mv include/google/ /usr/local/include/google/
-  - mix local.hex --force
-  - MIX_ENV=test mix deps.get
-  - export PATH=~/.mix/escripts/:$PATH
-  - yes | mix escript.install hex protobuf || true
+test_image:
+  image: docker:git
+  services:
+  - name: docker:dind
+    entrypoint: ["dockerd-entrypoint.sh"]
+    command: ["--insecure-registry", "172.17.0.1:5000"]
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - cd test && docker build -t $CI_REGISTRY/karl/pbuf:latest .
+    - docker push $CI_REGISTRY/karl/pbuf:latest
+  only:
+    - master
 
 test:
+  image: $CI_REGISTRY/karl/pbuf:latest
+
+  before_script:
+    - MIX_ENV=test mix deps.get
+
+  cache:
+    key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - deps/
+      - _build/
+
   script:
-  - make gen
-  - make t
+    - make gen
+    - make t

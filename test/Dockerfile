@@ -1,6 +1,6 @@
 from elixir:1.8.1-slim
 
-run apt-get update && apt-get -y install wget unzip build-essential && \
+run apt-get update && apt-get -y install wget unzip make && \
     wget -q https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0rc1/protoc-3.7.0-rc1-linux-x86_64.zip && \
     unzip protoc-3.7.0-rc1-linux-x86_64.zip && \
     mv bin/protoc /usr/local/bin && \

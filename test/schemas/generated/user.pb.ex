@@ -3,6 +3,7 @@ defmodule Pbuf.Tests.Sub.User do
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
 
+  @derive Jason.Encoder
   defstruct [
     id: 0,
     status: 0,
@@ -82,6 +83,7 @@ defmodule Pbuf.Tests.Sub.User.Name do
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
 
+  @derive Jason.Encoder
   defstruct [
     first: "",
     last: ""

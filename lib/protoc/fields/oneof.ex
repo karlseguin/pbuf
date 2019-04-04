@@ -15,8 +15,8 @@ defmodule Pbuf.Protoc.Fields.OneOf do
 
     pseudo_encode_fun = pseudo
     |> Map.get(:encode_fun)
-    |> String.replace("data.#{name}", "elem(data.#{oneof.name}, 1)")
-    encode_fun = "oneof_field(:#{name}, data.#{oneof.name}, fn -> #{pseudo_encode_fun} end)"
+    |> String.replace("data.#{name}", "v")
+    encode_fun = "oneof_field(:#{name}, data.#{oneof.name}, fn v -> #{pseudo_encode_fun} end)"
 
     pseudo_decode_fun = Map.get(pseudo, :decode_fun)
     decode_fun = "oneof_field(:#{oneof.name}, #{pseudo_decode_fun})"

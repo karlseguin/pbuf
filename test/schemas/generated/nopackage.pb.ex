@@ -3,6 +3,7 @@ defmodule A do
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
 
+  @derive Jason.Encoder
   defstruct [
     b: nil
   ]
@@ -68,6 +69,7 @@ defmodule A.B do
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
 
+  @derive Jason.Encoder
   defstruct [
     c: nil
   ]
@@ -133,6 +135,7 @@ defmodule A.B.C do
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
 
+  @derive Jason.Encoder
   defstruct [
     d: 0
   ]

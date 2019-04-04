@@ -325,8 +325,19 @@ defmodule Pbuf.Encoder do
     <<>>
   end
 
-  def oneof_field(choice, {choice, _value}, fun) do
-    fun.()
+  def oneof_field(choice, {choice, value}, fun) do
+    fun.(value)
+  end
+
+  def oneof_field(choice, %{oneof: choice, value: value}, fun) do
+    fun.(value)
+  end
+
+  def oneof_field(choice, value, fun) when map_size(value) == 1 do
+    case :maps.next(:maps.iterator(value)) do
+      {^choice, value, :none} -> fun.(value)
+      _ -> <<>>
+    end
   end
 
   def oneof_field(_choice, _value, _prefix) do

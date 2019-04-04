@@ -21,14 +21,10 @@ defmodule Pbuf.Protoc.OneOf do
 
   @spec new(String.t) :: t
   def new(name) do
-    %OneOf{name: name, typespec: "", default: "nil"}
+    %OneOf{name: name, typespec: "map", default: "nil"}
   end
 
   @spec add(t, Field.t) :: t
-  def add(%{typespec: ""} = oneof, field) do
-    %OneOf{oneof | typespec: build_typespec(field)}
-  end
-
   def add(%{typespec: existing} = oneof, field) do
     %OneOf{oneof | typespec: existing <> " | " <> build_typespec(field)}
   end

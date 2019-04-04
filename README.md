@@ -126,6 +126,20 @@ The value of a oneof field must be set to a tuple where the first element is the
 
 Then valid values for `event_oneof` are: nil, `{:commit, Commit.t}` or `{:wiki, Wiki.t}`.
 
+### Jason and Oneofs
+Generated structures have a `@derive Jason.Encoder`. For simple messages, this means you can use `Jason.encode(struct)` to generate a json representation of your messages.
+
+This fails for oneofs, since Jason can't encode tuples (`{:type, value`}). For this reason, a oneof can also be specified using a map, following either pattern:
+
+```
+  %{oneof: :commit, value: Commit.t}
+  # or
+
+  %{commit: Commit.t}
+```
+
+Note however that when decoding, it will _always_ go to the tuple version.
+
 
 ## What's Ugly?
 There are two distinctly ugly parts of the code. The first is pretty much anything to do with `oneof` fields. The second is the decoding of maps.

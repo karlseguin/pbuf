@@ -3,6 +3,7 @@ defmodule Pbuf.Tests.ErlangEnumValueOptions do
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
 
+  @derive Jason.Encoder
   defstruct [
     atom: ""
   ]
@@ -68,6 +69,7 @@ defmodule Pbuf.Tests.Everything do
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
 
+  @derive Jason.Encoder
   defstruct [
     choice: nil,
     bool: false,
@@ -113,7 +115,7 @@ defmodule Pbuf.Tests.Everything do
     map3: %{}
   ]
   @type t :: %__MODULE__{
-    choice: {:choice_int32, integer} | {:choice_string, String.t},
+    choice: map | {:choice_int32, integer} | {:choice_string, String.t},
     bool: boolean,
     int32: integer,
     int64: integer,
@@ -218,8 +220,8 @@ end
       Encoder.field(:struct, data.struct, <<130, 1>>),
       Encoder.enum_field(Pbuf.Tests.EverythingType, data.type, <<136, 1>>),
       Encoder.enum_field(Pbuf.Tests.Everything.Corpus, data.corpus, <<144, 1>>),
-      Encoder.oneof_field(:choice_int32, data.choice, fn -> Encoder.field(:int32, elem(data.choice, 1), <<152, 1>>) end),
-      Encoder.oneof_field(:choice_string, data.choice, fn -> Encoder.field(:string, elem(data.choice, 1), <<162, 1>>) end),
+      Encoder.oneof_field(:choice_int32, data.choice, fn v -> Encoder.field(:int32, v, <<152, 1>>) end),
+      Encoder.oneof_field(:choice_string, data.choice, fn v -> Encoder.field(:string, v, <<162, 1>>) end),
       Encoder.field(:struct, data.user, <<170, 1>>),
       Encoder.enum_field(Pbuf.Tests.Sub.UserStatus, data.user_status, <<176, 1>>),
       Encoder.repeated_field(:bool, data.bools, <<250, 1>>),
@@ -482,6 +484,7 @@ defmodule Pbuf.Tests.Child do
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
 
+  @derive Jason.Encoder
   defstruct [
     id: 0,
     name: ""

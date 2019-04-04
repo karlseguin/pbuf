@@ -74,6 +74,17 @@ defmodule Pbuf.Tests.Integration do
     assert_value(everything, values)
   end
 
+  test "encodes oneof as map" do
+    everything = Everything.decode!(Pbuf.encode!(Everything.new(choice: {:choice_int32, 299})))
+    assert everything.choice == {:choice_int32, 299}
+
+    everything = Everything.decode!(Pbuf.encode!(Everything.new(choice: %{oneof: :choice_string, value: "spice"})))
+    assert everything.choice == {:choice_string, "spice"}
+    # values = %{choice: %{type: :choice_string, value: "abc"}}
+    # everything = encode_decode(struct(Everything, values))
+    # IO.inspect(everything)
+  end
+
   # decode using both our own library and Protobuf as a sanity check
   defp encode_decode(struct) do
     encoded = Pbuf.encode!(struct)

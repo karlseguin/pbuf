@@ -225,6 +225,10 @@ defmodule Pbuf.Encoder do
     [prefix, field(:string, val)]
   end
 
+  def field(:string, val, prefix) when is_atom(val) do
+    field(:string, Atom.to_string(val), prefix)
+  end
+
   def field(:string, val, prefix) do
     raise_invalid(:string, val, prefix)
   end

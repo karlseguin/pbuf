@@ -21,7 +21,7 @@ defmodule Pbuf.Tests.Encode do
     assert_scalar_invalid(:float, [true, false, :yes, "."], 12)
     assert_scalar_invalid(:double, [true, false, :yes, "."], 13)
 
-    assert_scalar_invalid(:string, [true, false, :yes, 1, -2.0], 14)
+    assert_scalar_invalid(:string, [1, -2.0], 14)
     assert_values_invalid(:bytes, [true, false, :yes, -3991, 99.2, %{}], 15)
 
     assert_values_invalid(:struct, [true, false, :yes, -3991, 99.2, %{}], 16)
@@ -52,6 +52,12 @@ defmodule Pbuf.Tests.Encode do
 
   test "nested messages" do
     user = User.new(name: User.Name.new(first: "leto", last: "atreides"))
+    user = User.decode!(User.encode!(user))
+    assert user.name == %User.Name{first: "leto", last: "atreides"}
+  end
+
+  test "atoms to string" do
+    user = User.new(name: User.Name.new(first: :leto, last: :atreides))
     user = User.decode!(User.encode!(user))
     assert user.name == %User.Name{first: "leto", last: "atreides"}
   end

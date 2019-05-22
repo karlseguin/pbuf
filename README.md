@@ -147,13 +147,12 @@ It's possible to not generate `@derive Jason.Encoder` on a per-message basis by 
 ```
 syntax = "proto2";
 
-
 extend google.protobuf.MessageOptions {
-  PbufMessageOptions pbuf = 78832;
+  optional PbufMessageOptions pbuf = 78832;
 }
 
 message PbufMessageOptions {
-  bool jason = 1;
+  optional bool jason = 1;
 }
 ```
 

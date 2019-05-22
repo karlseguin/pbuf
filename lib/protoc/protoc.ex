@@ -74,11 +74,12 @@ defmodule Pbuf.Protoc do
   end
 
   @spec generate_message(Google.Protobuf.DescriptorProto.t, %{optional(String.t) => Enumeration.t}, Context.t, iolist) :: iolist
-  defp generate_message(message, enums, context, acc) do
+  defp generate_message(message, enums, context, acc) do\
     name = message.name
     fields = generate_fields(message.field, context)
     context = Context.fields(context, fields)
-    acc = [acc, trim_template(Template.message(name, fields, enums, context))]
+    options = Keyword.merge([jason: true], parse_message_options(message.options))
+    acc = [acc, trim_template(Template.message(name, fields, enums, context, options))]
 
     message.nested_type
     |> Enum.filter(&(&1.options == nil))
@@ -101,6 +102,14 @@ defmodule Pbuf.Protoc do
   @spec generate_enumeration(Enumeration.t) :: iodata
   defp generate_enumeration(e) do
     trim_template(Template.enumeration(e, false))
+  end
+
+  defp parse_message_options(%{pbuf: opts}) do
+    [jason: Map.get(opts, :jason, true)]
+  end
+
+  defp parse_message_options(_) do
+    []
   end
 
   def capitalize_first(word) do

@@ -3,11 +3,19 @@ syntax = "proto3";
 import 'google/protobuf/descriptor.proto';
 
 extend google.protobuf.EnumValueOptions {
-  ErlangEnumValueOptions erlang = 4369;
+  ErlangEnumValueOptions erlang = 78832;
 }
 
 message ErlangEnumValueOptions {
   string atom = 1;
+}
+
+extend google.protobuf.MessageOptions {
+  PbufMessageOptions pbuf = 78832;
+}
+
+message PbufMessageOptions {
+  bool jason = 1;
 }
 
 package pbuf.tests;
@@ -74,6 +82,7 @@ message Everything {
 }
 
 message Child {
+  option (pbuf).jason = false;
   uint32 id = 1;
   string name = 2;
 }

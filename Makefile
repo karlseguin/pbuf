@@ -2,10 +2,12 @@ F=
 SCHEMA_DIR=test/schemas/
 GOOGLE_PROTO_ROOT=/usr/local/include
 
+.PHONY: bench
 bench:
 	MIX_ENV=test mix run test/benchmark.exs
 
 # generate files necessary using a protoc generator built from this source
+.PHONY: gen
 gen:
 	mix escript.build
 
@@ -24,9 +26,11 @@ gen:
 	mv ${SCHEMA_DIR}proto/*.pb.ex ${SCHEMA_DIR}generated/
 	rm -fr google
 
+.PHONY: t
 t:
 	mix test ${F}
 
+.PHONY: p
 p:
 	rm -fr ./test/schemas/generated/*
 	protoc --proto_path=./test/schemas/ \

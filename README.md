@@ -84,7 +84,7 @@ syntax = "proto2";
 import 'google/protobuf/descriptor.proto';
 
 extend google.protobuf.EnumValueOptions {
-  optional ErlangEnumValueOptions erlang = 4369;
+  optional ErlangEnumValueOptions erlang = 78832;
 }
 
 message ErlangEnumValueOptions {
@@ -133,12 +133,40 @@ This fails for oneofs, since Jason can't encode tuples (`{:type, value`}). For t
 
 ```
   %{oneof: :commit, value: Commit.t}
+
   # or
 
   %{commit: Commit.t}
 ```
 
 Note however that when decoding, it will _always_ go to the tuple version.
+
+#### Disabling Jason
+It's possible to not generate `@derive Jason.Encoder` on a per-message basis by using a custom option, say in `options.proto`:
+
+```
+syntax = "proto2";
+
+
+extend google.protobuf.MessageOptions {
+  PbufMessageOptions pbuf = 78832;
+}
+
+message PbufMessageOptions {
+  bool jason = 1;
+}
+```
+
+And then using it in your message:
+
+```
+message Something {
+  option (pbuf).jason = false;
+  ...
+}
+```
+
+(Yes, 78832 is the same option used by the Erlang enum option. This is OK. Tag values for options need only be unique per-message type.)
 
 
 ## What's Ugly?

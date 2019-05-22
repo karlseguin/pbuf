@@ -3,7 +3,7 @@ defmodule Pbuf.Protoc.Template do
 
   EEx.function_from_file(:def, :message,
     Path.expand("./templates/message.eex", __DIR__),
-    [:name, :fields, :enums, :context],
+    [:name, :fields, :enums, :context, :options],
     trim: true
   )
 

@@ -10,6 +10,18 @@ defmodule Sanity.Pbuf.Tests.ErlangEnumValueOptions do
   field :atom, 1, type: :string
 end
 
+defmodule Sanity.Pbuf.Tests.PbufMessageOptions do
+  @moduledoc false
+  use Protobuf, syntax: :proto3
+
+  @type t :: %__MODULE__{
+          jason: boolean
+        }
+  defstruct [:jason]
+
+  field :jason, 1, type: :bool
+end
+
 defmodule Sanity.Pbuf.Tests.Everything do
   @moduledoc false
   use Protobuf, syntax: :proto3

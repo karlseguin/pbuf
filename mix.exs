@@ -1,13 +1,13 @@
 defmodule Pbuf.MixProject do
   use Mix.Project
 
-  @version "0.0.5"
+  @version "0.0.6"
 
   def project do
     [
       app: :pbuf,
       deps: deps(),
-      elixir: "~> 1.6",
+      elixir: "~> 1.8",
       version: @version,
       escript: escript(),
       elixirc_paths: paths(Mix.env),

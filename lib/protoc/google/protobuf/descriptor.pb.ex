@@ -1823,7 +1823,7 @@ defmodule Google.Protobuf.MessageOptions do
     deprecated: nil,
     map_entry: nil,
     uninterpreted_option: [],
-    pbuf: nil
+    json_message: 1
 
   ]
 
@@ -1833,7 +1833,7 @@ defmodule Google.Protobuf.MessageOptions do
     deprecated: boolean,
     map_entry: boolean,
     uninterpreted_option: [Google.Protobuf.UninterpretedOption.t],
-    pbuf: Google.Protobuf.PbufMessageOptions.t
+    json_message: integer
   }
 
 
@@ -1851,7 +1851,7 @@ defmodule Google.Protobuf.MessageOptions do
       Encoder.field(:bool, data.deprecated, <<24>>),
       Encoder.field(:bool, data.map_entry, <<56>>),
       Encoder.repeated_field(:struct, data.uninterpreted_option, <<186, 62>>),
-      Encoder.field(:struct, data.pbuf, <<130, 191, 38>>),
+      Encoder.field(:int32, data.json_message, <<128, 191, 38>>)
     ]
   end
 
@@ -1895,15 +1895,14 @@ defmodule Google.Protobuf.MessageOptions do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
 
-  def decode(acc, <<130, 191, 38, data::binary>>) do
-    Decoder.struct_field(Google.Protobuf.PbufMessageOptions, :pbuf, acc, data)
+  def decode(acc, <<128, 191, 38, data::binary>>) do
+    Decoder.field(:int32, :json_message, acc, data)
   end
 
 
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it's a wrong type (which is an error)
   def decode(acc, data) do
-    :io.put_chars(:standard_error, [inspect(data), "\n"])
     {prefix, data} = Decoder.varint(data)
     tag = bsr(prefix, 3)
     type = band(prefix, 7)
@@ -1947,7 +1946,8 @@ defmodule Google.Protobuf.FieldOptions do
     lazy: nil,
     jstype: 0,
     weak: nil,
-    uninterpreted_option: []
+    uninterpreted_option: [],
+    json_field: 0
   ]
 
   @type t :: %FieldOptions{
@@ -1957,7 +1957,8 @@ defmodule Google.Protobuf.FieldOptions do
     lazy: boolean,
     jstype: Google.Protobuf.FieldOptions.JSType.t,
     weak: boolean,
-    uninterpreted_option: [Google.Protobuf.UninterpretedOption.t]
+    uninterpreted_option: [Google.Protobuf.UninterpretedOption.t],
+    json_field: integer,
   }
 
 defmodule JSType do
@@ -2027,6 +2028,7 @@ end
       Encoder.enum_field(Google.Protobuf.FieldOptions.JSType, data.jstype, <<48>>),
       Encoder.field(:bool, data.weak, <<80>>),
       Encoder.repeated_field(:struct, data.uninterpreted_option, <<186, 62>>),
+      Encoder.field(:int32, data.json_field, <<128, 191, 38>>),
     ]
   end
 
@@ -2076,6 +2078,10 @@ end
 
   def decode(acc, <<186, 62, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
+  end
+
+  def decode(acc, <<128, 191, 38, data::binary>>) do
+    Decoder.field(:int32, :json_field, acc, data)
   end
 
 
@@ -2398,73 +2404,6 @@ defmodule Google.Protobuf.EnumValueOptions do
     end)
 
     struct = Map.put(struct, :uninterpreted_option, Elixir.Enum.reverse(struct.uninterpreted_option))
-    struct
-  end
-end
-
-defmodule Google.Protobuf.PbufMessageOptions do
-  @moduledoc false
-  alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
-
-  @derive Jason.Encoder
-  defstruct [
-    jason: false
-  ]
-  @type t :: %__MODULE__{
-    jason: boolean
-  }
-
-  @spec new(Enum.t) :: t
-  def new(data) do
-    struct(__MODULE__, data)
-  end
-  @spec encode_to_iodata!(t | map) :: iodata
-  def encode_to_iodata!(data) do
-    alias Elixir.Pbuf.Encoder
-    [
-      Encoder.field(:bool, data.jason, <<8>>),
-    ]
-  end
-  @spec encode!(t | map) :: binary
-  def encode!(data) do
-    :erlang.iolist_to_binary(encode_to_iodata!(data))
-  end
-  @spec decode!(binary) :: t
-  def decode!(data) do
-    Decoder.decode!(__MODULE__, data)
-  end
-  @spec decode(binary) :: {:ok, t} | :error
-  def decode(data) do
-    Decoder.decode(__MODULE__, data)
-  end
-
-  def decode(acc, <<8, data::binary>>) do
-    Decoder.field(:bool, :jason, acc, data)
-  end
-
-  # failed to decode, either this is an unknown tag (which we can skip), or
-  # it is a wrong type (which is an error)
-  def decode(acc, data) do
-    {prefix, data} = Decoder.varint(data)
-    tag = bsr(prefix, 3)
-    type = band(prefix, 7)
-    case tag in [1] do
-      false -> {acc, Decoder.skip(type, data)}
-      true ->
-        err = %Decoder.Error{
-          tag: tag,
-          module: __MODULE__,
-          message: "#{__MODULE__} tag #{tag} has an incorrect type of #{type}"
-        }
-        {:error, err}
-    end
-  end
-
-  def __finalize_decode__(args) do
-    struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-            {k, v}, acc -> Map.put(acc, k, v)
-    end)
     struct
   end
 end

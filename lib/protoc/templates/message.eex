@@ -20,7 +20,7 @@ defmodule <%= context.namespace %><%= name %> do
     last_index = Enum.count(hidden_oneofs) - 1
   %>
 
-  <%= if Keyword.get(options, :jason) do %>@derive Jason.Encoder<% end %>
+  <%= if Keyword.get(options, :json) do %>@derive Jason.Encoder<% end %>
   defstruct [
   <%= for {field, i} <- hidden_oneofs do %>
     <%= field.name %>: <%= field.default %><%= if_neq(i, last_index, ",") %>
@@ -117,21 +117,30 @@ defmodule <%= context.namespace %><%= name %> do
   <% end %>
 
   <%
-    maps = Enum.filter(fields, fn f -> f.post_decode == :map end)
-    repack = Enum.filter(fields, fn f -> f.post_decode == :repack end)
+    {maps, repacks, encoders} = Enum.reduce(fields, {[], [], []}, fn field, {maps, repacks, encoders} = acc ->
+      case field.post_decode do
+        :map -> {[field | maps], repacks, encoders}
+        :repack -> {maps, [field | repacks], encoders}
+        {:encoder, encoder} -> {maps, repacks, [{field, encoder} | encoders]}
+        _ -> acc
+      end
+    end)
   %>
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
       <%= for field <- maps do %>
       {:<%= field.name %>, {c, v}}, acc -> Map.update(acc, :<%= field.name %>, %{c => v}, fn m -> Map.put(m, c, v) end)
       <% end %>
-      <%= for field <- repack do %>
+      <%= for field <- repacks do %>
       {:<%= field.name %>, v}, acc -> Map.update(acc, :<%= field.name %>, [v], fn e -> [v | e] end)
+      <% end %>
+      <%= for {field, {encoder, opts}} <- encoders do %>
+        {:<%= field.name %>, v}, acc -> Map.put(acc, :<%= field.name %>, <%=encoder%>.decode!(v, <%= opts %>))
       <% end %>
       {k, v}, acc -> Map.put(acc, k, v)
     end)
 
-    <%= for field <- repack do %>
+    <%= for field <- repacks do %>
     struct = Map.put(struct, :<%=field.name%>, Elixir.Enum.reverse(struct.<%=field.name%>))
     <% end %>
     struct

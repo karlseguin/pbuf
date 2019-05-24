@@ -59,73 +59,7 @@ defmodule Pbuf.Tests.ErlangEnumValueOptions do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-            {k, v}, acc -> Map.put(acc, k, v)
-    end)
-    struct
-  end
-end
-defmodule Pbuf.Tests.PbufMessageOptions do
-  @moduledoc false
-  alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
-
-  @derive Jason.Encoder
-  defstruct [
-    jason: false
-  ]
-  @type t :: %__MODULE__{
-    jason: boolean
-  }
-
-  @spec new(Enum.t) :: t
-  def new(data) do
-    struct(__MODULE__, data)
-  end
-  @spec encode_to_iodata!(t | map) :: iodata
-  def encode_to_iodata!(data) do
-    alias Elixir.Pbuf.Encoder
-    [
-      Encoder.field(:bool, data.jason, <<8>>),
-    ]
-  end
-  @spec encode!(t | map) :: binary
-  def encode!(data) do
-    :erlang.iolist_to_binary(encode_to_iodata!(data))
-  end
-  @spec decode!(binary) :: t
-  def decode!(data) do
-    Decoder.decode!(__MODULE__, data)
-  end
-  @spec decode(binary) :: {:ok, t} | :error
-  def decode(data) do
-    Decoder.decode(__MODULE__, data)
-  end
-  
-  def decode(acc, <<8, data::binary>>) do
-    Decoder.field(:bool, :jason, acc, data)
-  end
-
-  # failed to decode, either this is an unknown tag (which we can skip), or
-  # it is a wrong type (which is an error)
-  def decode(acc, data) do
-    {prefix, data} = Decoder.varint(data)
-    tag = bsr(prefix, 3)
-    type = band(prefix, 7)
-    case tag in [1] do
-      false -> {acc, Decoder.skip(type, data)}
-      true ->
-        err = %Decoder.Error{
-          tag: tag,
-          module: __MODULE__,
-          message: "#{__MODULE__} tag #{tag} has an incorrect type of #{type}"
-        }
-        {:error, err}
-    end
-  end
-
-  def __finalize_decode__(args) do
-    struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-            {k, v}, acc -> Map.put(acc, k, v)
+                  {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
@@ -530,18 +464,18 @@ end
   end
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-      {:map1, {c, v}}, acc -> Map.update(acc, :map1, %{c => v}, fn m -> Map.put(m, c, v) end)
-      {:map2, {c, v}}, acc -> Map.update(acc, :map2, %{c => v}, fn m -> Map.put(m, c, v) end)
       {:map3, {c, v}}, acc -> Map.update(acc, :map3, %{c => v}, fn m -> Map.put(m, c, v) end)
+      {:map2, {c, v}}, acc -> Map.update(acc, :map2, %{c => v}, fn m -> Map.put(m, c, v) end)
+      {:map1, {c, v}}, acc -> Map.update(acc, :map1, %{c => v}, fn m -> Map.put(m, c, v) end)
       
-      {:strings, v}, acc -> Map.update(acc, :strings, [v], fn e -> [v | e] end)
-      {:bytess, v}, acc -> Map.update(acc, :bytess, [v], fn e -> [v | e] end)
       {:structs, v}, acc -> Map.update(acc, :structs, [v], fn e -> [v | e] end)
-      {k, v}, acc -> Map.put(acc, k, v)
+      {:bytess, v}, acc -> Map.update(acc, :bytess, [v], fn e -> [v | e] end)
+      {:strings, v}, acc -> Map.update(acc, :strings, [v], fn e -> [v | e] end)
+            {k, v}, acc -> Map.put(acc, k, v)
     end)
-    struct = Map.put(struct, :strings, Elixir.Enum.reverse(struct.strings))
-    struct = Map.put(struct, :bytess, Elixir.Enum.reverse(struct.bytess))
     struct = Map.put(struct, :structs, Elixir.Enum.reverse(struct.structs))
+    struct = Map.put(struct, :bytess, Elixir.Enum.reverse(struct.bytess))
+    struct = Map.put(struct, :strings, Elixir.Enum.reverse(struct.strings))
     struct
   end
 end
@@ -553,11 +487,17 @@ defmodule Pbuf.Tests.Child do
   
   defstruct [
     id: 0,
-    name: ""
+    name: "",
+    data1: <<>>,
+    data2: <<>>,
+    data3: <<>>
   ]
   @type t :: %__MODULE__{
     id: non_neg_integer,
-    name: String.t
+    name: String.t,
+    data1: binary,
+    data2: binary,
+    data3: binary
   }
 
   @spec new(Enum.t) :: t
@@ -570,6 +510,17 @@ defmodule Pbuf.Tests.Child do
     [
       Encoder.field(:uint32, data.id, <<8>>),
       Encoder.field(:string, data.name, <<18>>),
+      Encoder.field(:bytes, data.data1, <<26>>),
+      
+case data.data2 do
+        <<>> -> []
+        value -> Encoder.field(:bytes, Elixir.Jason.encode!(value), <<34>>)
+      end,
+      
+case data.data3 do
+        <<>> -> []
+        value -> Encoder.field(:bytes, Elixir.Jason.encode!(value), <<42>>)
+      end,
     ]
   end
   @spec encode!(t | map) :: binary
@@ -592,6 +543,18 @@ defmodule Pbuf.Tests.Child do
   def decode(acc, <<18, data::binary>>) do
     Decoder.field(:string, :name, acc, data)
   end
+  
+  def decode(acc, <<26, data::binary>>) do
+    Decoder.field(:bytes, :data1, acc, data)
+  end
+  
+  def decode(acc, <<34, data::binary>>) do
+    Decoder.field(:bytes, :data2, acc, data)
+  end
+  
+  def decode(acc, <<42, data::binary>>) do
+    Decoder.field(:bytes, :data3, acc, data)
+  end
 
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
@@ -599,7 +562,7 @@ defmodule Pbuf.Tests.Child do
     {prefix, data} = Decoder.varint(data)
     tag = bsr(prefix, 3)
     type = band(prefix, 7)
-    case tag in [1,2] do
+    case tag in [1,2,3,4,5] do
       false -> {acc, Decoder.skip(type, data)}
       true ->
         err = %Decoder.Error{
@@ -613,7 +576,10 @@ defmodule Pbuf.Tests.Child do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-            {k, v}, acc -> Map.put(acc, k, v)
+            
+        {:data3, v}, acc -> Map.put(acc, :data3, Elixir.Jason.decode!(v, [keys: :atoms]))
+        {:data2, v}, acc -> Map.put(acc, :data2, Elixir.Jason.decode!(v, []))
+      {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end

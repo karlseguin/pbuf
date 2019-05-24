@@ -80,9 +80,13 @@ defmodule Pbuf.Tests.Integration do
 
     everything = Everything.decode!(Pbuf.encode!(Everything.new(choice: %{oneof: :choice_string, value: "spice"})))
     assert everything.choice == {:choice_string, "spice"}
-    # values = %{choice: %{type: :choice_string, value: "abc"}}
-    # everything = encode_decode(struct(Everything, values))
-    # IO.inspect(everything)
+  end
+
+  test "encodes and decodes json" do
+    child = Child.new(data2: %{over: 9000}, data3: %{over: 9001})
+    child = Child.decode!(Child.encode!(child))
+    assert child.data2 == %{"over" => 9000}
+    assert child.data3 == %{over: 9001}
   end
 
   # decode using both our own library and Protobuf as a sanity check

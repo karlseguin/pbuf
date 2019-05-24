@@ -141,31 +141,58 @@ This fails for oneofs, since Jason can't encode tuples (`{:type, value`}). For t
 
 Note however that when decoding, it will _always_ go to the tuple version.
 
-#### Disabling Jason
+#### Json Message Encoding
 It's possible to not generate `@derive Jason.Encoder` on a per-message basis by using a custom option, say in `options.proto`:
 
 ```
 syntax = "proto2";
 
 extend google.protobuf.MessageOptions {
-  optional PbufMessageOptions pbuf = 78832;
+  int32 json_message = 78832;
 }
 
-message PbufMessageOptions {
-  optional bool jason = 1;
-}
 ```
 
 And then using it in your message:
 
 ```
 message Something {
-  option (pbuf).jason = false;
+  option (json_message) = 0;
   ...
 }
 ```
 
-(Yes, 78832 is the same option used by the Erlang enum option. This is OK. Tag values for options need only be unique per-message type.)
+#### Json Field Encoding
+It's possible to automatically encode and decode a `bytes` field to and from Json. First, define a `FieldOptions`:
+
+```
+syntax = "proto2";
+
+extend google.protobuf.MessageOptions {
+  int32 json_field = 78832;
+}
+
+```
+
+And then using it in your message:
+
+```
+message Something {
+  bytes data = 1 [(json_field) = 1];
+}
+```
+
+Which results in:
+```
+  something = [data: %{over: 9000}]
+  |> Something.new()
+  |> something.encode!()
+  |> Somethihg.decode!()
+
+  something.data == %{"over" => 9000}
+```
+
+Note that if you assign the `json_field` a value of `2`, keys will be atomified.
 
 
 ## What's Ugly?

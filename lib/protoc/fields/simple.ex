@@ -25,9 +25,14 @@ defmodule Pbuf.Protoc.Fields.Simple do
       true -> module_name(desc)
     end
 
-    post_decode = case repeated && type in [:bytes, :string, :struct] do
-      true -> :repack
-      false -> :none
+    post_decode = get_post_decoded(desc, repeated, type)
+    encode_fun = case post_decode do
+      {:encoder, {encoder, _decode_opts}} -> "
+case data.#{name} do
+        <<>> -> []
+        value -> Encoder.#{encode_fun}(:#{type}, #{encoder}.encode!(value), #{prefix})
+      end"
+      _ -> "Encoder.#{encode_fun}(:#{type}, data.#{name}, #{prefix})"
     end
 
     %Field{
@@ -37,7 +42,7 @@ defmodule Pbuf.Protoc.Fields.Simple do
       default: default,
       typespec: typespec,
       post_decode: post_decode,
-      encode_fun: "Encoder.#{encode_fun}(:#{type}, data.#{name}, #{prefix})",
+      encode_fun: encode_fun,
       decode_fun: "Decoder.#{decode_fun}(#{decode_type}, :#{name}, acc, data)",
     }
   end
@@ -70,4 +75,20 @@ defmodule Pbuf.Protoc.Fields.Simple do
   def default(_, :float), do: 0.0
   def default(_, :struct), do: "nil"
   def default(_, _other), do: 0
+
+  defp get_post_decoded(_desc, true, type) when type in [:bytes, :string, :struct] do
+    :repack
+  end
+
+  defp get_post_decoded(%{options: options}, false, type) when options != nil and type in [:bytes, :string] do
+    case Map.get(options, :json_field, 0) do
+      0 -> :none
+      1 -> {:encoder, {Jason, "[]"}}
+      2 -> {:encoder, {Jason, "[keys: :atoms]"}}
+    end
+  end
+
+  defp get_post_decoded(_desc, _repeated, _type) do
+    :none
+  end
 end

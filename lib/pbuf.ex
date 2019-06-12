@@ -1,5 +1,7 @@
 defmodule Pbuf do
   @spec encode!(struct) :: binary
+  @compile {:inline, oneof_to_map: 1}
+
   def encode!(struct) do
     struct.__struct__.encode!(struct)
   end
@@ -11,6 +13,10 @@ defmodule Pbuf do
 
   defdelegate decode(module, iodata), to: Pbuf.Decoder
   defdelegate decode!(module, iodata), to: Pbuf.Decoder
+
+  def oneof_to_map({type, value}) do
+    %{type => value}
+  end
 
   def glue_length(_tag, nil) do
     []

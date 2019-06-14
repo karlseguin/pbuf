@@ -1,12 +1,10 @@
 defmodule Google.Protobuf.Api do
   @moduledoc false
-  alias Pbuf.{Decoder, Encoder}
+  alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
 
-  alias __MODULE__
-
+  @derive Jason.Encoder
   defstruct [
-    __pbuf__: true,
     name: "",
     methods: [],
     options: [],
@@ -15,8 +13,7 @@ defmodule Google.Protobuf.Api do
     mixins: [],
     syntax: 0
   ]
-
-  @type t :: %Api{
+  @type t :: %__MODULE__{
     name: String.t,
     methods: [Google.Protobuf.Method.t],
     options: [Google.Protobuf.Option.t],
@@ -26,12 +23,10 @@ defmodule Google.Protobuf.Api do
     syntax: Google.Protobuf.Syntax.t
   }
 
-
   @spec new(Enum.t) :: t
   def new(data) do
     struct(__MODULE__, data)
   end
-
   @spec encode_to_iodata!(t | map) :: iodata
   def encode_to_iodata!(data) do
     alias Elixir.Pbuf.Encoder
@@ -45,26 +40,18 @@ defmodule Google.Protobuf.Api do
       Encoder.enum_field(Google.Protobuf.Syntax, data.syntax, <<56>>),
     ]
   end
-
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
-
   @spec decode!(binary) :: t
   def decode!(data) do
-    case Pbuf.Decoder.decode(__MODULE__, data) do
-      {:ok, decoded} -> decoded
-      {:error, err} -> raise err
-    end
+    Decoder.decode!(__MODULE__, data)
   end
-
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
-    Pbuf.Decoder.decode(__MODULE__, data)
+    Decoder.decode(__MODULE__, data)
   end
-
-  @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
   
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :name, acc, data)
@@ -94,53 +81,45 @@ defmodule Google.Protobuf.Api do
     Decoder.enum_field(Google.Protobuf.Syntax, :syntax, acc, data)
   end
 
-
   # failed to decode, either this is an unknown tag (which we can skip), or
-  # it's a wrong type (which is an error)
+  # it is a wrong type (which is an error)
   def decode(acc, data) do
     {prefix, data} = Decoder.varint(data)
     tag = bsr(prefix, 3)
     type = band(prefix, 7)
-
     case tag in [1,2,3,4,5,6,7] do
       false -> {acc, Decoder.skip(type, data)}
       true ->
         err = %Decoder.Error{
           tag: tag,
           module: __MODULE__,
-          message: "#{__MODULE__} tag #{tag} has an incorrect write type of #{type}"
+          message: "#{__MODULE__} tag #{tag} has an incorrect type of #{type}"
         }
         {:error, err}
     end
   end
 
-
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
       
-      {:methods, v}, acc -> Map.update(acc, :methods, [v], fn e -> [v | e] end)
-
-      {:options, v}, acc -> Map.update(acc, :options, [v], fn e -> [v | e] end)
-
       {:mixins, v}, acc -> Map.update(acc, :mixins, [v], fn e -> [v | e] end)
-      {k, v}, acc -> Map.put(acc, k, v)
+      {:options, v}, acc -> Map.update(acc, :options, [v], fn e -> [v | e] end)
+      {:methods, v}, acc -> Map.update(acc, :methods, [v], fn e -> [v | e] end)
+            {k, v}, acc -> Map.put(acc, k, v)
     end)
-
-    struct = Map.put(struct, :methods, Elixir.Enum.reverse(struct.methods))
-    struct = Map.put(struct, :options, Elixir.Enum.reverse(struct.options))
     struct = Map.put(struct, :mixins, Elixir.Enum.reverse(struct.mixins))
+    struct = Map.put(struct, :options, Elixir.Enum.reverse(struct.options))
+    struct = Map.put(struct, :methods, Elixir.Enum.reverse(struct.methods))
     struct
   end
 end
 defmodule Google.Protobuf.Method do
   @moduledoc false
-  alias Pbuf.{Decoder, Encoder}
+  alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
 
-  alias __MODULE__
-
+  @derive Jason.Encoder
   defstruct [
-    __pbuf__: true,
     name: "",
     request_type_url: "",
     request_streaming: false,
@@ -149,8 +128,7 @@ defmodule Google.Protobuf.Method do
     options: [],
     syntax: 0
   ]
-
-  @type t :: %Method{
+  @type t :: %__MODULE__{
     name: String.t,
     request_type_url: String.t,
     request_streaming: boolean,
@@ -160,12 +138,10 @@ defmodule Google.Protobuf.Method do
     syntax: Google.Protobuf.Syntax.t
   }
 
-
   @spec new(Enum.t) :: t
   def new(data) do
     struct(__MODULE__, data)
   end
-
   @spec encode_to_iodata!(t | map) :: iodata
   def encode_to_iodata!(data) do
     alias Elixir.Pbuf.Encoder
@@ -179,26 +155,18 @@ defmodule Google.Protobuf.Method do
       Encoder.enum_field(Google.Protobuf.Syntax, data.syntax, <<56>>),
     ]
   end
-
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
-
   @spec decode!(binary) :: t
   def decode!(data) do
-    case Pbuf.Decoder.decode(__MODULE__, data) do
-      {:ok, decoded} -> decoded
-      {:error, err} -> raise err
-    end
+    Decoder.decode!(__MODULE__, data)
   end
-
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
-    Pbuf.Decoder.decode(__MODULE__, data)
+    Decoder.decode(__MODULE__, data)
   end
-
-  @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
   
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :name, acc, data)
@@ -228,62 +196,53 @@ defmodule Google.Protobuf.Method do
     Decoder.enum_field(Google.Protobuf.Syntax, :syntax, acc, data)
   end
 
-
   # failed to decode, either this is an unknown tag (which we can skip), or
-  # it's a wrong type (which is an error)
+  # it is a wrong type (which is an error)
   def decode(acc, data) do
     {prefix, data} = Decoder.varint(data)
     tag = bsr(prefix, 3)
     type = band(prefix, 7)
-
     case tag in [1,2,3,4,5,6,7] do
       false -> {acc, Decoder.skip(type, data)}
       true ->
         err = %Decoder.Error{
           tag: tag,
           module: __MODULE__,
-          message: "#{__MODULE__} tag #{tag} has an incorrect write type of #{type}"
+          message: "#{__MODULE__} tag #{tag} has an incorrect type of #{type}"
         }
         {:error, err}
     end
   end
 
-
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
       
       {:options, v}, acc -> Map.update(acc, :options, [v], fn e -> [v | e] end)
-      {k, v}, acc -> Map.put(acc, k, v)
+            {k, v}, acc -> Map.put(acc, k, v)
     end)
-
     struct = Map.put(struct, :options, Elixir.Enum.reverse(struct.options))
     struct
   end
 end
 defmodule Google.Protobuf.Mixin do
   @moduledoc false
-  alias Pbuf.{Decoder, Encoder}
+  alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
 
-  alias __MODULE__
-
+  @derive Jason.Encoder
   defstruct [
-    __pbuf__: true,
     name: "",
     root: ""
   ]
-
-  @type t :: %Mixin{
+  @type t :: %__MODULE__{
     name: String.t,
     root: String.t
   }
-
 
   @spec new(Enum.t) :: t
   def new(data) do
     struct(__MODULE__, data)
   end
-
   @spec encode_to_iodata!(t | map) :: iodata
   def encode_to_iodata!(data) do
     alias Elixir.Pbuf.Encoder
@@ -292,26 +251,18 @@ defmodule Google.Protobuf.Mixin do
       Encoder.field(:string, data.root, <<18>>),
     ]
   end
-
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
-
   @spec decode!(binary) :: t
   def decode!(data) do
-    case Pbuf.Decoder.decode(__MODULE__, data) do
-      {:ok, decoded} -> decoded
-      {:error, err} -> raise err
-    end
+    Decoder.decode!(__MODULE__, data)
   end
-
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
-    Pbuf.Decoder.decode(__MODULE__, data)
+    Decoder.decode(__MODULE__, data)
   end
-
-  @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
   
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :name, acc, data)
@@ -321,32 +272,28 @@ defmodule Google.Protobuf.Mixin do
     Decoder.field(:string, :root, acc, data)
   end
 
-
   # failed to decode, either this is an unknown tag (which we can skip), or
-  # it's a wrong type (which is an error)
+  # it is a wrong type (which is an error)
   def decode(acc, data) do
     {prefix, data} = Decoder.varint(data)
     tag = bsr(prefix, 3)
     type = band(prefix, 7)
-
     case tag in [1,2] do
       false -> {acc, Decoder.skip(type, data)}
       true ->
         err = %Decoder.Error{
           tag: tag,
           module: __MODULE__,
-          message: "#{__MODULE__} tag #{tag} has an incorrect write type of #{type}"
+          message: "#{__MODULE__} tag #{tag} has an incorrect type of #{type}"
         }
         {:error, err}
     end
   end
 
-
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-            {k, v}, acc -> Map.put(acc, k, v)
+                  {k, v}, acc -> Map.put(acc, k, v)
     end)
-
     struct
   end
 end

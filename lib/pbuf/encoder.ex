@@ -325,6 +325,12 @@ defmodule Pbuf.Encoder do
     [prefix, varint(byte_size), encoded]
   end
 
+  def repeated_unpacked_field(type, enum, prefix) do
+    Enum.reduce(enum, [], fn value, acc ->
+      [acc, prefix, field(type, value)]
+    end)
+  end
+
   def oneof_field(_choice, nil, _fun) do
     <<>>
   end

@@ -4,11 +4,14 @@ defmodule Pbuf.Protoc.Fields.Simple do
   def new(desc, context) do
     typespec = typespec(desc)
     repeated = is_repeated?(desc)
-    {tag, name, type, prefix} = extract_core(desc)
+    packed? = context.version == 3 || (desc.options != nil && desc.options.packed == true)
+
+    {tag, name, type, prefix} = extract_core(desc, packed?)
 
     {encode_fun, typespec, default} =
-    case repeated do
-      false -> {"field", typespec, default(context, type)}
+    cond do
+      repeated == false -> {"field", typespec, default(context, type)}
+      packed? == false -> {"repeated_unpacked_field", "[" <> typespec <> "]", "[]"}
       true -> {"repeated_field", "[" <> typespec <> "]", "[]"}
     end
 

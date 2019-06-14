@@ -30,12 +30,12 @@ defmodule Sanity.Pbuf.Tests.Everything do
           float: float,
           double: float,
           string: String.t(),
-          bytes: String.t(),
-          struct: Sanity.Pbuf.Tests.Child.t(),
-          type: integer,
-          corpus: integer,
-          user: Sanity.Pbuf.Tests.Sub.User.t(),
-          user_status: integer,
+          bytes: binary,
+          struct: Sanity.Pbuf.Tests.Child.t() | nil,
+          type: atom | integer,
+          corpus: atom | integer,
+          user: Sanity.Pbuf.Tests.Sub.User.t() | nil,
+          user_status: atom | integer,
           bools: [boolean],
           int32s: [integer],
           int64s: [integer],
@@ -50,13 +50,13 @@ defmodule Sanity.Pbuf.Tests.Everything do
           floats: [float],
           doubles: [float],
           strings: [String.t()],
-          bytess: [String.t()],
+          bytess: [binary],
           structs: [Sanity.Pbuf.Tests.Child.t()],
-          types: [integer],
-          corpuss: [integer],
+          types: [atom | integer],
+          corpuss: [atom | integer],
           map1: %{String.t() => integer},
           map2: %{integer => float},
-          map3: %{non_neg_integer => Sanity.Pbuf.Tests.Child.t()}
+          map3: %{non_neg_integer => Sanity.Pbuf.Tests.Child.t() | nil}
         }
   defstruct [
     :choice,
@@ -183,7 +183,7 @@ defmodule Sanity.Pbuf.Tests.Everything.Map3Entry do
 
   @type t :: %__MODULE__{
           key: non_neg_integer,
-          value: Sanity.Pbuf.Tests.Child.t()
+          value: Sanity.Pbuf.Tests.Child.t() | nil
         }
   defstruct [:key, :value]
 
@@ -211,9 +211,9 @@ defmodule Sanity.Pbuf.Tests.Child do
   @type t :: %__MODULE__{
           id: non_neg_integer,
           name: String.t(),
-          data1: String.t(),
-          data2: String.t(),
-          data3: String.t()
+          data1: binary,
+          data2: binary,
+          data3: binary
         }
   defstruct [:id, :name, :data1, :data2, :data3]
 

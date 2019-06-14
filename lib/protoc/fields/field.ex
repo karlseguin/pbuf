@@ -92,12 +92,12 @@ defmodule Pbuf.Protoc.Field do
   end
 
   @spec extract_core(Protoc.proto_field) :: {non_neg_integer, String.t, atom, binary}
-  def extract_core(desc) do
+  def extract_core(desc, packed? \\ true) do
     tag = desc.number
     name = desc.name
     type = internal_type(desc.type)
 
-    prefix = case is_repeated?(desc) do
+    prefix = case is_repeated?(desc) && packed? do
       true -> Pbuf.Encoder.prefix(tag, :bytes) # bytes share the same encoding type as any type of array
       false -> Pbuf.Encoder.prefix(tag, type)
     end

@@ -1,15 +1,3 @@
-defmodule Sanity.Pbuf.Tests.ErlangEnumValueOptions do
-  @moduledoc false
-  use Protobuf, syntax: :proto3
-
-  @type t :: %__MODULE__{
-          atom: String.t()
-        }
-  defstruct [:atom]
-
-  field :atom, 1, type: :string
-end
-
 defmodule Sanity.Pbuf.Tests.Everything do
   @moduledoc false
   use Protobuf, syntax: :proto3

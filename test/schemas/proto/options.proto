@@ -1,0 +1,19 @@
+syntax = 'proto2';
+
+import 'google/protobuf/descriptor.proto';
+
+extend google.protobuf.EnumValueOptions {
+  optional string elixir_atom = 78832;
+}
+
+extend google.protobuf.MessageOptions {
+  optional int32 json_message = 78832;
+}
+
+extend google.protobuf.FieldOptions {
+  optional int32 json_field = 78832;
+}
+
+extend google.protobuf.FileOptions {
+  optional int32 elixir_oneof_format = 78832;
+}

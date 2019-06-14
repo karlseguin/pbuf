@@ -117,11 +117,13 @@ defmodule <%= context.namespace %><%= name %> do
   <% end %>
 
   <%
-    {maps, repacks, encoders} = Enum.reduce(fields, {[], [], []}, fn field, {maps, repacks, encoders} = acc ->
+    {maps, repacks, encoders, oneof1, oneof2} = Enum.reduce(fields, {[], [], [], [], []}, fn field, {maps, repacks, encoders, oneof1, oneof2} = acc ->
       case field.post_decode do
-        :map -> {[field | maps], repacks, encoders}
-        :repack -> {maps, [field | repacks], encoders}
-        {:encoder, encoder} -> {maps, repacks, [{field, encoder} | encoders]}
+        :map -> {[field | maps], repacks, encoders, oneof1, oneof2}
+        :repack -> {maps, [field | repacks], encoders, oneof1, oneof2}
+        {:encoder, encoder} -> {maps, repacks, [{field, encoder} | encoders], oneof1, oneof2}
+        :oneof1 -> {maps, repacks, encoders, [field | oneof1], oneof2}
+        :oneof2 -> {maps, repacks, encoders, oneof1, [field | oneof2]}
         _ -> acc
       end
     end)
@@ -136,6 +138,12 @@ defmodule <%= context.namespace %><%= name %> do
       <% end %>
       <%= for {field, {encoder, opts}} <- encoders do %>
         {:<%= field.name %>, v}, acc -> Map.put(acc, :<%= field.name %>, <%=encoder%>.decode!(v, <%= opts %>))
+      <% end %>
+      <%= for field <- oneof1 do %>
+      {:<%= field.name %>, {choice, v}}, acc -> Map.put(acc, choice, %{oneof: :<%= field.name %>, value: v})
+      <% end %>
+      <%= for field <- oneof2 do %>
+      {:<%= field.name %>, {choice, v}}, acc -> Map.put(acc, choice, %{<%= field.name %>: v})
       <% end %>
       {k, v}, acc -> Map.put(acc, k, v)
     end)

@@ -59,7 +59,7 @@ defmodule A do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                  {k, v}, acc -> Map.put(acc, k, v)
+                              {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
@@ -125,7 +125,7 @@ defmodule A.B do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                  {k, v}, acc -> Map.put(acc, k, v)
+                              {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
@@ -191,7 +191,7 @@ defmodule A.B.C do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                  {k, v}, acc -> Map.put(acc, k, v)
+                              {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end

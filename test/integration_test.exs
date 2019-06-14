@@ -74,19 +74,26 @@ defmodule Pbuf.Tests.Integration do
     assert_value(everything, values)
   end
 
-  test "encodes oneof as map" do
-    everything = Everything.decode!(Pbuf.encode!(Everything.new(choice: {:choice_int32, 299})))
-    assert everything.choice == {:choice_int32, 299}
-
-    everything = Everything.decode!(Pbuf.encode!(Everything.new(choice: %{oneof: :choice_string, value: "spice"})))
-    assert everything.choice == {:choice_string, "spice"}
-  end
-
   test "encodes and decodes json" do
     child = Child.new(data2: %{over: 9000}, data3: %{over: 9001})
     child = Child.decode!(Child.encode!(child))
     assert child.data2 == %{"over" => 9000}
     assert child.data3 == %{over: 9001}
+  end
+
+  test "encodes oneof as tuple" do
+    oneof = OneOfZero.decode!(Pbuf.encode!(OneOfZero.new(choice: {:a, 2})))
+    assert oneof.choice == {:a, 2}
+  end
+
+  test "encodes oneof as choice map" do
+    oneof = OneOfOne.decode!(Pbuf.encode!(OneOfOne.new(choice: %{oneof: :a, value: 3})))
+    assert oneof.choice == %{oneof: :a, value: 3}
+  end
+
+  test "encodes oneof as field map" do
+    oneof = OneOfTwo.decode!(Pbuf.encode!(OneOfTwo.new(choice: %{b: 4})))
+    assert oneof.choice == %{b: 4}
   end
 
   # decode using both our own library and Protobuf as a sanity check

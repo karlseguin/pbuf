@@ -179,11 +179,16 @@ defmodule Pbuf.Decoder do
     err
   end
 
-  def oneof_field(name, {acc, data}) do
+  def oneof_field(name, 0, {acc, data}) do
     # pop the last k=>v added to our acc, which is the hidden oneof field
     # and replace it with a the same value, but with our exposed key names
-    [{inner_name, value} | acc] = acc
-    {[{name, {inner_name, value}} | acc], data}
+    [choice | acc] = acc
+    {[{name, choice} | acc], data}
+  end
+
+  def oneof_field(name, _, {acc, data}) do
+    [{field, value} | acc] = acc
+    {[{field, {name, value}} | acc], data}
   end
 
   # length-prefixed repeated fields are never packed. That's ok. Our decode method
@@ -195,6 +200,11 @@ defmodule Pbuf.Decoder do
     <<repeated_data::bytes-size(l), data::binary>> = data
     values = decoded_repeated(type, repeated_data, [])
     {[{name, values} | acc], data}
+  end
+
+  def repeated_unpacked_field(type, name, acc, data) do
+    {value, data} = field(type, data)
+    {[{name, value} | acc], data}
   end
 
   defp decoded_repeated(_type, <<>>, acc) do

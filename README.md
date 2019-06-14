@@ -84,12 +84,9 @@ syntax = "proto2";
 import 'google/protobuf/descriptor.proto';
 
 extend google.protobuf.EnumValueOptions {
-  optional ErlangEnumValueOptions erlang = 78832;
+  optional string elixir_atom = 78832;
 }
 
-message ErlangEnumValueOptions {
-  optional string atom = 1;
-}
 ```
 
 You can them import this .proto file like any other and use the option:
@@ -98,8 +95,8 @@ You can them import this .proto file like any other and use the option:
 import 'options.proto';
 
 enum HTTPMethod {
-  HTTP_METHOD_GET = 0 [(erlang).atom = 'get'];
-  HTTP_METHOD_POST = 1 [(erlang).atom = 'post'];
+  HTTP_METHOD_GET = 0 [(elixir_atom) = 'get'];
+  HTTP_METHOD_POST = 1 [(elixir_atom) = 'post'];
 }
 ```
 
@@ -115,7 +112,7 @@ They are available from the protocol buffer source: [https://github.com/protocol
 
 
 ### Oneofs
-The value of a oneof field must be set to a tuple where the first element is the name of the field and the second is the value. Given:
+By default, a oneof field must be set to a tuple where the first element is the name of the field and the second is the value. Given:
 
     message Event {
       oneof event_oneof {
@@ -126,16 +123,38 @@ The value of a oneof field must be set to a tuple where the first element is the
 
 Then valid values for `event_oneof` are: nil, `{:commit, Commit.t}` or `{:wiki, Wiki.t}`.
 
-### Jason and Oneofs
+#### Jason and Oneofs
 Generated structures have a `@derive Jason.Encoder`. For simple messages, this means you can use `Jason.encode(struct)` to generate a json representation of your messages.
 
-This fails for oneofs, since Jason can't encode tuples (`{:type, value`}). For this reason, a oneof can also be specified using a map, following either pattern:
+This fails for oneofs, since Jason can't encode tuples (`{:type, value`}). You can configure a different `oneof` format by using the special `elixir_oneof_format` option:
+
+```
+extend google.protobuf.EnumValueOptions {
+  optional string elixir_atom = 78832;
+}
+```
+
+And then, at the file level, specifying either: 
+
+```
+option (elixir_oneof_format) = 1
+```
+
+and using:
 
 ```
   %{oneof: :commit, value: Commit.t}
+```
 
-  # or
+OR specifying
 
+```
+option (elixir_oneof_format) = 1
+```
+
+and using:
+
+```
   %{commit: Commit.t}
 ```
 
@@ -193,7 +212,3 @@ Which results in:
 ```
 
 Note that if you assign the `json_field` a value of `2`, keys will be atomified.
-
-
-## What's Ugly?
-There are two distinctly ugly parts of the code. The first is pretty much anything to do with `oneof` fields. The second is the decoding of maps.

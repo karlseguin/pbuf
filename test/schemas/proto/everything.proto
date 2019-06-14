@@ -1,26 +1,9 @@
 syntax = "proto3";
 
-import 'google/protobuf/descriptor.proto';
-
-extend google.protobuf.EnumValueOptions {
-  ErlangEnumValueOptions erlang = 78832;
-}
-
-message ErlangEnumValueOptions {
-  string atom = 1;
-}
-
-extend google.protobuf.MessageOptions {
-  int32 json_message = 78832;
-}
-
-extend google.protobuf.FieldOptions {
-  int32 json_field = 78832;
-}
-
 package pbuf.tests;
 
-import 'test/schemas/proto/user.proto';
+import 'user.proto';
+import 'options.proto';
 
 message Everything {
   bool bool = 1;
@@ -41,13 +24,13 @@ message Everything {
   Child struct = 16;
   EverythingType type = 17;
   enum Corpus {
-    UNIVERSAL = 0 [(erlang).atom = "universal"];
-    WEB = 1 [(erlang).atom = "web"];
-    IMAGES = 2 [(erlang).atom = "images"];
-    LOCAL = 3 [(erlang).atom = "local"];
-    NEWS = 4 [(erlang).atom = "news"];
-    PRODUCTS = 5 [(erlang).atom = "products"];
-    VIDEO = 6 [(erlang).atom = "video"];
+    UNIVERSAL = 0 [(elixir_atom) = "universal"];
+    WEB = 1 [(elixir_atom) = "web"];
+    IMAGES = 2 [(elixir_atom) = "images"];
+    LOCAL = 3 [(elixir_atom) = "local"];
+    NEWS = 4 [(elixir_atom) = "news"];
+    PRODUCTS = 5 [(elixir_atom) = "products"];
+    VIDEO = 6 [(elixir_atom) = "video"];
   }
   Corpus corpus = 18;
   oneof choice {

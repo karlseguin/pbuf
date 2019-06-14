@@ -24,7 +24,7 @@ defmodule Pbuf.Protoc.Enumeration do
     {values, default, typespec} =
     Enum.reduce(desc.value, {%{}, 0, []}, fn v, {acc, default, typespec} ->
       name = case v.options do
-        %{erlang: %{atom: atom}} -> String.to_atom(atom)
+        %{elixir_atom: atom} -> String.to_atom(atom)
         _ -> String.to_atom(v.name)
       end
 

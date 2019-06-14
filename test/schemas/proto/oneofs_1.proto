@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import 'options.proto';
+option (elixir_oneof_format) = 1;
+
+message OneOfOne {
+  oneof choice {
+    int32 a = 1;
+    int32 b = 2;
+  }
+}

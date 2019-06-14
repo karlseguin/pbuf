@@ -16,10 +16,16 @@ defmodule Pbuf.Protoc.Fields.OneOf do
     pseudo_encode_fun = pseudo
     |> Map.get(:encode_fun)
     |> String.replace("data.#{name}", "v")
-    encode_fun = "oneof_field(:#{name}, data.#{oneof.name}, fn v -> #{pseudo_encode_fun} end)"
+    encode_fun = "oneof_field(:#{name}, data.#{oneof.name}, #{context.oneof_format}, fn v -> #{pseudo_encode_fun} end)"
 
     pseudo_decode_fun = Map.get(pseudo, :decode_fun)
-    decode_fun = "oneof_field(:#{oneof.name}, #{pseudo_decode_fun})"
+    decode_fun = "oneof_field(:#{oneof.name}, #{context.oneof_format}, #{pseudo_decode_fun})"
+
+    post_decode = case context.oneof_format do
+      1 -> :oneof1
+      2 -> :oneof2
+      _ -> :none
+    end
 
     %Field{
       tag: tag,
@@ -28,6 +34,7 @@ defmodule Pbuf.Protoc.Fields.OneOf do
       hidden: true,
       default: "nil",
       oneof_index: index,
+      post_decode: post_decode,
       typespec: pseudo.typespec,
       encode_fun: "Encoder.#{encode_fun}",
       decode_fun: "Decoder.#{decode_fun}"

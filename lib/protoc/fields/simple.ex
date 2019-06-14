@@ -20,6 +20,7 @@ defmodule Pbuf.Protoc.Fields.Simple do
     decode_fun = cond do
       type == :struct -> "struct_field"  # special name largely because a module is an atom and we need to match between the two
       !repeated || type in [:bytes, :string] -> "field" # never packed
+      packed? == false -> "repeated_unpacked_field"
       true -> "repeated_field"
     end
 
@@ -28,7 +29,12 @@ defmodule Pbuf.Protoc.Fields.Simple do
       true -> module_name(desc)
     end
 
-    post_decode = get_post_decoded(desc, repeated, type)
+    post_decode = cond do
+      repeated && !packed? -> :repack
+      repeated && type in [:bytes, :string, :struct] -> :repack
+      true -> get_post_decode(desc, repeated, type)
+    end
+
     encode_fun = case post_decode do
       {:encoder, {encoder, _decode_opts}} -> "
 case data.#{name} do
@@ -79,11 +85,7 @@ case data.#{name} do
   def default(_, :struct), do: "nil"
   def default(_, _other), do: 0
 
-  defp get_post_decoded(_desc, true, type) when type in [:bytes, :string, :struct] do
-    :repack
-  end
-
-  defp get_post_decoded(%{options: options}, false, type) when options != nil and type in [:bytes, :string] do
+  defp get_post_decode(%{options: options}, false, type) when options != nil and type in [:bytes, :string] do
     case Map.get(options, :json_field, 0) do
       0 -> :none
       1 -> {:encoder, {Jason, "[]"}}
@@ -91,7 +93,7 @@ case data.#{name} do
     end
   end
 
-  defp get_post_decoded(_desc, _repeated, _type) do
+  defp get_post_decode(_desc, _repeated, _type) do
     :none
   end
 end

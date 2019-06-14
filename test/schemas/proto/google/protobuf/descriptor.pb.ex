@@ -34,7 +34,7 @@ defmodule Google.Protobuf.FileDescriptorSet do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.FileDescriptorProto, :file, acc, data)
   end
@@ -59,9 +59,9 @@ defmodule Google.Protobuf.FileDescriptorSet do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:file, v}, acc -> Map.update(acc, :file, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :file, Elixir.Enum.reverse(struct.file))
     struct
@@ -136,51 +136,51 @@ defmodule Google.Protobuf.FileDescriptorProto do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :name, acc, data)
   end
-
+  
   def decode(acc, <<18, data::binary>>) do
     Decoder.field(:string, :package, acc, data)
   end
-
+  
   def decode(acc, <<26, data::binary>>) do
     Decoder.field(:string, :dependency, acc, data)
   end
-
+  
   def decode(acc, <<34, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.DescriptorProto, :message_type, acc, data)
   end
-
+  
   def decode(acc, <<42, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.EnumDescriptorProto, :enum_type, acc, data)
   end
-
+  
   def decode(acc, <<50, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.ServiceDescriptorProto, :service, acc, data)
   end
-
+  
   def decode(acc, <<58, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.FieldDescriptorProto, :extension, acc, data)
   end
-
+  
   def decode(acc, <<66, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.FileOptions, :options, acc, data)
   end
-
+  
   def decode(acc, <<74, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.SourceCodeInfo, :source_code_info, acc, data)
   end
-
+  
   def decode(acc, <<80, data::binary>>) do
     Decoder.repeated_unpacked_field(:int32, :public_dependency, acc, data)
   end
-
+  
   def decode(acc, <<88, data::binary>>) do
     Decoder.repeated_unpacked_field(:int32, :weak_dependency, acc, data)
   end
-
+  
   def decode(acc, <<98, data::binary>>) do
     Decoder.field(:string, :syntax, acc, data)
   end
@@ -205,7 +205,7 @@ defmodule Google.Protobuf.FileDescriptorProto do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:weak_dependency, v}, acc -> Map.update(acc, :weak_dependency, [v], fn e -> [v | e] end)
       {:public_dependency, v}, acc -> Map.update(acc, :public_dependency, [v], fn e -> [v | e] end)
       {:extension, v}, acc -> Map.update(acc, :extension, [v], fn e -> [v | e] end)
@@ -213,7 +213,7 @@ defmodule Google.Protobuf.FileDescriptorProto do
       {:enum_type, v}, acc -> Map.update(acc, :enum_type, [v], fn e -> [v | e] end)
       {:message_type, v}, acc -> Map.update(acc, :message_type, [v], fn e -> [v | e] end)
       {:dependency, v}, acc -> Map.update(acc, :dependency, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :weak_dependency, Elixir.Enum.reverse(struct.weak_dependency))
     struct = Map.put(struct, :public_dependency, Elixir.Enum.reverse(struct.public_dependency))
@@ -288,43 +288,43 @@ defmodule Google.Protobuf.DescriptorProto do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :name, acc, data)
   end
-
+  
   def decode(acc, <<18, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.FieldDescriptorProto, :field, acc, data)
   end
-
+  
   def decode(acc, <<26, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.DescriptorProto, :nested_type, acc, data)
   end
-
+  
   def decode(acc, <<34, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.EnumDescriptorProto, :enum_type, acc, data)
   end
-
+  
   def decode(acc, <<42, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.DescriptorProto.ExtensionRange, :extension_range, acc, data)
   end
-
+  
   def decode(acc, <<50, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.FieldDescriptorProto, :extension, acc, data)
   end
-
+  
   def decode(acc, <<58, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.MessageOptions, :options, acc, data)
   end
-
+  
   def decode(acc, <<66, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.OneofDescriptorProto, :oneof_decl, acc, data)
   end
-
+  
   def decode(acc, <<74, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.DescriptorProto.ReservedRange, :reserved_range, acc, data)
   end
-
+  
   def decode(acc, <<82, data::binary>>) do
     Decoder.field(:string, :reserved_name, acc, data)
   end
@@ -349,7 +349,7 @@ defmodule Google.Protobuf.DescriptorProto do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:reserved_name, v}, acc -> Map.update(acc, :reserved_name, [v], fn e -> [v | e] end)
       {:reserved_range, v}, acc -> Map.update(acc, :reserved_range, [v], fn e -> [v | e] end)
       {:oneof_decl, v}, acc -> Map.update(acc, :oneof_decl, [v], fn e -> [v | e] end)
@@ -358,7 +358,7 @@ defmodule Google.Protobuf.DescriptorProto do
       {:enum_type, v}, acc -> Map.update(acc, :enum_type, [v], fn e -> [v | e] end)
       {:nested_type, v}, acc -> Map.update(acc, :nested_type, [v], fn e -> [v | e] end)
       {:field, v}, acc -> Map.update(acc, :field, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :reserved_name, Elixir.Enum.reverse(struct.reserved_name))
     struct = Map.put(struct, :reserved_range, Elixir.Enum.reverse(struct.reserved_range))
@@ -413,15 +413,15 @@ defmodule Google.Protobuf.DescriptorProto.ExtensionRange do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<8, data::binary>>) do
     Decoder.field(:int32, :start, acc, data)
   end
-
+  
   def decode(acc, <<16, data::binary>>) do
     Decoder.field(:int32, :end, acc, data)
   end
-
+  
   def decode(acc, <<26, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.ExtensionRangeOptions, :options, acc, data)
   end
@@ -446,7 +446,7 @@ defmodule Google.Protobuf.DescriptorProto.ExtensionRange do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                  {k, v}, acc -> Map.put(acc, k, v)
+                              {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
@@ -490,11 +490,11 @@ defmodule Google.Protobuf.DescriptorProto.ReservedRange do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<8, data::binary>>) do
     Decoder.field(:int32, :start, acc, data)
   end
-
+  
   def decode(acc, <<16, data::binary>>) do
     Decoder.field(:int32, :end, acc, data)
   end
@@ -519,7 +519,7 @@ defmodule Google.Protobuf.DescriptorProto.ReservedRange do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                  {k, v}, acc -> Map.put(acc, k, v)
+                              {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
@@ -560,7 +560,7 @@ defmodule Google.Protobuf.ExtensionRangeOptions do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<186, 62, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
@@ -585,9 +585,9 @@ defmodule Google.Protobuf.ExtensionRangeOptions do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:uninterpreted_option, v}, acc -> Map.update(acc, :uninterpreted_option, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :uninterpreted_option, Elixir.Enum.reverse(struct.uninterpreted_option))
     struct
@@ -747,43 +747,43 @@ end
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :name, acc, data)
   end
-
+  
   def decode(acc, <<18, data::binary>>) do
     Decoder.field(:string, :extendee, acc, data)
   end
-
+  
   def decode(acc, <<24, data::binary>>) do
     Decoder.field(:int32, :number, acc, data)
   end
-
+  
   def decode(acc, <<32, data::binary>>) do
     Decoder.enum_field(Google.Protobuf.FieldDescriptorProto.Label, :label, acc, data)
   end
-
+  
   def decode(acc, <<40, data::binary>>) do
     Decoder.enum_field(Google.Protobuf.FieldDescriptorProto.Type, :type, acc, data)
   end
-
+  
   def decode(acc, <<50, data::binary>>) do
     Decoder.field(:string, :type_name, acc, data)
   end
-
+  
   def decode(acc, <<58, data::binary>>) do
     Decoder.field(:string, :default_value, acc, data)
   end
-
+  
   def decode(acc, <<66, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.FieldOptions, :options, acc, data)
   end
-
+  
   def decode(acc, <<72, data::binary>>) do
     Decoder.field(:int32, :oneof_index, acc, data)
   end
-
+  
   def decode(acc, <<82, data::binary>>) do
     Decoder.field(:string, :json_name, acc, data)
   end
@@ -808,7 +808,7 @@ end
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                  {k, v}, acc -> Map.put(acc, k, v)
+                              {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
@@ -852,11 +852,11 @@ defmodule Google.Protobuf.OneofDescriptorProto do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :name, acc, data)
   end
-
+  
   def decode(acc, <<18, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.OneofOptions, :options, acc, data)
   end
@@ -881,7 +881,7 @@ defmodule Google.Protobuf.OneofDescriptorProto do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                  {k, v}, acc -> Map.put(acc, k, v)
+                              {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
@@ -934,23 +934,23 @@ defmodule Google.Protobuf.EnumDescriptorProto do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :name, acc, data)
   end
-
+  
   def decode(acc, <<18, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.EnumValueDescriptorProto, :value, acc, data)
   end
-
+  
   def decode(acc, <<26, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.EnumOptions, :options, acc, data)
   end
-
+  
   def decode(acc, <<34, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.EnumDescriptorProto.EnumReservedRange, :reserved_range, acc, data)
   end
-
+  
   def decode(acc, <<42, data::binary>>) do
     Decoder.field(:string, :reserved_name, acc, data)
   end
@@ -975,11 +975,11 @@ defmodule Google.Protobuf.EnumDescriptorProto do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:reserved_name, v}, acc -> Map.update(acc, :reserved_name, [v], fn e -> [v | e] end)
       {:reserved_range, v}, acc -> Map.update(acc, :reserved_range, [v], fn e -> [v | e] end)
       {:value, v}, acc -> Map.update(acc, :value, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :reserved_name, Elixir.Enum.reverse(struct.reserved_name))
     struct = Map.put(struct, :reserved_range, Elixir.Enum.reverse(struct.reserved_range))
@@ -1026,11 +1026,11 @@ defmodule Google.Protobuf.EnumDescriptorProto.EnumReservedRange do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<8, data::binary>>) do
     Decoder.field(:int32, :start, acc, data)
   end
-
+  
   def decode(acc, <<16, data::binary>>) do
     Decoder.field(:int32, :end, acc, data)
   end
@@ -1055,7 +1055,7 @@ defmodule Google.Protobuf.EnumDescriptorProto.EnumReservedRange do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                  {k, v}, acc -> Map.put(acc, k, v)
+                              {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
@@ -1102,15 +1102,15 @@ defmodule Google.Protobuf.EnumValueDescriptorProto do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :name, acc, data)
   end
-
+  
   def decode(acc, <<16, data::binary>>) do
     Decoder.field(:int32, :number, acc, data)
   end
-
+  
   def decode(acc, <<26, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.EnumValueOptions, :options, acc, data)
   end
@@ -1135,7 +1135,7 @@ defmodule Google.Protobuf.EnumValueDescriptorProto do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                  {k, v}, acc -> Map.put(acc, k, v)
+                              {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
@@ -1182,15 +1182,15 @@ defmodule Google.Protobuf.ServiceDescriptorProto do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :name, acc, data)
   end
-
+  
   def decode(acc, <<18, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.MethodDescriptorProto, :method, acc, data)
   end
-
+  
   def decode(acc, <<26, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.ServiceOptions, :options, acc, data)
   end
@@ -1215,9 +1215,9 @@ defmodule Google.Protobuf.ServiceDescriptorProto do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:method, v}, acc -> Map.update(acc, :method, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :method, Elixir.Enum.reverse(struct.method))
     struct
@@ -1274,27 +1274,27 @@ defmodule Google.Protobuf.MethodDescriptorProto do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :name, acc, data)
   end
-
+  
   def decode(acc, <<18, data::binary>>) do
     Decoder.field(:string, :input_type, acc, data)
   end
-
+  
   def decode(acc, <<26, data::binary>>) do
     Decoder.field(:string, :output_type, acc, data)
   end
-
+  
   def decode(acc, <<34, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.MethodOptions, :options, acc, data)
   end
-
+  
   def decode(acc, <<40, data::binary>>) do
     Decoder.field(:bool, :client_streaming, acc, data)
   end
-
+  
   def decode(acc, <<48, data::binary>>) do
     Decoder.field(:bool, :server_streaming, acc, data)
   end
@@ -1319,7 +1319,7 @@ defmodule Google.Protobuf.MethodDescriptorProto do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                  {k, v}, acc -> Map.put(acc, k, v)
+                              {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
@@ -1351,8 +1351,7 @@ defmodule Google.Protobuf.FileOptions do
     php_generic_services: nil,
     php_metadata_namespace: nil,
     ruby_package: nil,
-    uninterpreted_option: [],
-    elixir_oneof_format: 0
+    uninterpreted_option: []
   ]
   @type t :: %__MODULE__{
     java_package: String.t,
@@ -1375,8 +1374,7 @@ defmodule Google.Protobuf.FileOptions do
     php_generic_services: boolean,
     php_metadata_namespace: String.t,
     ruby_package: String.t,
-    uninterpreted_option: [Google.Protobuf.UninterpretedOption.t],
-    elixir_oneof_format: integer
+    uninterpreted_option: [Google.Protobuf.UninterpretedOption.t]
   }
 defmodule OptimizeMode do
   @moduledoc false
@@ -1431,7 +1429,6 @@ end
       Encoder.field(:string, data.php_metadata_namespace, <<226, 2>>),
       Encoder.field(:string, data.ruby_package, <<234, 2>>),
       Encoder.repeated_unpacked_field(:struct, data.uninterpreted_option, <<186, 62>>),
-      Encoder.field(:int32, data.elixir_oneof_format, <<128, 191, 38>>)
     ]
   end
   @spec encode!(t | map) :: binary
@@ -1446,93 +1443,89 @@ end
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :java_package, acc, data)
   end
-
+  
   def decode(acc, <<66, data::binary>>) do
     Decoder.field(:string, :java_outer_classname, acc, data)
   end
-
+  
   def decode(acc, <<72, data::binary>>) do
     Decoder.enum_field(Google.Protobuf.FileOptions.OptimizeMode, :optimize_for, acc, data)
   end
-
+  
   def decode(acc, <<80, data::binary>>) do
     Decoder.field(:bool, :java_multiple_files, acc, data)
   end
-
+  
   def decode(acc, <<90, data::binary>>) do
     Decoder.field(:string, :go_package, acc, data)
   end
-
+  
   def decode(acc, <<128, 1, data::binary>>) do
     Decoder.field(:bool, :cc_generic_services, acc, data)
   end
-
+  
   def decode(acc, <<136, 1, data::binary>>) do
     Decoder.field(:bool, :java_generic_services, acc, data)
   end
-
+  
   def decode(acc, <<144, 1, data::binary>>) do
     Decoder.field(:bool, :py_generic_services, acc, data)
   end
-
+  
   def decode(acc, <<160, 1, data::binary>>) do
     Decoder.field(:bool, :java_generate_equals_and_hash, acc, data)
   end
-
+  
   def decode(acc, <<184, 1, data::binary>>) do
     Decoder.field(:bool, :deprecated, acc, data)
   end
-
+  
   def decode(acc, <<216, 1, data::binary>>) do
     Decoder.field(:bool, :java_string_check_utf8, acc, data)
   end
-
+  
   def decode(acc, <<248, 1, data::binary>>) do
     Decoder.field(:bool, :cc_enable_arenas, acc, data)
   end
-
+  
   def decode(acc, <<162, 2, data::binary>>) do
     Decoder.field(:string, :objc_class_prefix, acc, data)
   end
-
+  
   def decode(acc, <<170, 2, data::binary>>) do
     Decoder.field(:string, :csharp_namespace, acc, data)
   end
-
+  
   def decode(acc, <<186, 2, data::binary>>) do
     Decoder.field(:string, :swift_prefix, acc, data)
   end
-
+  
   def decode(acc, <<194, 2, data::binary>>) do
     Decoder.field(:string, :php_class_prefix, acc, data)
   end
-
+  
   def decode(acc, <<202, 2, data::binary>>) do
     Decoder.field(:string, :php_namespace, acc, data)
   end
-
+  
   def decode(acc, <<208, 2, data::binary>>) do
     Decoder.field(:bool, :php_generic_services, acc, data)
   end
-
+  
   def decode(acc, <<226, 2, data::binary>>) do
     Decoder.field(:string, :php_metadata_namespace, acc, data)
   end
-
+  
   def decode(acc, <<234, 2, data::binary>>) do
     Decoder.field(:string, :ruby_package, acc, data)
   end
-
+  
   def decode(acc, <<186, 62, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
-  end
-
-  def decode(acc, <<128, 191, 38, data::binary>>) do
-    Decoder.field(:int32, :elixir_oneof_format, acc, data)
   end
 
   # failed to decode, either this is an unknown tag (which we can skip), or
@@ -1555,9 +1548,9 @@ end
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:uninterpreted_option, v}, acc -> Map.update(acc, :uninterpreted_option, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :uninterpreted_option, Elixir.Enum.reverse(struct.uninterpreted_option))
     struct
@@ -1574,16 +1567,14 @@ defmodule Google.Protobuf.MessageOptions do
     no_standard_descriptor_accessor: nil,
     deprecated: nil,
     map_entry: nil,
-    uninterpreted_option: [],
-    json_message: 1
+    uninterpreted_option: []
   ]
   @type t :: %__MODULE__{
     message_set_wire_format: boolean,
     no_standard_descriptor_accessor: boolean,
     deprecated: boolean,
     map_entry: boolean,
-    uninterpreted_option: [Google.Protobuf.UninterpretedOption.t],
-    json_message: integer
+    uninterpreted_option: [Google.Protobuf.UninterpretedOption.t]
   }
 
   @spec new(Enum.t) :: t
@@ -1599,7 +1590,6 @@ defmodule Google.Protobuf.MessageOptions do
       Encoder.field(:bool, data.deprecated, <<24>>),
       Encoder.field(:bool, data.map_entry, <<56>>),
       Encoder.repeated_unpacked_field(:struct, data.uninterpreted_option, <<186, 62>>),
-      Encoder.field(:int32, data.json_message, <<128, 191, 38>>)
     ]
   end
   @spec encode!(t | map) :: binary
@@ -1614,29 +1604,25 @@ defmodule Google.Protobuf.MessageOptions do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<8, data::binary>>) do
     Decoder.field(:bool, :message_set_wire_format, acc, data)
   end
-
+  
   def decode(acc, <<16, data::binary>>) do
     Decoder.field(:bool, :no_standard_descriptor_accessor, acc, data)
   end
-
+  
   def decode(acc, <<24, data::binary>>) do
     Decoder.field(:bool, :deprecated, acc, data)
   end
-
+  
   def decode(acc, <<56, data::binary>>) do
     Decoder.field(:bool, :map_entry, acc, data)
   end
-
+  
   def decode(acc, <<186, 62, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
-  end
-
-  def decode(acc, <<128, 191, 38, data::binary>>) do
-    Decoder.field(:int32, :json_message, acc, data)
   end
 
   # failed to decode, either this is an unknown tag (which we can skip), or
@@ -1659,9 +1645,9 @@ defmodule Google.Protobuf.MessageOptions do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:uninterpreted_option, v}, acc -> Map.update(acc, :uninterpreted_option, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :uninterpreted_option, Elixir.Enum.reverse(struct.uninterpreted_option))
     struct
@@ -1680,8 +1666,7 @@ defmodule Google.Protobuf.FieldOptions do
     lazy: nil,
     jstype: 0,
     weak: nil,
-    uninterpreted_option: [],
-    json_field: 0
+    uninterpreted_option: []
   ]
   @type t :: %__MODULE__{
     ctype: Google.Protobuf.FieldOptions.CType.t,
@@ -1690,8 +1675,7 @@ defmodule Google.Protobuf.FieldOptions do
     lazy: boolean,
     jstype: Google.Protobuf.FieldOptions.JSType.t,
     weak: boolean,
-    uninterpreted_option: [Google.Protobuf.UninterpretedOption.t],
-    json_field: integer
+    uninterpreted_option: [Google.Protobuf.UninterpretedOption.t]
   }
 defmodule JSType do
   @moduledoc false
@@ -1755,7 +1739,6 @@ end
       Encoder.enum_field(Google.Protobuf.FieldOptions.JSType, data.jstype, <<48>>),
       Encoder.field(:bool, data.weak, <<80>>),
       Encoder.repeated_unpacked_field(:struct, data.uninterpreted_option, <<186, 62>>),
-      Encoder.field(:int32, data.json_field, <<128, 191, 38>>)
     ]
   end
   @spec encode!(t | map) :: binary
@@ -1770,37 +1753,33 @@ end
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<8, data::binary>>) do
     Decoder.enum_field(Google.Protobuf.FieldOptions.CType, :ctype, acc, data)
   end
-
+  
   def decode(acc, <<16, data::binary>>) do
     Decoder.field(:bool, :packed, acc, data)
   end
-
+  
   def decode(acc, <<24, data::binary>>) do
     Decoder.field(:bool, :deprecated, acc, data)
   end
-
+  
   def decode(acc, <<40, data::binary>>) do
     Decoder.field(:bool, :lazy, acc, data)
   end
-
+  
   def decode(acc, <<48, data::binary>>) do
     Decoder.enum_field(Google.Protobuf.FieldOptions.JSType, :jstype, acc, data)
   end
-
+  
   def decode(acc, <<80, data::binary>>) do
     Decoder.field(:bool, :weak, acc, data)
   end
-
+  
   def decode(acc, <<186, 62, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
-  end
-
-  def decode(acc, <<128, 191, 38, data::binary>>) do
-    Decoder.field(:int32, :json_field, acc, data)
   end
 
   # failed to decode, either this is an unknown tag (which we can skip), or
@@ -1823,9 +1802,9 @@ end
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:uninterpreted_option, v}, acc -> Map.update(acc, :uninterpreted_option, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :uninterpreted_option, Elixir.Enum.reverse(struct.uninterpreted_option))
     struct
@@ -1867,7 +1846,7 @@ defmodule Google.Protobuf.OneofOptions do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<186, 62, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
@@ -1892,9 +1871,9 @@ defmodule Google.Protobuf.OneofOptions do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:uninterpreted_option, v}, acc -> Map.update(acc, :uninterpreted_option, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :uninterpreted_option, Elixir.Enum.reverse(struct.uninterpreted_option))
     struct
@@ -1942,15 +1921,15 @@ defmodule Google.Protobuf.EnumOptions do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<16, data::binary>>) do
     Decoder.field(:bool, :allow_alias, acc, data)
   end
-
+  
   def decode(acc, <<24, data::binary>>) do
     Decoder.field(:bool, :deprecated, acc, data)
   end
-
+  
   def decode(acc, <<186, 62, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
@@ -1975,9 +1954,9 @@ defmodule Google.Protobuf.EnumOptions do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:uninterpreted_option, v}, acc -> Map.update(acc, :uninterpreted_option, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :uninterpreted_option, Elixir.Enum.reverse(struct.uninterpreted_option))
     struct
@@ -1991,13 +1970,11 @@ defmodule Google.Protobuf.EnumValueOptions do
   @derive Jason.Encoder
   defstruct [
     deprecated: nil,
-    uninterpreted_option: [],
-    elixir_atom: nil
+    uninterpreted_option: []
   ]
   @type t :: %__MODULE__{
     deprecated: boolean,
-    uninterpreted_option: [Google.Protobuf.UninterpretedOption.t],
-    elixir_atom: String.t
+    uninterpreted_option: [Google.Protobuf.UninterpretedOption.t]
   }
 
   @spec new(Enum.t) :: t
@@ -2010,7 +1987,6 @@ defmodule Google.Protobuf.EnumValueOptions do
     [
       Encoder.field(:bool, data.deprecated, <<8>>),
       Encoder.repeated_unpacked_field(:struct, data.uninterpreted_option, <<186, 62>>),
-      Encoder.field(:string, data.elixir_atom, <<130, 191, 38>>)
     ]
   end
   @spec encode!(t | map) :: binary
@@ -2025,17 +2001,13 @@ defmodule Google.Protobuf.EnumValueOptions do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<8, data::binary>>) do
     Decoder.field(:bool, :deprecated, acc, data)
   end
-
+  
   def decode(acc, <<186, 62, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
-  end
-
-  def decode(acc, <<130, 191, 38, data::binary>>) do
-    Decoder.field(:string, :elixir_atom, acc, data)
   end
 
   # failed to decode, either this is an unknown tag (which we can skip), or
@@ -2058,95 +2030,14 @@ defmodule Google.Protobuf.EnumValueOptions do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:uninterpreted_option, v}, acc -> Map.update(acc, :uninterpreted_option, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :uninterpreted_option, Elixir.Enum.reverse(struct.uninterpreted_option))
     struct
   end
 end
-
-defmodule Google.Protobuf.ErlangEnumValueOptions do
-  @moduledoc false
-  alias Pbuf.{Decoder, Encoder}
-  import Bitwise, only: [bsr: 2, band: 2]
-
-  alias __MODULE__
-
-  defstruct [
-    __pbuf__: true,
-    atom: nil
-  ]
-
-  @type t :: %ErlangEnumValueOptions{
-    atom: String.t
-  }
-
-
-  @spec new(Enum.t) :: t
-  def new(data) do
-    struct(__MODULE__, data)
-  end
-
-  @spec encode_to_iodata!(t | map) :: iodata
-  def encode_to_iodata!(data) do
-    alias Elixir.Pbuf.Encoder
-    [
-      Encoder.field(:string, data.atom, <<10>>),
-    ]
-  end
-
-  @spec encode!(t | map) :: binary
-  def encode!(data) do
-    :erlang.iolist_to_binary(encode_to_iodata!(data))
-  end
-
-  @spec decode!(binary) :: t
-  def decode!(data) do
-    case Pbuf.Decoder.decode(__MODULE__, data) do
-      {:ok, decoded} -> decoded
-      {:error, err} -> raise err
-    end
-  end
-
-  @spec decode(binary) :: {:ok, t} | :error
-  def decode(data) do
-    Pbuf.Decoder.decode(__MODULE__, data)
-  end
-
-  @spec decode(binary, Keyword.t) :: {binary, Keywor.t} | {:error, Decoder.Error.t}
-
-  def decode(acc, <<10, data::binary>>) do
-    Decoder.field(:string, :atom, acc, data)
-  end
-
-  # failed to decode, either this is an unknown tag (which we can skip), or
-  # it's a wrong type (which is an error)
-  def decode(acc, data) do
-    {prefix, data} = Decoder.varint(data)
-    tag = bsr(prefix, 3)
-    type = band(prefix, 7)
-
-    case tag in [1] do
-      false -> {acc, Decoder.skip(type, data)}
-      true ->
-        err = %Decoder.Error{
-          tag: tag,
-          module: __MODULE__,
-          message: "#{__MODULE__} tag #{tag} has an incorrect write type of #{type}"
-        }
-        {:error, err}
-    end
-  end
-
-  def __finalize_decode__(args) do
-    Elixir.Enum.reduce(args, %__MODULE__{}, fn
-            {k, v}, acc -> Map.put(acc, k, v)
-    end)
-  end
-end
-
 defmodule Google.Protobuf.ServiceOptions do
   @moduledoc false
   alias Pbuf.Decoder
@@ -2186,11 +2077,11 @@ defmodule Google.Protobuf.ServiceOptions do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<136, 2, data::binary>>) do
     Decoder.field(:bool, :deprecated, acc, data)
   end
-
+  
   def decode(acc, <<186, 62, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
@@ -2215,9 +2106,9 @@ defmodule Google.Protobuf.ServiceOptions do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:uninterpreted_option, v}, acc -> Map.update(acc, :uninterpreted_option, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :uninterpreted_option, Elixir.Enum.reverse(struct.uninterpreted_option))
     struct
@@ -2288,15 +2179,15 @@ end
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<136, 2, data::binary>>) do
     Decoder.field(:bool, :deprecated, acc, data)
   end
-
+  
   def decode(acc, <<144, 2, data::binary>>) do
     Decoder.enum_field(Google.Protobuf.MethodOptions.IdempotencyLevel, :idempotency_level, acc, data)
   end
-
+  
   def decode(acc, <<186, 62, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
@@ -2321,9 +2212,9 @@ end
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:uninterpreted_option, v}, acc -> Map.update(acc, :uninterpreted_option, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :uninterpreted_option, Elixir.Enum.reverse(struct.uninterpreted_option))
     struct
@@ -2383,31 +2274,31 @@ defmodule Google.Protobuf.UninterpretedOption do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<18, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption.NamePart, :name, acc, data)
   end
-
+  
   def decode(acc, <<26, data::binary>>) do
     Decoder.field(:string, :identifier_value, acc, data)
   end
-
+  
   def decode(acc, <<32, data::binary>>) do
     Decoder.field(:uint64, :positive_int_value, acc, data)
   end
-
+  
   def decode(acc, <<40, data::binary>>) do
     Decoder.field(:int64, :negative_int_value, acc, data)
   end
-
+  
   def decode(acc, <<49, data::binary>>) do
     Decoder.field(:double, :double_value, acc, data)
   end
-
+  
   def decode(acc, <<58, data::binary>>) do
     Decoder.field(:bytes, :string_value, acc, data)
   end
-
+  
   def decode(acc, <<66, data::binary>>) do
     Decoder.field(:string, :aggregate_value, acc, data)
   end
@@ -2432,9 +2323,9 @@ defmodule Google.Protobuf.UninterpretedOption do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:name, v}, acc -> Map.update(acc, :name, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :name, Elixir.Enum.reverse(struct.name))
     struct
@@ -2479,11 +2370,11 @@ defmodule Google.Protobuf.UninterpretedOption.NamePart do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :name_part, acc, data)
   end
-
+  
   def decode(acc, <<16, data::binary>>) do
     Decoder.field(:bool, :is_extension, acc, data)
   end
@@ -2508,7 +2399,7 @@ defmodule Google.Protobuf.UninterpretedOption.NamePart do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                  {k, v}, acc -> Map.put(acc, k, v)
+                              {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
@@ -2549,7 +2440,7 @@ defmodule Google.Protobuf.SourceCodeInfo do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.SourceCodeInfo.Location, :location, acc, data)
   end
@@ -2574,9 +2465,9 @@ defmodule Google.Protobuf.SourceCodeInfo do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:location, v}, acc -> Map.update(acc, :location, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :location, Elixir.Enum.reverse(struct.location))
     struct
@@ -2630,23 +2521,23 @@ defmodule Google.Protobuf.SourceCodeInfo.Location do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.repeated_field(:int32, :path, acc, data)
   end
-
+  
   def decode(acc, <<18, data::binary>>) do
     Decoder.repeated_field(:int32, :span, acc, data)
   end
-
+  
   def decode(acc, <<26, data::binary>>) do
     Decoder.field(:string, :leading_comments, acc, data)
   end
-
+  
   def decode(acc, <<34, data::binary>>) do
     Decoder.field(:string, :trailing_comments, acc, data)
   end
-
+  
   def decode(acc, <<50, data::binary>>) do
     Decoder.field(:string, :leading_detached_comments, acc, data)
   end
@@ -2671,9 +2562,9 @@ defmodule Google.Protobuf.SourceCodeInfo.Location do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:leading_detached_comments, v}, acc -> Map.update(acc, :leading_detached_comments, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :leading_detached_comments, Elixir.Enum.reverse(struct.leading_detached_comments))
     struct
@@ -2715,7 +2606,7 @@ defmodule Google.Protobuf.GeneratedCodeInfo do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.struct_field(Google.Protobuf.GeneratedCodeInfo.Annotation, :annotation, acc, data)
   end
@@ -2740,9 +2631,9 @@ defmodule Google.Protobuf.GeneratedCodeInfo do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-
+      
       {:annotation, v}, acc -> Map.update(acc, :annotation, [v], fn e -> [v | e] end)
-            {k, v}, acc -> Map.put(acc, k, v)
+                        {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :annotation, Elixir.Enum.reverse(struct.annotation))
     struct
@@ -2793,19 +2684,19 @@ defmodule Google.Protobuf.GeneratedCodeInfo.Annotation do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.repeated_field(:int32, :path, acc, data)
   end
-
+  
   def decode(acc, <<18, data::binary>>) do
     Decoder.field(:string, :source_file, acc, data)
   end
-
+  
   def decode(acc, <<24, data::binary>>) do
     Decoder.field(:int32, :begin, acc, data)
   end
-
+  
   def decode(acc, <<32, data::binary>>) do
     Decoder.field(:int32, :end, acc, data)
   end
@@ -2830,7 +2721,7 @@ defmodule Google.Protobuf.GeneratedCodeInfo.Annotation do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                  {k, v}, acc -> Map.put(acc, k, v)
+                              {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end

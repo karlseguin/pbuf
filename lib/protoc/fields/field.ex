@@ -19,7 +19,7 @@ defmodule Pbuf.Protoc.Field do
     default: String.t,
     hidden: boolean,
     oneof_index: nil | non_neg_integer,
-    post_decode: :none | :map | :repack
+    post_decode: :none | :map | :repack | :oneof1 | :oneof2
   }
 
   defmacro __using__(_opts) do

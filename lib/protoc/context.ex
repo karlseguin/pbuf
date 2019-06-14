@@ -9,7 +9,7 @@ defmodule Pbuf.Protoc.Context do
   alias Pbuf.Protoc
   alias Pbuf.Protoc.{OneOf, Enumeration}
 
-  @enforce_keys [:package, :namespace, :enums, :maps, :oneofs, :version]
+  @enforce_keys [:package, :namespace, :enums, :maps, :oneofs, :oneof_format, :version]
   defstruct @enforce_keys
 
   @type t :: %Context{
@@ -47,7 +47,8 @@ defmodule Pbuf.Protoc.Context do
       package: package,
       namespace: namespace(package),
       version: version(input.syntax),
-      enums: extract_enums(input.enum_type, package)
+      enums: extract_enums(input.enum_type, package),
+      oneof_format: Map.get(input.options || %{}, :elixir_oneof_format, 0)
     }
   end
 

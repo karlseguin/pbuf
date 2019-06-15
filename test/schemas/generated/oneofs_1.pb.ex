@@ -65,8 +65,8 @@ defmodule OneOfOne do
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
                   
-      {:b, {choice, v}}, acc -> Map.put(acc, choice, %{oneof: :b, value: v})
-      {:a, {choice, v}}, acc -> Map.put(acc, choice, %{oneof: :a, value: v})
+      {:b, {choice, v}}, acc -> Map.put(acc, choice, %{__type: :b, value: v})
+      {:a, {choice, v}}, acc -> Map.put(acc, choice, %{__type: :a, value: v})
             {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct

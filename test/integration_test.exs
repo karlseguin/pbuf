@@ -87,8 +87,8 @@ defmodule Pbuf.Tests.Integration do
   end
 
   test "encodes oneof as choice map" do
-    oneof = OneOfOne.decode!(Pbuf.encode!(OneOfOne.new(choice: %{oneof: :a, value: 3})))
-    assert oneof.choice == %{oneof: :a, value: 3}
+    oneof = OneOfOne.decode!(Pbuf.encode!(OneOfOne.new(choice: %{__type: :a, value: 3})))
+    assert oneof.choice == %{__type: :a, value: 3}
   end
 
   test "encodes oneof as field map" do

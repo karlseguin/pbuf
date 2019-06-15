@@ -140,7 +140,7 @@ defmodule <%= context.namespace %><%= name %> do
         {:<%= field.name %>, v}, acc -> Map.put(acc, :<%= field.name %>, <%=encoder%>.decode!(v, <%= opts %>))
       <% end %>
       <%= for field <- oneof1 do %>
-      {:<%= field.name %>, {choice, v}}, acc -> Map.put(acc, choice, %{oneof: :<%= field.name %>, value: v})
+      {:<%= field.name %>, {choice, v}}, acc -> Map.put(acc, choice, %{__type: :<%= field.name %>, value: v})
       <% end %>
       <%= for field <- oneof2 do %>
       {:<%= field.name %>, {choice, v}}, acc -> Map.put(acc, choice, %{<%= field.name %>: v})

@@ -143,7 +143,7 @@ option (elixir_oneof_format) = 1
 and using:
 
 ```
-  %{oneof: :commit, value: Commit.t}
+  %{__type: :commit, value: Commit.t}
 ```
 
 OR specifying
@@ -157,8 +157,6 @@ and using:
 ```
   %{commit: Commit.t}
 ```
-
-Note however that when decoding, it will _always_ go to the tuple version.
 
 #### Json Message Encoding
 It's possible to not generate `@derive Jason.Encoder` on a per-message basis by using a custom option, say in `options.proto`:

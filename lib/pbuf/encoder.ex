@@ -339,7 +339,7 @@ defmodule Pbuf.Encoder do
     fun.(value)
   end
 
-  def oneof_field(choice, %{oneof: choice, value: value}, 1, fun) do
+  def oneof_field(choice, %{__type: choice, value: value}, 1, fun) do
     fun.(value)
   end
 

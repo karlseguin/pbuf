@@ -44,8 +44,8 @@ defmodule <%= context.namespace %><%= name %> do
 
   <% last_index = Enum.count(fields) %>
   @spec encode_to_iodata!(t | map) :: iodata
-  def encode_to_iodata!(data) do
-    alias Elixir.Pbuf.Encoder
+  def encode_to_iodata!(<%= if last_index == 0 do %>_<% end %>data) do
+    <%= if last_index != 0 do %>alias Elixir.Pbuf.Encoder<% end %>
     [
     <%= for {field, i} <- Enum.with_index(fields) do %>
       <%= field.encode_fun %><%= if_neq(i, last_index, ",") %>

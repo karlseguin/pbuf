@@ -127,29 +127,6 @@ defmodule Corpus do
   def from_int(1), do: :web
   def from_int(_unknown), do: :invalid
 end
-defmodule EverythingType do
-  @moduledoc false
-  @type t :: :EVERYTHING_TYPE_UNKNOWN | 0 | :EVERYTHING_TYPE_SAND | 1 | :EVERYTHING_TYPE_SPICE | 2
-  @spec to_int(t | non_neg_integer) :: integer
-  def to_int(:EVERYTHING_TYPE_SAND), do: 1
-  def to_int(1), do: 1
-  def to_int(:EVERYTHING_TYPE_SPICE), do: 2
-  def to_int(2), do: 2
-  def to_int(:EVERYTHING_TYPE_UNKNOWN), do: 0
-  def to_int(0), do: 0
-  def to_int(invalid) do
-    raise Pbuf.Encoder.Error,
-      type: __MODULE__,
-      value: invalid,
-      tag: nil,
-      message: "#{inspect(invalid)} is not a valid enum value for #{__MODULE__}"
-  end
-  @spec from_int(integer) :: t
-  def from_int(1), do: :EVERYTHING_TYPE_SAND
-  def from_int(2), do: :EVERYTHING_TYPE_SPICE
-  def from_int(0), do: :EVERYTHING_TYPE_UNKNOWN
-  def from_int(_unknown), do: :invalid
-end
   @spec new(Enum.t) :: t
   def new(data) do
     struct(__MODULE__, data)
@@ -411,29 +388,7 @@ defmodule Pbuf.Tests.Child do
     data2: binary,
     data3: binary
   }
-defmodule EverythingType do
-  @moduledoc false
-  @type t :: :EVERYTHING_TYPE_UNKNOWN | 0 | :EVERYTHING_TYPE_SAND | 1 | :EVERYTHING_TYPE_SPICE | 2
-  @spec to_int(t | non_neg_integer) :: integer
-  def to_int(:EVERYTHING_TYPE_SAND), do: 1
-  def to_int(1), do: 1
-  def to_int(:EVERYTHING_TYPE_SPICE), do: 2
-  def to_int(2), do: 2
-  def to_int(:EVERYTHING_TYPE_UNKNOWN), do: 0
-  def to_int(0), do: 0
-  def to_int(invalid) do
-    raise Pbuf.Encoder.Error,
-      type: __MODULE__,
-      value: invalid,
-      tag: nil,
-      message: "#{inspect(invalid)} is not a valid enum value for #{__MODULE__}"
-  end
-  @spec from_int(integer) :: t
-  def from_int(1), do: :EVERYTHING_TYPE_SAND
-  def from_int(2), do: :EVERYTHING_TYPE_SPICE
-  def from_int(0), do: :EVERYTHING_TYPE_UNKNOWN
-  def from_int(_unknown), do: :invalid
-end
+
   @spec new(Enum.t) :: t
   def new(data) do
     struct(__MODULE__, data)

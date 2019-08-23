@@ -54,7 +54,7 @@ defmodule Pbuf.Protoc.Context do
       false -> package <> "."
     end
 
-    enums = extract_enums(input.enum_type, package, %{})
+    enums = extract_enums(input.enum_type, package)
     global = Global.enums(global, enums)
 
     context = %Context{
@@ -73,7 +73,7 @@ defmodule Pbuf.Protoc.Context do
   # Expand the file context with message-specific information
   def message(context, desc, global) do
     package = context.package <> desc.name
-    enums = extract_enums(desc.enum_type, package, context.enums)
+    enums = extract_enums(desc.enum_type, package)
     global = Global.enums(global, enums)
     context = %Context{context |
       enums: enums,
@@ -123,11 +123,11 @@ defmodule Pbuf.Protoc.Context do
     |> Enum.join(".")
   end
 
-  defp extract_enums(values, package, acc) do
+  defp extract_enums(values, package) do
     namespace = namespace(package)
-    Enum.reduce(values, acc, fn v, acc ->
+    Enum.into(values, %{}, fn v->
       e = Enumeration.new(v, namespace)
-      Map.put(acc, e.full_name, e)
+      {e.full_name, e}
     end)
   end
 

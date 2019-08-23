@@ -14,29 +14,7 @@ defmodule Pbuf.Tests.Sub.User do
     status: Pbuf.Tests.Sub.UserStatus.t,
     name: Pbuf.Tests.Sub.User.Name.t
   }
-defmodule UserStatus do
-  @moduledoc false
-  @type t :: :USER_STATUS_UNKNOWN | 0 | :USER_STATUS_NORMAL | 1 | :USER_STATUS_DELETED | 2
-  @spec to_int(t | non_neg_integer) :: integer
-  def to_int(:USER_STATUS_DELETED), do: 2
-  def to_int(2), do: 2
-  def to_int(:USER_STATUS_NORMAL), do: 1
-  def to_int(1), do: 1
-  def to_int(:USER_STATUS_UNKNOWN), do: 0
-  def to_int(0), do: 0
-  def to_int(invalid) do
-    raise Pbuf.Encoder.Error,
-      type: __MODULE__,
-      value: invalid,
-      tag: nil,
-      message: "#{inspect(invalid)} is not a valid enum value for #{__MODULE__}"
-  end
-  @spec from_int(integer) :: t
-  def from_int(2), do: :USER_STATUS_DELETED
-  def from_int(1), do: :USER_STATUS_NORMAL
-  def from_int(0), do: :USER_STATUS_UNKNOWN
-  def from_int(_unknown), do: :invalid
-end
+
   @spec new(Enum.t) :: t
   def new(data) do
     struct(__MODULE__, data)
@@ -111,29 +89,7 @@ defmodule Pbuf.Tests.Sub.User.Name do
     first: String.t,
     last: String.t
   }
-defmodule UserStatus do
-  @moduledoc false
-  @type t :: :USER_STATUS_UNKNOWN | 0 | :USER_STATUS_NORMAL | 1 | :USER_STATUS_DELETED | 2
-  @spec to_int(t | non_neg_integer) :: integer
-  def to_int(:USER_STATUS_DELETED), do: 2
-  def to_int(2), do: 2
-  def to_int(:USER_STATUS_NORMAL), do: 1
-  def to_int(1), do: 1
-  def to_int(:USER_STATUS_UNKNOWN), do: 0
-  def to_int(0), do: 0
-  def to_int(invalid) do
-    raise Pbuf.Encoder.Error,
-      type: __MODULE__,
-      value: invalid,
-      tag: nil,
-      message: "#{inspect(invalid)} is not a valid enum value for #{__MODULE__}"
-  end
-  @spec from_int(integer) :: t
-  def from_int(2), do: :USER_STATUS_DELETED
-  def from_int(1), do: :USER_STATUS_NORMAL
-  def from_int(0), do: :USER_STATUS_UNKNOWN
-  def from_int(_unknown), do: :invalid
-end
+
   @spec new(Enum.t) :: t
   def new(data) do
     struct(__MODULE__, data)

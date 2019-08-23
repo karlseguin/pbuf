@@ -33,7 +33,7 @@ defmodule <%= context.namespace %><%= name %> do
   <% end %>
   }
 
-  <%= for e <- enums do %>
+  <%= for {_name, e} <- enums do %>
 <%= Pbuf.Protoc.Template.enumeration(e, true) %>
   <% end %>
 

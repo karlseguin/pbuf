@@ -1,4 +1,4 @@
-defmodule OneOfZero do
+defmodule 	OneOfZero do
   @moduledoc false
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
@@ -35,11 +35,9 @@ defmodule OneOfZero do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-  
   def decode(acc, <<8, data::binary>>) do
     Decoder.oneof_field(:choice, 0, Decoder.field(:int32, :a, acc, data))
   end
-  
   def decode(acc, <<16, data::binary>>) do
     Decoder.oneof_field(:choice, 0, Decoder.field(:int32, :b, acc, data))
   end
@@ -64,7 +62,7 @@ defmodule OneOfZero do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                              {k, v}, acc -> Map.put(acc, k, v)
+      {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end

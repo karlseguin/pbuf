@@ -23,9 +23,12 @@ defmodule Pbuf.Protoc do
     input = IO.binread(:all)
     request = Pbuf.decode!(Compiler.CodeGeneratorRequest, input)
 
+    global = Context.Global.new()
     {files, err} = try do
-      files = Enum.map(request.proto_file, &(generate/1))
-      {files, nil}
+      global = Enum.reduce(request.proto_file, global, fn input, global ->
+        generate(input, global)
+      end)
+      {global.files, nil}
     rescue
       e -> {nil, {e, __STACKTRACE__}}
     end
@@ -38,43 +41,43 @@ defmodule Pbuf.Protoc do
     IO.binwrite(Pbuf.encode!(response))
   end
 
-  @spec generate(proto_file) :: Compiler.CodeGeneratorResponse.File.t
-  defp generate(%{syntax: "proto3"} = input) do
-    context = Context.new(input)
+  defp generate(%{syntax: "proto3"} = input, global) do
+    {context, global} = Context.new(input, global)
 
-    templates = Enum.reduce(input.message_type, [], fn message, acc ->
-      {context, enum} = Context.message(context, message)
-      generate_message(message, enum, context, acc)
+    {templates, global} = Enum.reduce(input.message_type, {[], global}, fn message, {acc, global} ->
+      {context, enums, global} = Context.message(context, message, global)
+      generate_message(message, enums, context, acc, global)
     end)
 
-    templates = Enum.reduce(context.enums, templates, fn e, acc ->
+    templates = Enum.reduce(context.enums, templates, fn {_name, e}, acc ->
       [acc, generate_enumeration(e)]
     end)
 
-    %Compiler.CodeGeneratorResponse.File{
+    file = %Compiler.CodeGeneratorResponse.File{
       insertion_point: "",
       name: String.replace(input.name, ".proto", ".pb.ex"),
       content: :erlang.iolist_to_binary(templates)
     }
+    %{global | files: [file | global.files]}
   end
 
-  defp generate(input) do
-    context = Context.new(input)
+  defp generate(input, global) do
+    {context, global} = Context.new(input, global)
 
-    templates = Enum.reduce(input.message_type, [], fn message, acc ->
-      {context, enum} = Context.message(context, message)
-      generate_message(message, enum, context, acc)
+    {templates, global} = Enum.reduce(input.message_type, {[], global}, fn message, {acc, global} ->
+      {context, enum, global} = Context.message(context, message, global)
+      generate_message(message, enum, context, acc, global)
     end)
 
-    %Compiler.CodeGeneratorResponse.File{
+    file = %Compiler.CodeGeneratorResponse.File{
       insertion_point: "",
       content: :erlang.iolist_to_binary(templates),
       name: String.replace(input.name, ".proto", ".pb.ex"),
     }
+    %{global | files: [file | global.files]}
   end
 
-  @spec generate_message(Google.Protobuf.DescriptorProto.t, %{optional(String.t) => Enumeration.t}, Context.t, iolist) :: iolist
-  defp generate_message(message, enums, context, acc) do\
+  defp generate_message(message, enums, context, acc, global) do
     name = message.name
     fields = generate_fields(message.field, context)
     context = Context.fields(context, fields)
@@ -83,12 +86,12 @@ defmodule Pbuf.Protoc do
 
     message.nested_type
     |> Enum.filter(&(&1.options == nil))
-    |> Enum.reduce(acc, fn message, acc ->
+    |> Enum.reduce({acc, global}, fn message, {acc, global} ->
       namespace = context.namespace
-      {context, enums} = Context.message(context, message)
+      {context, enums, global} = Context.message(context, message, global)
       # ugly, but feeling extra lazy
       context = %Context{context | namespace: namespace <> name <> "."}
-      generate_message(message, enums, context, acc)
+      generate_message(message, enums, context, acc, global)
     end)
   end
 

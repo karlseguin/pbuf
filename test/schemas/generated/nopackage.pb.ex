@@ -1,4 +1,4 @@
-defmodule A do
+defmodule 	A do
   @moduledoc false
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
@@ -34,7 +34,6 @@ defmodule A do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-  
   def decode(acc, <<10, data::binary>>) do
     Decoder.struct_field(A.B, :b, acc, data)
   end
@@ -59,12 +58,12 @@ defmodule A do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                              {k, v}, acc -> Map.put(acc, k, v)
+      {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
 end
-defmodule A.B do
+defmodule 	A.B do
   @moduledoc false
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
@@ -100,7 +99,6 @@ defmodule A.B do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-  
   def decode(acc, <<10, data::binary>>) do
     Decoder.struct_field(A.B.C, :c, acc, data)
   end
@@ -125,12 +123,12 @@ defmodule A.B do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                              {k, v}, acc -> Map.put(acc, k, v)
+      {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
 end
-defmodule A.B.C do
+defmodule 	A.B.C do
   @moduledoc false
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
@@ -166,7 +164,6 @@ defmodule A.B.C do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-  
   def decode(acc, <<16, data::binary>>) do
     Decoder.field(:int32, :d, acc, data)
   end
@@ -191,7 +188,7 @@ defmodule A.B.C do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                              {k, v}, acc -> Map.put(acc, k, v)
+      {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end

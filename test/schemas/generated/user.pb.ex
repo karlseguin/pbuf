@@ -6,7 +6,7 @@ defmodule Pbuf.Tests.Sub.User do
   @derive Jason.Encoder
   defstruct [
     id: 0,
-    status: 0,
+    status: :USER_STATUS_UNKNOWN,
     name: nil
   ]
   @type t :: %__MODULE__{
@@ -14,7 +14,29 @@ defmodule Pbuf.Tests.Sub.User do
     status: Pbuf.Tests.Sub.UserStatus.t,
     name: Pbuf.Tests.Sub.User.Name.t
   }
-
+defmodule UserStatus do
+  @moduledoc false
+  @type t :: :USER_STATUS_UNKNOWN | 0 | :USER_STATUS_NORMAL | 1 | :USER_STATUS_DELETED | 2
+  @spec to_int(t | non_neg_integer) :: integer
+  def to_int(:USER_STATUS_DELETED), do: 2
+  def to_int(2), do: 2
+  def to_int(:USER_STATUS_NORMAL), do: 1
+  def to_int(1), do: 1
+  def to_int(:USER_STATUS_UNKNOWN), do: 0
+  def to_int(0), do: 0
+  def to_int(invalid) do
+    raise Pbuf.Encoder.Error,
+      type: __MODULE__,
+      value: invalid,
+      tag: nil,
+      message: "#{inspect(invalid)} is not a valid enum value for #{__MODULE__}"
+  end
+  @spec from_int(integer) :: t
+  def from_int(2), do: :USER_STATUS_DELETED
+  def from_int(1), do: :USER_STATUS_NORMAL
+  def from_int(0), do: :USER_STATUS_UNKNOWN
+  def from_int(_unknown), do: :invalid
+end
   @spec new(Enum.t) :: t
   def new(data) do
     struct(__MODULE__, data)
@@ -40,15 +62,12 @@ defmodule Pbuf.Tests.Sub.User do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-  
   def decode(acc, <<8, data::binary>>) do
     Decoder.field(:uint32, :id, acc, data)
   end
-  
   def decode(acc, <<16, data::binary>>) do
     Decoder.enum_field(Pbuf.Tests.Sub.UserStatus, :status, acc, data)
   end
-  
   def decode(acc, <<26, data::binary>>) do
     Decoder.struct_field(Pbuf.Tests.Sub.User.Name, :name, acc, data)
   end
@@ -73,7 +92,7 @@ defmodule Pbuf.Tests.Sub.User do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                              {k, v}, acc -> Map.put(acc, k, v)
+      {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
@@ -92,7 +111,29 @@ defmodule Pbuf.Tests.Sub.User.Name do
     first: String.t,
     last: String.t
   }
-
+defmodule UserStatus do
+  @moduledoc false
+  @type t :: :USER_STATUS_UNKNOWN | 0 | :USER_STATUS_NORMAL | 1 | :USER_STATUS_DELETED | 2
+  @spec to_int(t | non_neg_integer) :: integer
+  def to_int(:USER_STATUS_DELETED), do: 2
+  def to_int(2), do: 2
+  def to_int(:USER_STATUS_NORMAL), do: 1
+  def to_int(1), do: 1
+  def to_int(:USER_STATUS_UNKNOWN), do: 0
+  def to_int(0), do: 0
+  def to_int(invalid) do
+    raise Pbuf.Encoder.Error,
+      type: __MODULE__,
+      value: invalid,
+      tag: nil,
+      message: "#{inspect(invalid)} is not a valid enum value for #{__MODULE__}"
+  end
+  @spec from_int(integer) :: t
+  def from_int(2), do: :USER_STATUS_DELETED
+  def from_int(1), do: :USER_STATUS_NORMAL
+  def from_int(0), do: :USER_STATUS_UNKNOWN
+  def from_int(_unknown), do: :invalid
+end
   @spec new(Enum.t) :: t
   def new(data) do
     struct(__MODULE__, data)
@@ -117,11 +158,9 @@ defmodule Pbuf.Tests.Sub.User.Name do
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
-  
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :first, acc, data)
   end
-  
   def decode(acc, <<18, data::binary>>) do
     Decoder.field(:string, :last, acc, data)
   end
@@ -146,7 +185,7 @@ defmodule Pbuf.Tests.Sub.User.Name do
 
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-                              {k, v}, acc -> Map.put(acc, k, v)
+      {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end

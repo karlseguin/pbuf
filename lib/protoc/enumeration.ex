@@ -42,12 +42,17 @@ defmodule Pbuf.Protoc.Enumeration do
       typespec -> typespec
     end
 
+    full_name = case String.last(namespace) do
+      "." -> namespace <> desc.name
+      _ -> namespace <> "." <> desc.name
+    end
+
     %Enumeration{
       name: desc.name,
       values: values,
       default: default,
       typespec: typespec,
-      full_name: namespace <> desc.name,
+      full_name: full_name,
     }
   end
 end

@@ -31,4 +31,9 @@ defmodule Pbuf do
 
     [Pbuf.Encoder.varint(tag <<< 3 ||| 2), size, value]
   end
+
+  def glue_varint(tag, value) do
+    use Bitwise, only_operators: true
+    [Pbuf.Encoder.varint(tag <<< 3), Pbuf.Encoder.varint(value)]
+  end
 end

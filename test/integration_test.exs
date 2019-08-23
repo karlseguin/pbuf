@@ -12,8 +12,8 @@ defmodule Pbuf.Tests.Integration do
     expected = %{
       bool: false, int32: 0, int64: 0, uint32: 0, uint64: 0, sint32: 0, sint64: 0,
       fixed32: 0, sfixed32: 0, fixed64: 0, sfixed64: 0, float: 0.0, double: 0.0,
-      string: "" , bytes: "", struct: nil, type: :EVERYTHING_TYPE_UNKNOWN, corpus: :UNIVERSAL,
-      choice: nil, user: nil, user_status: 0,
+      string: "" , bytes: "", struct: nil, type: :EVERYTHING_TYPE_UNKNOWN, corpus: :universal,
+      choice: nil, user: nil, user_status: :USER_STATUS_UNKNOWN,
 
       bools: [], int32s: [], int64s: [], uint32s: [],
       uint64s: [], sint32s: [], sint64s: [], fixed32s: [], sfixed32s: [], fixed64s: [],
@@ -52,8 +52,8 @@ defmodule Pbuf.Tests.Integration do
       bool: true, int32: 0, int64: 0, uint32: 0, uint64: 0,
       sint32: 0, sint64: 0, fixed32: 0, sfixed32: 0,
       fixed64: 0, sfixed64: 0, float: 0, double: 0, string: "", bytes: "",
-      struct: nil, type: 0, corpus: 0, choice: {:choice_string, "use this test for this"},
-      user: nil, user_status: 0,
+      struct: nil, type: :EVERYTHING_TYPE_UNKNOWN, corpus: :universal, choice: {:choice_string, "use this test for this"},
+      user: nil, user_status: :USER_STATUS_UNKNOWN,
 
       bools: [true, false], int32s: [-21, 32], int64s: [-9922232, 9922232],
       uint32s: [82882, 323], uint64s: [199922332321984, 3223001],
@@ -137,7 +137,7 @@ defmodule Pbuf.Tests.Integration do
   end
 
   # not sure how else to handle the mismatch for how we handle enums
-  defp assert_value(0, :UNIVERSAL, :protobuf), do: :ok
+  defp assert_value(0, :universal, :protobuf), do: :ok
   defp assert_value(1, :web, :protobuf), do: :ok
   defp assert_value(4, :news, :protobuf), do: :ok
   defp assert_value(5, :products, :protobuf), do: :ok
@@ -155,9 +155,9 @@ defmodule Pbuf.Tests.Integration do
 
   # this is wrong, but it's valid
   defp assert_value(0, :EVERYTHING_TYPE_UNKNOWN, :pbuf), do: :ok
-  defp assert_value(0, :UNIVERSAL, :pbuf), do: :ok
+  defp assert_value(0, :universal, :pbuf), do: :ok
 
   defp assert_value(actual, expected, _type) do
-    assert actual == expected, "expect value of #{inspect(expected)}, got #{inspect(actual)}"
+    assert actual == expected, "#{inspect(actual)} != #{inspect(expected)}"
   end
 end

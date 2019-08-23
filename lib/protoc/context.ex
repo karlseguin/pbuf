@@ -9,10 +9,24 @@ defmodule Pbuf.Protoc.Context do
   alias Pbuf.Protoc
   alias Pbuf.Protoc.{OneOf, Enumeration}
 
-  @enforce_keys [:package, :namespace, :enums, :maps, :oneofs, :oneof_format, :version]
+
+  defmodule Global do
+    defstruct [:enums, :files]
+    def new() do
+      %__MODULE__{enums: %{}, files: []}
+    end
+
+    def enums(global, enums) do
+      %{global | enums: Map.merge(global.enums, enums)}
+    end
+  end
+
+  @enforce_keys [:package, :namespace, :enums, :maps, :oneofs, :oneof_format, :version, :global]
   defstruct @enforce_keys
 
   @type t :: %Context{
+    global: any,
+
     version: 2 | 3,
 
     # The package as presented in the .proto file. We keep this around because
@@ -28,41 +42,46 @@ defmodule Pbuf.Protoc.Context do
     maps: %{optional(String.t) => {any, any}},
 
     # Enumertions in this file (initially global, then type-embedded)
-    enums: [Enumeration.t],
+    enums: %{optional(String.t) => Enumeration.t},
 
     # OneOf index to our OneOf type
     oneofs: %{optional(non_neg_integer) => OneOf.t}
   }
 
-  @spec new(Protoc.proto_file) :: t
-  def new(%{package: package} = input) do
+  def new(%{package: package} = input, global) do
     package = case package == nil do
-      true -> ""
+      true -> "	"
       false -> package <> "."
     end
 
-    %Context{
+    enums = extract_enums(input.enum_type, package, %{})
+    global = Global.enums(global, enums)
+
+    context = %Context{
       maps: %{},    # only exists at the message level
       oneofs: %{},  # only exists at the message level
+      enums: enums,
+    	global: global,
       package: package,
       namespace: namespace(package),
       version: version(input.syntax),
-      enums: extract_enums(input.enum_type, package),
       oneof_format: Map.get(input.options || %{}, :elixir_oneof_format, 0)
     }
+    {context, global}
   end
 
   # Expand the file context with message-specific information
-  @spec message(t, Protoc.proto_message) :: {t, %{optional(String.t) => Enumeration.t}}
-  def message(context, desc) do
-    package = context.package <> "." <> desc.name
-    enums = extract_enums(desc.enum_type, package)
+  def message(context, desc, global) do
+    package = context.package <> desc.name
+    enums = extract_enums(desc.enum_type, package, context.enums)
+    global = Global.enums(global, enums)
     context = %Context{context |
+      enums: enums,
+      global: global,
       maps: maps(desc),
       oneofs: oneofs(desc),
-      enums: enums ++ context.enums,
     }
-    {context, enums}
+    {context, enums, global}
   end
 
   # Expand the message-specific context with additional field information. This
@@ -104,11 +123,11 @@ defmodule Pbuf.Protoc.Context do
     |> Enum.join(".")
   end
 
-  defp extract_enums(values, package) do
+  defp extract_enums(values, package, acc) do
     namespace = namespace(package)
-    Enum.reduce(values, [], fn v, acc ->
+    Enum.reduce(values, acc, fn v, acc ->
       e = Enumeration.new(v, namespace)
-      [e | acc]
+      Map.put(acc, e.full_name, e)
     end)
   end
 

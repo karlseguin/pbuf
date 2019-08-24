@@ -1,4 +1,4 @@
-defmodule 	OneOfZero do
+defmodule OneOfZero do
   @moduledoc false
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]

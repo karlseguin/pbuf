@@ -50,7 +50,7 @@ defmodule Pbuf.Protoc.Context do
 
   def new(%{package: package} = input, global) do
     package = case package == nil do
-      true -> "	"
+      true -> ""
       false -> package <> "."
     end
 
@@ -61,7 +61,7 @@ defmodule Pbuf.Protoc.Context do
       maps: %{},    # only exists at the message level
       oneofs: %{},  # only exists at the message level
       enums: enums,
-    	global: global,
+      global: global,
       package: package,
       namespace: namespace(package),
       version: version(input.syntax),
@@ -76,10 +76,10 @@ defmodule Pbuf.Protoc.Context do
     enums = extract_enums(desc.enum_type, package)
     global = Global.enums(global, enums)
     context = %Context{context |
-      enums: enums,
       global: global,
       maps: maps(desc),
       oneofs: oneofs(desc),
+      enums: Map.merge(context.enums, enums),
     }
     {context, enums, global}
   end

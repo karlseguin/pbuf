@@ -1,4 +1,4 @@
-defmodule 	A do
+defmodule A do
   @moduledoc false
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
@@ -63,7 +63,7 @@ defmodule 	A do
     struct
   end
 end
-defmodule 	A.B do
+defmodule A.B do
   @moduledoc false
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]
@@ -128,7 +128,7 @@ defmodule 	A.B do
     struct
   end
 end
-defmodule 	A.B.C do
+defmodule A.B.C do
   @moduledoc false
   alias Pbuf.Decoder
   import Bitwise, only: [bsr: 2, band: 2]

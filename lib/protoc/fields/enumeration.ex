@@ -7,6 +7,7 @@ defmodule Pbuf.Protoc.Fields.Enumeration do
     full_name = module_name(desc)
     typespec = full_name <> ".t"
 
+    context.package <> desc.name
     {base_fun, typespec, default} =
     case is_repeated?(desc) do
       false -> {"enum_field", typespec, ":#{context.global.enums[full_name].default}"}

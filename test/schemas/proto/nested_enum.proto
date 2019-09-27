@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package pbuf.tests;
+
+message Root {
+  message Child {
+    enum XE {
+      UNKNOWN = 0;
+      VALUE = 1;
+    }
+    XE xe = 1;
+  }
+}

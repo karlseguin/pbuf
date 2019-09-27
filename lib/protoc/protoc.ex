@@ -87,10 +87,8 @@ defmodule Pbuf.Protoc do
     message.nested_type
     |> Enum.filter(&(&1.options == nil))
     |> Enum.reduce({acc, global}, fn message, {acc, global} ->
-      namespace = context.namespace
+      context = %Context{context | namespace: context.namespace <> name <> "."}
       {context, enums, global} = Context.message(context, message, global)
-      # ugly, but feeling extra lazy
-      context = %Context{context | namespace: namespace <> name <> "."}
       generate_message(message, enums, context, acc, global)
     end)
   end

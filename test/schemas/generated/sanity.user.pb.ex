@@ -4,8 +4,8 @@ defmodule Sanity.Pbuf.Tests.Sub.User do
 
   @type t :: %__MODULE__{
           id: non_neg_integer,
-          status: integer,
-          name: Sanity.Pbuf.Tests.Sub.User.Name.t()
+          status: atom | integer,
+          name: Sanity.Pbuf.Tests.Sub.User.Name.t() | nil
         }
   defstruct [:id, :status, :name]
 

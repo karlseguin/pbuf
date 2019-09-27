@@ -72,7 +72,7 @@ defmodule Pbuf.Protoc.Context do
 
   # Expand the file context with message-specific information
   def message(context, desc, global) do
-    package = context.package <> desc.name
+    package = context.namespace <> desc.name
     enums = extract_enums(desc.enum_type, package)
     global = Global.enums(global, enums)
     context = %Context{context |

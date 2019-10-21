@@ -24,6 +24,8 @@ defmodule Pbuf.Decoder do
           acc = Enum.reverse(acc)
           {:ok, mod.__finalize_decode__(acc)}
       end
+    rescue
+      e -> {:error, e}
     catch
       e -> {:error, e}
     end

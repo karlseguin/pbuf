@@ -16,12 +16,16 @@ defmodule Pbuf.Decoder do
   @spec decode(module, iodata) :: {:ok, any} | {:error, any}
   def decode(mod, data) do
     data = :erlang.iolist_to_binary(data)
-    case do_decode({[], data}, mod) do
-      {:error, _} = err -> err
-      acc ->
-        # protoc rules say the last value read should overwrite previous ones
-        acc = Enum.reverse(acc)
-        {:ok, mod.__finalize_decode__(acc)}
+    try do
+      case do_decode({[], data}, mod) do
+        {:error, _} = err -> err
+        acc ->
+          # protoc rules say the last value read should overwrite previous ones
+          acc = Enum.reverse(acc)
+          {:ok, mod.__finalize_decode__(acc)}
+      end
+    catch
+      e -> {:error, e}
     end
   end
 

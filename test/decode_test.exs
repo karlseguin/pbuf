@@ -16,7 +16,16 @@ defmodule Pbuf.Tests.Decode do
     assert Everything.decode!(<<210, 10>>) == %Everything{}
   end
 
-  test "error on unexpected map data" do
+  test "error on unexpected map data with decode/0" do
+    assert {:error, %Error{} = err} = Everything.decode(<<234, 3, 2, 1, 2, 3, 4>>)
+    assert err.tag == 61
+    assert err.module == Everything
+    assert err.message == "Elixir.Pbuf.Tests.Everything.map1 tag 61 unexpected map data: <<2>>"
+
+    assert {:error, _} = Everything.decode(<<234, 3, 2, 1, 2, 3, 4>>)
+  end
+
+  test "raises on unexpected map data with decode!/1" do
     assert {:error, %Error{} = err} = Everything.decode(<<234, 3, 2, 1, 2, 3, 4>>)
     assert err.tag == 61
     assert err.module == Everything

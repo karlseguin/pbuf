@@ -139,7 +139,7 @@ and using:
 OR specifying
 
 ```
-option (elixir_oneof_format) = 1
+option (elixir_oneof_format) = 2
 ```
 
 and using:

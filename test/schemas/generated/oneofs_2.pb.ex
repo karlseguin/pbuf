@@ -12,7 +12,7 @@ defmodule OneOfTwo do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata

@@ -12,7 +12,7 @@ defmodule Google.Protobuf.FileDescriptorSet do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -101,7 +101,7 @@ defmodule Google.Protobuf.FileDescriptorProto do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -242,7 +242,7 @@ defmodule Google.Protobuf.DescriptorProto do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -363,7 +363,7 @@ defmodule Google.Protobuf.DescriptorProto.ExtensionRange do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -438,7 +438,7 @@ defmodule Google.Protobuf.DescriptorProto.ReservedRange do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -507,7 +507,7 @@ defmodule Google.Protobuf.ExtensionRangeOptions do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -682,7 +682,7 @@ defmodule Type do
   def from_int(_unknown), do: :invalid
 end
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -785,7 +785,7 @@ defmodule Google.Protobuf.OneofDescriptorProto do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -862,7 +862,7 @@ defmodule Google.Protobuf.EnumDescriptorProto do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -951,7 +951,7 @@ defmodule Google.Protobuf.EnumDescriptorProto.EnumReservedRange do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -1024,7 +1024,7 @@ defmodule Google.Protobuf.EnumValueDescriptorProto do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -1101,7 +1101,7 @@ defmodule Google.Protobuf.ServiceDescriptorProto do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -1186,7 +1186,7 @@ defmodule Google.Protobuf.MethodDescriptorProto do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -1333,7 +1333,7 @@ defmodule OptimizeMode do
   def from_int(_unknown), do: :invalid
 end
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -1488,7 +1488,7 @@ defmodule Google.Protobuf.MessageOptions do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -1628,7 +1628,7 @@ defmodule JSType do
   def from_int(_unknown), do: :invalid
 end
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -1719,7 +1719,7 @@ defmodule Google.Protobuf.OneofOptions do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -1790,7 +1790,7 @@ defmodule Google.Protobuf.EnumOptions do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -1867,7 +1867,7 @@ defmodule Google.Protobuf.EnumValueOptions do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -1940,7 +1940,7 @@ defmodule Google.Protobuf.ServiceOptions do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -2037,7 +2037,7 @@ defmodule IdempotencyLevel do
   def from_int(_unknown), do: :invalid
 end
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -2124,7 +2124,7 @@ defmodule Google.Protobuf.UninterpretedOption do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -2217,7 +2217,7 @@ defmodule Google.Protobuf.UninterpretedOption.NamePart do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -2286,7 +2286,7 @@ defmodule Google.Protobuf.SourceCodeInfo do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -2361,7 +2361,7 @@ defmodule Google.Protobuf.SourceCodeInfo.Location do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -2444,7 +2444,7 @@ defmodule Google.Protobuf.GeneratedCodeInfo do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -2517,7 +2517,7 @@ defmodule Google.Protobuf.GeneratedCodeInfo.Annotation do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata

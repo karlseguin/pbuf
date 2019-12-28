@@ -128,7 +128,7 @@ defmodule Corpus do
   def from_int(_unknown), do: :invalid
 end
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -390,7 +390,7 @@ defmodule Pbuf.Tests.Child do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata

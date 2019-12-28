@@ -16,7 +16,7 @@ defmodule Pbuf.Tests.Sub.User do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -91,7 +91,7 @@ defmodule Pbuf.Tests.Sub.User.Name do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata

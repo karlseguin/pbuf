@@ -10,7 +10,7 @@ defmodule Pbuf.Tests.Root do
   }
 
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata
@@ -36,18 +36,8 @@ defmodule Pbuf.Tests.Root do
   # it is a wrong type (which is an error)
   def decode(acc, data) do
     {prefix, data} = Decoder.varint(data)
-    tag = bsr(prefix, 3)
     type = band(prefix, 7)
-    case tag in [] do
-      false -> {acc, Decoder.skip(type, data)}
-      true ->
-        err = %Decoder.Error{
-          tag: tag,
-          module: __MODULE__,
-          message: "#{__MODULE__} tag #{tag} has an incorrect type of #{type}"
-        }
-        {:error, err}
-    end
+    {acc, Decoder.skip(type, data)}
   end
 
   def __finalize_decode__(args) do
@@ -90,7 +80,7 @@ defmodule XE do
   def from_int(_unknown), do: :invalid
 end
   @spec new(Enum.t) :: t
-  def new(data) do
+  def new(data \\ []) do
     struct(__MODULE__, data)
   end
   @spec encode_to_iodata!(t | map) :: iodata

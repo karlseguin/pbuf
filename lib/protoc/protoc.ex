@@ -18,7 +18,13 @@ defmodule Pbuf.Protoc do
 
   @type field :: Pbuf.Protoc.Field.t
 
-  def main(_) do
+  @version Pbuf.MixProject.project()[:version]
+
+  def main(["--version"]) do
+    IO.puts(@version)
+  end
+
+  def main(_args) do
     :io.setopts(:standard_io, encoding: :latin1)
     input = IO.binread(:all)
     request = Pbuf.decode!(Compiler.CodeGeneratorRequest, input)

@@ -15,8 +15,8 @@ defmodule Sanity.Pbuf.Tests.Everything do
           fixed64: non_neg_integer,
           sfixed32: integer,
           sfixed64: integer,
-          float: float | :infinity | :negative_infinity | :nan,
-          double: float | :infinity | :negative_infinity | :nan,
+          float: float,
+          double: float,
           string: String.t(),
           bytes: binary,
           struct: Sanity.Pbuf.Tests.Child.t() | nil,
@@ -35,15 +35,15 @@ defmodule Sanity.Pbuf.Tests.Everything do
           sfixed32s: [integer],
           fixed64s: [non_neg_integer],
           sfixed64s: [integer],
-          floats: [float | :infinity | :negative_infinity | :nan],
-          doubles: [float | :infinity | :negative_infinity | :nan],
+          floats: [float],
+          doubles: [float],
           strings: [String.t()],
           bytess: [binary],
           structs: [Sanity.Pbuf.Tests.Child.t()],
           types: [atom | integer],
           corpuss: [atom | integer],
           map1: %{String.t() => integer},
-          map2: %{integer => float | :infinity | :negative_infinity | :nan},
+          map2: %{integer => float},
           map3: %{non_neg_integer => Sanity.Pbuf.Tests.Child.t() | nil}
         }
   defstruct [
@@ -157,7 +157,7 @@ defmodule Sanity.Pbuf.Tests.Everything.Map2Entry do
 
   @type t :: %__MODULE__{
           key: integer,
-          value: float | :infinity | :negative_infinity | :nan
+          value: float
         }
   defstruct [:key, :value]
 

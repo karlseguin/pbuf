@@ -137,25 +137,14 @@ defmodule Pbuf.Tests.Integration do
   end
 
   # not sure how else to handle the mismatch for how we handle enums
-  defp assert_value(0, :universal, :protobuf), do: :ok
-  defp assert_value(1, :web, :protobuf), do: :ok
-  defp assert_value(4, :news, :protobuf), do: :ok
-  defp assert_value(5, :products, :protobuf), do: :ok
-  defp assert_value(6, :video, :protobuf), do: :ok
-
-  defp assert_value(0, :EVERYTHING_TYPE_UNKNOWN, :protobuf), do: :ok
-  defp assert_value(1, :EVERYTHING_TYPE_SAND, :protobuf), do: :ok
-  defp assert_value(2, :EVERYTHING_TYPE_SPICE, :protobuf), do: :ok
-
-  defp assert_value(0, :USER_STATUS_UNKNOWN, :protobuf), do: :ok
-  defp assert_value(1, :USER_STATUS_NORMAL, :protobuf), do: :ok
-  defp assert_value(2, :USER_STATUS_DELETED, :protobuf), do: :ok
+  defp assert_value(:UNIVERSAL, :universal, :protobuf), do: :ok
+  defp assert_value(:WEB, :web, :protobuf), do: :ok
+  defp assert_value(:NEWS, :news, :protobuf), do: :ok
+  defp assert_value(:PRODUCTS, :products, :protobuf), do: :ok
+  defp assert_value(:VIDEO, :video, :protobuf), do: :ok
 
   defp assert_value(:USER_STATUS_NORMAL, 1, :pbuf), do: :ok
-
-  # this is wrong, but it's valid
-  defp assert_value(0, :EVERYTHING_TYPE_UNKNOWN, :pbuf), do: :ok
-  defp assert_value(0, :universal, :pbuf), do: :ok
+  defp assert_value(:USER_STATUS_NORMAL, 1, :protobuf), do: :ok
 
   defp assert_value(actual, expected, _type) do
     assert actual == expected, "#{inspect(actual)} != #{inspect(expected)}"

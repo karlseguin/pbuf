@@ -1,7 +1,7 @@
 defmodule Pbuf.MixProject do
   use Mix.Project
 
-  @version "0.1.8"
+  @version "0.1.9"
 
   def project do
     [
@@ -15,7 +15,7 @@ defmodule Pbuf.MixProject do
       package: [
         licenses: ["MIT"],
         links: %{
-          "git" => "https://src.openmymind.net/karl/pbuf"
+          "git" => "https://github.com/karlseguin/pbuf"
         },
         maintainers: ["Karl Seguin"],
       ],
@@ -38,9 +38,9 @@ defmodule Pbuf.MixProject do
   defp deps do
     [
       {:jason, "~> 1.1.2"},
-      {:ex_doc, "~> 0.19", only: :dev, runtime: false},
-      {:benchee, "~> 0.13.2", only: :test},
-      {:protobuf, "~> 0.5.4", only: [:test]},
+      {:ex_doc, "~> 0.21.2", only: :dev, runtime: false},
+      {:benchee, "~> 1.0.1", only: :test},
+      {:protobuf, "~> 0.7.1", only: [:test]}
     ]
   end
 end

@@ -23,4 +23,4 @@ binary = Pbuf.encode_to_iodata!(everything)
 Benchee.run(%{
   "encode" => fn -> Pbuf.encode_to_iodata!(everything) end,
   "decode" => fn -> Pbuf.decode!(Everything, binary) end
-}, console: [comparison: false])
+})

@@ -1,7 +1,6 @@
 defmodule OneOfOne do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -42,6 +41,7 @@ defmodule OneOfOne do
     Decoder.oneof_field(:choice, 1, Decoder.field(:int32, :b, acc, data))
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do

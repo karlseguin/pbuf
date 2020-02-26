@@ -1,7 +1,6 @@
 defmodule Pbuf.Tests.Root do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -32,6 +31,7 @@ defmodule Pbuf.Tests.Root do
     Decoder.decode(__MODULE__, data)
   end
 
+  import Bitwise, only: [band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -50,7 +50,6 @@ end
 defmodule Pbuf.Tests.Root.Child do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -106,6 +105,7 @@ end
     Decoder.enum_field(Pbuf.Tests.Root.Child.XE, :xe, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do

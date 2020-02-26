@@ -2,7 +2,6 @@ defmodule <%= context.namespace %><%= name %> do
   @moduledoc false
 
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   <%
     # Oneof fields are "hidden" behind their parent. We don't want to generate
@@ -79,6 +78,12 @@ defmodule <%= context.namespace %><%= name %> do
      |> Enum.map(fn f -> f.tag end)
      |> Enum.join(",")
   %>
+
+  <%= if tag_list != "" do %>
+  import Bitwise, only: [bsr: 2, band: 2]
+  <% else %>
+  import Bitwise, only: [band: 2]
+  <% end %>
 
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)

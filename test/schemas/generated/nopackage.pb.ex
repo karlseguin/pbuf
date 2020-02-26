@@ -1,7 +1,6 @@
 defmodule A do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -38,6 +37,7 @@ defmodule A do
     Decoder.struct_field(A.B, :b, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -66,7 +66,6 @@ end
 defmodule A.B do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -103,6 +102,7 @@ defmodule A.B do
     Decoder.struct_field(A.B.C, :c, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -131,7 +131,6 @@ end
 defmodule A.B.C do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -168,6 +167,7 @@ defmodule A.B.C do
     Decoder.field(:int32, :d, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do

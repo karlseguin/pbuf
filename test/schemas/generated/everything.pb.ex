@@ -1,7 +1,6 @@
 defmodule Pbuf.Tests.Everything do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -322,6 +321,7 @@ end
     post_map(:map3, 63, Decoder.map_field(8, :uint32, 0, 18, Pbuf.Tests.Child, nil, :map3, acc, data))
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -371,7 +371,6 @@ end
 defmodule Pbuf.Tests.Child do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   
   defstruct [
@@ -440,6 +439,7 @@ case data.data3 do
     Decoder.field(:bytes, :data3, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do

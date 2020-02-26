@@ -1,7 +1,6 @@
 defmodule Google.Protobuf.FileDescriptorSet do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -38,6 +37,7 @@ defmodule Google.Protobuf.FileDescriptorSet do
     Decoder.struct_field(Google.Protobuf.FileDescriptorProto, :file, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -68,7 +68,6 @@ end
 defmodule Google.Protobuf.FileDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -171,6 +170,7 @@ defmodule Google.Protobuf.FileDescriptorProto do
     Decoder.field(:string, :syntax, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -213,7 +213,6 @@ end
 defmodule Google.Protobuf.DescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -304,6 +303,7 @@ defmodule Google.Protobuf.DescriptorProto do
     Decoder.field(:string, :reserved_name, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -348,7 +348,6 @@ end
 defmodule Google.Protobuf.DescriptorProto.ExtensionRange do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -397,6 +396,7 @@ defmodule Google.Protobuf.DescriptorProto.ExtensionRange do
     Decoder.struct_field(Google.Protobuf.ExtensionRangeOptions, :options, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -425,7 +425,6 @@ end
 defmodule Google.Protobuf.DescriptorProto.ReservedRange do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -468,6 +467,7 @@ defmodule Google.Protobuf.DescriptorProto.ReservedRange do
     Decoder.field(:int32, :end, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -496,7 +496,6 @@ end
 defmodule Google.Protobuf.ExtensionRangeOptions do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -533,6 +532,7 @@ defmodule Google.Protobuf.ExtensionRangeOptions do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -563,7 +563,6 @@ end
 defmodule Google.Protobuf.FieldDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -744,6 +743,7 @@ end
     Decoder.field(:string, :json_name, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -772,7 +772,6 @@ end
 defmodule Google.Protobuf.OneofDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -815,6 +814,7 @@ defmodule Google.Protobuf.OneofDescriptorProto do
     Decoder.struct_field(Google.Protobuf.OneofOptions, :options, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -843,7 +843,6 @@ end
 defmodule Google.Protobuf.EnumDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -904,6 +903,7 @@ defmodule Google.Protobuf.EnumDescriptorProto do
     Decoder.field(:string, :reserved_name, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -938,7 +938,6 @@ end
 defmodule Google.Protobuf.EnumDescriptorProto.EnumReservedRange do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -981,6 +980,7 @@ defmodule Google.Protobuf.EnumDescriptorProto.EnumReservedRange do
     Decoder.field(:int32, :end, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -1009,7 +1009,6 @@ end
 defmodule Google.Protobuf.EnumValueDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -1058,6 +1057,7 @@ defmodule Google.Protobuf.EnumValueDescriptorProto do
     Decoder.struct_field(Google.Protobuf.EnumValueOptions, :options, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -1086,7 +1086,6 @@ end
 defmodule Google.Protobuf.ServiceDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -1135,6 +1134,7 @@ defmodule Google.Protobuf.ServiceDescriptorProto do
     Decoder.struct_field(Google.Protobuf.ServiceOptions, :options, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -1165,7 +1165,6 @@ end
 defmodule Google.Protobuf.MethodDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -1232,6 +1231,7 @@ defmodule Google.Protobuf.MethodDescriptorProto do
     Decoder.field(:bool, :server_streaming, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -1260,7 +1260,6 @@ end
 defmodule Google.Protobuf.FileOptions do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -1439,6 +1438,7 @@ end
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -1469,7 +1469,6 @@ end
 defmodule Google.Protobuf.MessageOptions do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -1530,6 +1529,7 @@ defmodule Google.Protobuf.MessageOptions do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -1560,7 +1560,6 @@ end
 defmodule Google.Protobuf.FieldOptions do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -1678,6 +1677,7 @@ end
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -1708,7 +1708,6 @@ end
 defmodule Google.Protobuf.OneofOptions do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -1745,6 +1744,7 @@ defmodule Google.Protobuf.OneofOptions do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -1775,7 +1775,6 @@ end
 defmodule Google.Protobuf.EnumOptions do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -1824,6 +1823,7 @@ defmodule Google.Protobuf.EnumOptions do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -1854,7 +1854,6 @@ end
 defmodule Google.Protobuf.EnumValueOptions do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -1897,6 +1896,7 @@ defmodule Google.Protobuf.EnumValueOptions do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -1927,7 +1927,6 @@ end
 defmodule Google.Protobuf.ServiceOptions do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -1970,6 +1969,7 @@ defmodule Google.Protobuf.ServiceOptions do
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -2000,7 +2000,6 @@ end
 defmodule Google.Protobuf.MethodOptions do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -2071,6 +2070,7 @@ end
     Decoder.struct_field(Google.Protobuf.UninterpretedOption, :uninterpreted_option, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -2101,7 +2101,6 @@ end
 defmodule Google.Protobuf.UninterpretedOption do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -2174,6 +2173,7 @@ defmodule Google.Protobuf.UninterpretedOption do
     Decoder.field(:string, :aggregate_value, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -2204,7 +2204,6 @@ end
 defmodule Google.Protobuf.UninterpretedOption.NamePart do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -2247,6 +2246,7 @@ defmodule Google.Protobuf.UninterpretedOption.NamePart do
     Decoder.field(:bool, :is_extension, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -2275,7 +2275,6 @@ end
 defmodule Google.Protobuf.SourceCodeInfo do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -2312,6 +2311,7 @@ defmodule Google.Protobuf.SourceCodeInfo do
     Decoder.struct_field(Google.Protobuf.SourceCodeInfo.Location, :location, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -2342,7 +2342,6 @@ end
 defmodule Google.Protobuf.SourceCodeInfo.Location do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -2403,6 +2402,7 @@ defmodule Google.Protobuf.SourceCodeInfo.Location do
     Decoder.field(:string, :leading_detached_comments, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -2433,7 +2433,6 @@ end
 defmodule Google.Protobuf.GeneratedCodeInfo do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -2470,6 +2469,7 @@ defmodule Google.Protobuf.GeneratedCodeInfo do
     Decoder.struct_field(Google.Protobuf.GeneratedCodeInfo.Annotation, :annotation, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -2500,7 +2500,6 @@ end
 defmodule Google.Protobuf.GeneratedCodeInfo.Annotation do
   @moduledoc false
   alias Pbuf.Decoder
-  import Bitwise, only: [bsr: 2, band: 2]
 
   @derive Jason.Encoder
   defstruct [
@@ -2555,6 +2554,7 @@ defmodule Google.Protobuf.GeneratedCodeInfo.Annotation do
     Decoder.field(:int32, :end, acc, data)
   end
 
+  import Bitwise, only: [bsr: 2, band: 2]
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do

@@ -1,7 +1,7 @@
 defmodule Pbuf.MixProject do
   use Mix.Project
 
-  @version "0.1.10"
+  @version "0.1.11"
 
   def project do
     [
@@ -37,7 +37,7 @@ defmodule Pbuf.MixProject do
 
   defp deps do
     [
-      {:jason, "~> 1.1.2"},
+      {:jason, ">= 1.1.0"},
       {:ex_doc, "~> 0.21.2", only: :dev, runtime: false},
       {:benchee, "~> 1.0.1", only: :test},
       {:protobuf, "~> 0.7.1", only: [:test]}

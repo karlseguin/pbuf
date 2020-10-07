@@ -1,7 +1,7 @@
 defmodule Pbuf.MixProject do
   use Mix.Project
 
-  @version "0.1.11"
+  @version "0.1.12"
 
   def project do
     [
@@ -31,16 +31,16 @@ defmodule Pbuf.MixProject do
 
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :eex]
     ]
   end
 
   defp deps do
     [
-      {:jason, ">= 1.1.0"},
-      {:ex_doc, "~> 0.21.2", only: :dev, runtime: false},
+      {:jason, ">= 1.2.2"},
       {:benchee, "~> 1.0.1", only: :test},
-      {:protobuf, "~> 0.7.1", only: [:test]}
+      {:protobuf, "~> 0.7.1", only: [:test]},
+      {:ex_doc, "~> 0.22.6", only: :dev, runtime: false}
     ]
   end
 end

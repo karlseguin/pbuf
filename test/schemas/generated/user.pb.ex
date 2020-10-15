@@ -1,23 +1,23 @@
 defmodule Pbuf.Tests.Sub.User do
   @moduledoc false
   alias Pbuf.Decoder
-
+  
   @derive Jason.Encoder
   defstruct [
     id: 0,
     status: :USER_STATUS_UNKNOWN,
     name: nil
   ]
+
   @type t :: %__MODULE__{
     id: non_neg_integer,
     status: Pbuf.Tests.Sub.UserStatus.t,
     name: Pbuf.Tests.Sub.User.Name.t
   }
-
+  
   @spec new(Enum.t) :: t
-  def new(data \\ []) do
-    struct(__MODULE__, data)
-  end
+  def new(data \\ []), do: struct(__MODULE__, data)
+  
   @spec encode_to_iodata!(t | map) :: iodata
   def encode_to_iodata!(data) do
     alias Elixir.Pbuf.Encoder
@@ -27,29 +27,37 @@ defmodule Pbuf.Tests.Sub.User do
       Encoder.field(:struct, data.name, <<26>>),
     ]
   end
+
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
+
   @spec decode!(binary) :: t
   def decode!(data) do
     Decoder.decode!(__MODULE__, data)
   end
+
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
+  
+  
   def decode(acc, <<8, data::binary>>) do
     Decoder.field(:uint32, :id, acc, data)
   end
+  
   def decode(acc, <<16, data::binary>>) do
     Decoder.enum_field(Pbuf.Tests.Sub.UserStatus, :status, acc, data)
   end
+  
   def decode(acc, <<26, data::binary>>) do
     Decoder.struct_field(Pbuf.Tests.Sub.User.Name, :name, acc, data)
   end
-
+  
   import Bitwise, only: [bsr: 2, band: 2]
+  
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -66,10 +74,16 @@ defmodule Pbuf.Tests.Sub.User do
         }
         {:error, err}
     end
-  end
-
+    
+   end
+  
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
+      
+      
+      
+      
+      
       {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
@@ -78,21 +92,21 @@ end
 defmodule Pbuf.Tests.Sub.User.Name do
   @moduledoc false
   alias Pbuf.Decoder
-
+  
   @derive Jason.Encoder
   defstruct [
     first: "",
     last: ""
   ]
+
   @type t :: %__MODULE__{
     first: String.t,
     last: String.t
   }
-
+  
   @spec new(Enum.t) :: t
-  def new(data \\ []) do
-    struct(__MODULE__, data)
-  end
+  def new(data \\ []), do: struct(__MODULE__, data)
+  
   @spec encode_to_iodata!(t | map) :: iodata
   def encode_to_iodata!(data) do
     alias Elixir.Pbuf.Encoder
@@ -101,26 +115,33 @@ defmodule Pbuf.Tests.Sub.User.Name do
       Encoder.field(:string, data.last, <<18>>),
     ]
   end
+
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
+
   @spec decode!(binary) :: t
   def decode!(data) do
     Decoder.decode!(__MODULE__, data)
   end
+
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
+  
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.field(:string, :first, acc, data)
   end
+  
   def decode(acc, <<18, data::binary>>) do
     Decoder.field(:string, :last, acc, data)
   end
-
+  
   import Bitwise, only: [bsr: 2, band: 2]
+  
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -137,25 +158,36 @@ defmodule Pbuf.Tests.Sub.User.Name do
         }
         {:error, err}
     end
-  end
-
+    
+   end
+  
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
+      
+      
+      
+      
+      
       {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
 end
+
 defmodule Pbuf.Tests.Sub.UserStatus do
   @moduledoc false
   @type t :: :USER_STATUS_UNKNOWN | 0 | :USER_STATUS_NORMAL | 1 | :USER_STATUS_DELETED | 2
+
   @spec to_int(t | non_neg_integer) :: integer
   def to_int(:USER_STATUS_DELETED), do: 2
   def to_int(2), do: 2
+  
   def to_int(:USER_STATUS_NORMAL), do: 1
   def to_int(1), do: 1
+  
   def to_int(:USER_STATUS_UNKNOWN), do: 0
   def to_int(0), do: 0
+  
   def to_int(invalid) do
     raise Pbuf.Encoder.Error,
       type: __MODULE__,
@@ -163,6 +195,7 @@ defmodule Pbuf.Tests.Sub.UserStatus do
       tag: nil,
       message: "#{inspect(invalid)} is not a valid enum value for #{__MODULE__}"
   end
+
   @spec from_int(integer) :: t
   def from_int(2), do: :USER_STATUS_DELETED
   def from_int(1), do: :USER_STATUS_NORMAL

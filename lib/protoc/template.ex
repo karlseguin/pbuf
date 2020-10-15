@@ -4,13 +4,13 @@ defmodule Pbuf.Protoc.Template do
   EEx.function_from_file(:def, :message,
     Path.expand("./templates/message.eex", __DIR__),
     [:name, :fields, :enums, :context, :options],
-    trim: true
+    trim: false
   )
 
   EEx.function_from_file(:def, :enumeration,
     Path.expand("./templates/enumeration.eex", __DIR__),
     [:e, :embed?],
-    trim: true
+    trim: false
   )
 
   defp if_neq(a, b, text) do

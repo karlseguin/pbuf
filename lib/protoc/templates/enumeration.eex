@@ -7,8 +7,9 @@
 defmodule <%= name %> do
   @moduledoc false
   @type t :: <%= e.typespec %>
-  @spec to_int(t | non_neg_integer) :: integer
-  <%= for {atom, value} <- Enum.sort(Map.to_list(e.values)) do %>
+
+
+  @spec to_int(t | non_neg_integer) :: integer<%= for {atom, value} <- Enum.sort(Map.to_list(e.values)) do %>
   def to_int(:<%= atom %>), do: <%= value %>
   def to_int(<%= value %>), do: <%= value %>
   <% end %>
@@ -20,9 +21,8 @@ defmodule <%= name %> do
       message: "#{inspect(invalid)} is not a valid enum value for #{__MODULE__}"
   end
 
+
   @spec from_int(integer) :: t
-  <%= for {atom, value} <- Enum.sort(Map.to_list(e.values)) do %>
-  def from_int(<%= value %>), do: :<%= atom %>
-  <% end %>
-  def from_int(_unknown), do: :invalid
+  <%= for {atom, value} <- Enum.sort(Map.to_list(e.values)) do %>def from_int(<%= value %>), do: :<%= atom %>
+  <% end %>def from_int(_unknown), do: :invalid
 end

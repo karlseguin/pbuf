@@ -1,19 +1,19 @@
 defmodule A do
   @moduledoc false
   alias Pbuf.Decoder
-
+  
   @derive Jason.Encoder
   defstruct [
     b: nil
   ]
+
   @type t :: %__MODULE__{
     b: A.B.t
   }
-
+  
   @spec new(Enum.t) :: t
-  def new(data \\ []) do
-    struct(__MODULE__, data)
-  end
+  def new(data \\ []), do: struct(__MODULE__, data)
+  
   @spec encode_to_iodata!(t | map) :: iodata
   def encode_to_iodata!(data) do
     alias Elixir.Pbuf.Encoder
@@ -21,23 +21,29 @@ defmodule A do
       Encoder.field(:struct, data.b, <<10>>),
     ]
   end
+
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
+
   @spec decode!(binary) :: t
   def decode!(data) do
     Decoder.decode!(__MODULE__, data)
   end
+
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
+  
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.struct_field(A.B, :b, acc, data)
   end
-
+  
   import Bitwise, only: [bsr: 2, band: 2]
+  
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -54,10 +60,16 @@ defmodule A do
         }
         {:error, err}
     end
-  end
-
+    
+   end
+  
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
+      
+      
+      
+      
+      
       {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
@@ -66,19 +78,19 @@ end
 defmodule A.B do
   @moduledoc false
   alias Pbuf.Decoder
-
+  
   @derive Jason.Encoder
   defstruct [
     c: nil
   ]
+
   @type t :: %__MODULE__{
     c: A.B.C.t
   }
-
+  
   @spec new(Enum.t) :: t
-  def new(data \\ []) do
-    struct(__MODULE__, data)
-  end
+  def new(data \\ []), do: struct(__MODULE__, data)
+  
   @spec encode_to_iodata!(t | map) :: iodata
   def encode_to_iodata!(data) do
     alias Elixir.Pbuf.Encoder
@@ -86,23 +98,29 @@ defmodule A.B do
       Encoder.field(:struct, data.c, <<10>>),
     ]
   end
+
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
+
   @spec decode!(binary) :: t
   def decode!(data) do
     Decoder.decode!(__MODULE__, data)
   end
+
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
+  
+  
   def decode(acc, <<10, data::binary>>) do
     Decoder.struct_field(A.B.C, :c, acc, data)
   end
-
+  
   import Bitwise, only: [bsr: 2, band: 2]
+  
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -119,10 +137,16 @@ defmodule A.B do
         }
         {:error, err}
     end
-  end
-
+    
+   end
+  
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
+      
+      
+      
+      
+      
       {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
@@ -131,19 +155,19 @@ end
 defmodule A.B.C do
   @moduledoc false
   alias Pbuf.Decoder
-
+  
   @derive Jason.Encoder
   defstruct [
     d: 0
   ]
+
   @type t :: %__MODULE__{
     d: integer
   }
-
+  
   @spec new(Enum.t) :: t
-  def new(data \\ []) do
-    struct(__MODULE__, data)
-  end
+  def new(data \\ []), do: struct(__MODULE__, data)
+  
   @spec encode_to_iodata!(t | map) :: iodata
   def encode_to_iodata!(data) do
     alias Elixir.Pbuf.Encoder
@@ -151,23 +175,29 @@ defmodule A.B.C do
       Encoder.field(:int32, data.d, <<16>>),
     ]
   end
+
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
+
   @spec decode!(binary) :: t
   def decode!(data) do
     Decoder.decode!(__MODULE__, data)
   end
+
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
+  
+  
   def decode(acc, <<16, data::binary>>) do
     Decoder.field(:int32, :d, acc, data)
   end
-
+  
   import Bitwise, only: [bsr: 2, band: 2]
+  
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -184,10 +214,16 @@ defmodule A.B.C do
         }
         {:error, err}
     end
-  end
-
+    
+   end
+  
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
+      
+      
+      
+      
+      
       {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct

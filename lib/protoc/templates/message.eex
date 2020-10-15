@@ -21,46 +21,42 @@ defmodule <%= context.namespace %><%= name %> do
 
   <%= if Keyword.get(options, :json) do %>@derive Jason.Encoder<% end %>
   defstruct [
-  <%= for {field, i} <- hidden_oneofs do %>
-    <%= field.name %>: <%= field.default %><%= if_neq(i, last_index, ",") %>
-  <% end %>
-  ]
+  <%= for {field, i} <- hidden_oneofs do %>  <%= field.name %>: <%= field.default %><%= if_neq(i, last_index, ",") %>
+  <% end %>]
+
 
   @type t :: %__MODULE__{
-  <%= for {field, i} <- hidden_oneofs do %>
-    <%= field.name %>: <%= field.typespec %><%= if_neq(i, last_index, ",") %>
-  <% end %>
-  }
+  <%= for {field, i} <- hidden_oneofs do %>  <%= field.name %>: <%= field.typespec %><%= if_neq(i, last_index, ",") %>
+  <% end %>}
 
   <%= for {_name, e} <- enums do %>
 <%= Pbuf.Protoc.Template.enumeration(e, true) %>
   <% end %>
 
   @spec new(Enum.t) :: t
-  def new(data \\ []) do
-    struct(__MODULE__, data)
-  end
+  def new(data \\ []), do: struct(__MODULE__, data)
 
   <% last_index = Enum.count(fields) %>
   @spec encode_to_iodata!(t | map) :: iodata
   def encode_to_iodata!(<%= if last_index == 0 do %>_<% end %>data) do
     <%= if last_index != 0 do %>alias Elixir.Pbuf.Encoder<% end %>
     [
-    <%= for {field, i} <- Enum.with_index(fields) do %>
-      <%= field.encode_fun %><%= if_neq(i, last_index, ",") %>
-    <% end %>
-    ]
+    <%= for {field, i} <- Enum.with_index(fields) do %>  <%= field.encode_fun %><%= if_neq(i, last_index, ",") %>
+    <% end %>]
   end
+
 
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
 
+
   @spec decode!(binary) :: t
   def decode!(data) do
     Decoder.decode!(__MODULE__, data)
   end
+
 
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
@@ -70,26 +66,22 @@ defmodule <%= context.namespace %><%= name %> do
   <%= for {field, _i} <- Enum.with_index(fields) do %>
   <% prefix = String.replace(field.prefix, ">>" , "") %>
   def decode(acc, <%= prefix %>, data::binary>>) do
-    <%= "    " <> field.decode_fun <> "\n" %>
-  end
-  <% end %>
+    <%= field.decode_fun %>
+  end<% end %>
 
   <% tag_list = fields
      |> Enum.map(fn f -> f.tag end)
      |> Enum.join(",")
   %>
 
-  <%= if tag_list != "" do %>
-  import Bitwise, only: [bsr: 2, band: 2]
-  <% else %>
-  import Bitwise, only: [band: 2]
+  <%= if tag_list != "" do %>import Bitwise, only: [bsr: 2, band: 2]
+  <% else %>import Bitwise, only: [band: 2]
   <% end %>
 
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
-    <%= if tag_list != "" do %>
-    {prefix, data} = Decoder.varint(data)
+    <%= if tag_list != "" do %>{prefix, data} = Decoder.varint(data)
     tag = bsr(prefix, 3)
     type = band(prefix, 7)
     case tag in [<%= tag_list %>] do
@@ -105,9 +97,8 @@ defmodule <%= context.namespace %><%= name %> do
     <% else %>
     {prefix, data} = Decoder.varint(data)
     type = band(prefix, 7)
-    {acc, Decoder.skip(type, data)}
-    <% end %>
-  end
+    {acc, Decoder.skip(type, data)}<% end %>
+   end
 
   <%= if Enum.any?(fields, fn f -> f.post_decode == :map end) do %>
   defp post_map(name, tag, {:error, %{tag: nil, message: message}}) do
@@ -119,14 +110,11 @@ defmodule <%= context.namespace %><%= name %> do
     {:error, err}
   end
 
+
   # either valid data or a complete error (which would happen if our value
   # was a struct and the error happened decoding it)
-  defp post_map(_name, _prefix, data) do
-    data
-  end
-  <% end %>
-
-  <%
+  defp post_map(_name, _prefix, data), do: data
+  <% end %><%
     {maps, repacks, encoders, oneof1, oneof2} = Enum.reduce(fields, {[], [], [], [], []}, fn field, {maps, repacks, encoders, oneof1, oneof2} = acc ->
       case field.post_decode do
         :map -> {[field | maps], repacks, encoders, oneof1, oneof2}
@@ -140,27 +128,20 @@ defmodule <%= context.namespace %><%= name %> do
   %>
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-      <%= for field <- maps do %>
-      {:<%= field.name %>, {c, v}}, acc -> Map.update(acc, :<%= field.name %>, %{c => v}, fn m -> Map.put(m, c, v) end)
+      <%= for field <- maps do %>{:<%= field.name %>, {c, v}}, acc -> Map.update(acc, :<%= field.name %>, %{c => v}, fn m -> Map.put(m, c, v) end)
       <% end %>
-      <%= for field <- repacks do %>
-      {:<%= field.name %>, v}, acc -> Map.update(acc, :<%= field.name %>, [v], fn e -> [v | e] end)
+      <%= for field <- repacks do %>{:<%= field.name %>, v}, acc -> Map.update(acc, :<%= field.name %>, [v], fn e -> [v | e] end)
       <% end %>
-      <%= for {field, {encoder, opts}} <- encoders do %>
-        {:<%= field.name %>, v}, acc -> Map.put(acc, :<%= field.name %>, <%=encoder%>.decode!(v, <%= opts %>))
+      <%= for {field, {encoder, opts}} <- encoders do %>{:<%= field.name %>, v}, acc -> Map.put(acc, :<%= field.name %>, <%=encoder%>.decode!(v, <%= opts %>))
       <% end %>
-      <%= for field <- oneof1 do %>
-      {:<%= field.name %>, {choice, v}}, acc -> Map.put(acc, choice, %{__type: :<%= field.name %>, value: v})
+      <%= for field <- oneof1 do %>{:<%= field.name %>, {choice, v}}, acc -> Map.put(acc, choice, %{__type: :<%= field.name %>, value: v})
       <% end %>
-      <%= for field <- oneof2 do %>
-      {:<%= field.name %>, {choice, v}}, acc -> Map.put(acc, choice, %{<%= field.name %>: v})
+      <%= for field <- oneof2 do %>{:<%= field.name %>, {choice, v}}, acc -> Map.put(acc, choice, %{<%= field.name %>: v})
       <% end %>
       {k, v}, acc -> Map.put(acc, k, v)
     end)
 
-    <%= for field <- repacks do %>
-    struct = Map.put(struct, :<%=field.name%>, Elixir.Enum.reverse(struct.<%=field.name%>))
-    <% end %>
-    struct
+    <%= for field <- repacks do %>struct = Map.put(struct, :<%=field.name%>, Elixir.Enum.reverse(struct.<%=field.name%>))
+    <% end %>struct
   end
 end

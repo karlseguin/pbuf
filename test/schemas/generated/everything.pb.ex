@@ -1,7 +1,7 @@
 defmodule Pbuf.Tests.Everything do
   @moduledoc false
   alias Pbuf.Decoder
-
+  
   @derive Jason.Encoder
   defstruct [
     choice: nil,
@@ -47,6 +47,7 @@ defmodule Pbuf.Tests.Everything do
     map2: %{},
     map3: %{}
   ]
+
   @type t :: %__MODULE__{
     choice: map | {:choice_int32, integer} | {:choice_string, String.t},
     bool: boolean,
@@ -91,24 +92,33 @@ defmodule Pbuf.Tests.Everything do
     map2: %{optional(integer) => any},
     map3: %{optional(non_neg_integer) => any}
   }
+  
 defmodule Corpus do
   @moduledoc false
   @type t :: :universal | 0 | :web | 1 | :images | 2 | :local | 3 | :news | 4 | :products | 5 | :video | 6
+
   @spec to_int(t | non_neg_integer) :: integer
   def to_int(:images), do: 2
   def to_int(2), do: 2
+  
   def to_int(:local), do: 3
   def to_int(3), do: 3
+  
   def to_int(:news), do: 4
   def to_int(4), do: 4
+  
   def to_int(:products), do: 5
   def to_int(5), do: 5
+  
   def to_int(:universal), do: 0
   def to_int(0), do: 0
+  
   def to_int(:video), do: 6
   def to_int(6), do: 6
+  
   def to_int(:web), do: 1
   def to_int(1), do: 1
+  
   def to_int(invalid) do
     raise Pbuf.Encoder.Error,
       type: __MODULE__,
@@ -116,6 +126,7 @@ defmodule Corpus do
       tag: nil,
       message: "#{inspect(invalid)} is not a valid enum value for #{__MODULE__}"
   end
+
   @spec from_int(integer) :: t
   def from_int(2), do: :images
   def from_int(3), do: :local
@@ -126,10 +137,10 @@ defmodule Corpus do
   def from_int(1), do: :web
   def from_int(_unknown), do: :invalid
 end
+  
   @spec new(Enum.t) :: t
-  def new(data \\ []) do
-    struct(__MODULE__, data)
-  end
+  def new(data \\ []), do: struct(__MODULE__, data)
+  
   @spec encode_to_iodata!(t | map) :: iodata
   def encode_to_iodata!(data) do
     alias Elixir.Pbuf.Encoder
@@ -179,149 +190,197 @@ end
       Encoder.map_field(<<8>>, :uint32, <<18>>, :struct, data.map3, <<250, 3>>),
     ]
   end
+
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
+
   @spec decode!(binary) :: t
   def decode!(data) do
     Decoder.decode!(__MODULE__, data)
   end
+
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
+  
+  
   def decode(acc, <<8, data::binary>>) do
     Decoder.field(:bool, :bool, acc, data)
   end
+  
   def decode(acc, <<16, data::binary>>) do
     Decoder.field(:int32, :int32, acc, data)
   end
+  
   def decode(acc, <<24, data::binary>>) do
     Decoder.field(:int64, :int64, acc, data)
   end
+  
   def decode(acc, <<32, data::binary>>) do
     Decoder.field(:uint32, :uint32, acc, data)
   end
+  
   def decode(acc, <<40, data::binary>>) do
     Decoder.field(:uint64, :uint64, acc, data)
   end
+  
   def decode(acc, <<48, data::binary>>) do
     Decoder.field(:sint32, :sint32, acc, data)
   end
+  
   def decode(acc, <<56, data::binary>>) do
     Decoder.field(:sint64, :sint64, acc, data)
   end
+  
   def decode(acc, <<69, data::binary>>) do
     Decoder.field(:fixed32, :fixed32, acc, data)
   end
+  
   def decode(acc, <<73, data::binary>>) do
     Decoder.field(:fixed64, :fixed64, acc, data)
   end
+  
   def decode(acc, <<85, data::binary>>) do
     Decoder.field(:sfixed32, :sfixed32, acc, data)
   end
+  
   def decode(acc, <<89, data::binary>>) do
     Decoder.field(:sfixed64, :sfixed64, acc, data)
   end
+  
   def decode(acc, <<101, data::binary>>) do
     Decoder.field(:float, :float, acc, data)
   end
+  
   def decode(acc, <<105, data::binary>>) do
     Decoder.field(:double, :double, acc, data)
   end
+  
   def decode(acc, <<114, data::binary>>) do
     Decoder.field(:string, :string, acc, data)
   end
+  
   def decode(acc, <<122, data::binary>>) do
     Decoder.field(:bytes, :bytes, acc, data)
   end
+  
   def decode(acc, <<130, 1, data::binary>>) do
     Decoder.struct_field(Pbuf.Tests.Child, :struct, acc, data)
   end
+  
   def decode(acc, <<136, 1, data::binary>>) do
     Decoder.enum_field(Pbuf.Tests.EverythingType, :type, acc, data)
   end
+  
   def decode(acc, <<144, 1, data::binary>>) do
     Decoder.enum_field(Pbuf.Tests.Everything.Corpus, :corpus, acc, data)
   end
+  
   def decode(acc, <<152, 1, data::binary>>) do
     Decoder.oneof_field(:choice, 0, Decoder.field(:int32, :choice_int32, acc, data))
   end
+  
   def decode(acc, <<162, 1, data::binary>>) do
     Decoder.oneof_field(:choice, 0, Decoder.field(:string, :choice_string, acc, data))
   end
+  
   def decode(acc, <<170, 1, data::binary>>) do
     Decoder.struct_field(Pbuf.Tests.Sub.User, :user, acc, data)
   end
+  
   def decode(acc, <<176, 1, data::binary>>) do
     Decoder.enum_field(Pbuf.Tests.Sub.UserStatus, :user_status, acc, data)
   end
+  
   def decode(acc, <<250, 1, data::binary>>) do
     Decoder.repeated_field(:bool, :bools, acc, data)
   end
+  
   def decode(acc, <<130, 2, data::binary>>) do
     Decoder.repeated_field(:int32, :int32s, acc, data)
   end
+  
   def decode(acc, <<138, 2, data::binary>>) do
     Decoder.repeated_field(:int64, :int64s, acc, data)
   end
+  
   def decode(acc, <<146, 2, data::binary>>) do
     Decoder.repeated_field(:uint32, :uint32s, acc, data)
   end
+  
   def decode(acc, <<154, 2, data::binary>>) do
     Decoder.repeated_field(:uint64, :uint64s, acc, data)
   end
+  
   def decode(acc, <<162, 2, data::binary>>) do
     Decoder.repeated_field(:sint32, :sint32s, acc, data)
   end
+  
   def decode(acc, <<170, 2, data::binary>>) do
     Decoder.repeated_field(:sint64, :sint64s, acc, data)
   end
+  
   def decode(acc, <<178, 2, data::binary>>) do
     Decoder.repeated_field(:fixed32, :fixed32s, acc, data)
   end
+  
   def decode(acc, <<186, 2, data::binary>>) do
     Decoder.repeated_field(:sfixed32, :sfixed32s, acc, data)
   end
+  
   def decode(acc, <<194, 2, data::binary>>) do
     Decoder.repeated_field(:fixed64, :fixed64s, acc, data)
   end
+  
   def decode(acc, <<202, 2, data::binary>>) do
     Decoder.repeated_field(:sfixed64, :sfixed64s, acc, data)
   end
+  
   def decode(acc, <<210, 2, data::binary>>) do
     Decoder.repeated_field(:float, :floats, acc, data)
   end
+  
   def decode(acc, <<218, 2, data::binary>>) do
     Decoder.repeated_field(:double, :doubles, acc, data)
   end
+  
   def decode(acc, <<226, 2, data::binary>>) do
     Decoder.field(:string, :strings, acc, data)
   end
+  
   def decode(acc, <<234, 2, data::binary>>) do
     Decoder.field(:bytes, :bytess, acc, data)
   end
+  
   def decode(acc, <<242, 2, data::binary>>) do
     Decoder.struct_field(Pbuf.Tests.Child, :structs, acc, data)
   end
+  
   def decode(acc, <<250, 2, data::binary>>) do
     Decoder.repeated_enum_field(Pbuf.Tests.EverythingType, :types, acc, data)
   end
+  
   def decode(acc, <<130, 3, data::binary>>) do
     Decoder.repeated_enum_field(Pbuf.Tests.Everything.Corpus, :corpuss, acc, data)
   end
+  
   def decode(acc, <<234, 3, data::binary>>) do
     post_map(:map1, 61, Decoder.map_field(10, :string, "", 16, :int32, 0, :map1, acc, data))
   end
+  
   def decode(acc, <<242, 3, data::binary>>) do
     post_map(:map2, 62, Decoder.map_field(8, :int64, 0, 21, :float, 0.0, :map2, acc, data))
   end
+  
   def decode(acc, <<250, 3, data::binary>>) do
     post_map(:map3, 63, Decoder.map_field(8, :uint32, 0, 18, Pbuf.Tests.Child, nil, :map3, acc, data))
   end
-
+  
   import Bitwise, only: [bsr: 2, band: 2]
+  
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -338,7 +397,9 @@ end
         }
         {:error, err}
     end
-  end
+    
+   end
+  
   defp post_map(name, tag, {:error, %{tag: nil, message: message}}) do
     err = %Decoder.Error{
       tag: tag,
@@ -347,19 +408,24 @@ end
     }
     {:error, err}
   end
+
   # either valid data or a complete error (which would happen if our value
   # was a struct and the error happened decoding it)
-  defp post_map(_name, _prefix, data) do
-    data
-  end
+  defp post_map(_name, _prefix, data), do: data
+  
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
       {:map3, {c, v}}, acc -> Map.update(acc, :map3, %{c => v}, fn m -> Map.put(m, c, v) end)
       {:map2, {c, v}}, acc -> Map.update(acc, :map2, %{c => v}, fn m -> Map.put(m, c, v) end)
       {:map1, {c, v}}, acc -> Map.update(acc, :map1, %{c => v}, fn m -> Map.put(m, c, v) end)
+      
       {:structs, v}, acc -> Map.update(acc, :structs, [v], fn e -> [v | e] end)
       {:bytess, v}, acc -> Map.update(acc, :bytess, [v], fn e -> [v | e] end)
       {:strings, v}, acc -> Map.update(acc, :strings, [v], fn e -> [v | e] end)
+      
+      
+      
+      
       {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct = Map.put(struct, :structs, Elixir.Enum.reverse(struct.structs))
@@ -371,7 +437,7 @@ end
 defmodule Pbuf.Tests.Child do
   @moduledoc false
   alias Pbuf.Decoder
-
+  
   
   defstruct [
     id: 0,
@@ -380,6 +446,7 @@ defmodule Pbuf.Tests.Child do
     data2: <<>>,
     data3: <<>>
   ]
+
   @type t :: %__MODULE__{
     id: non_neg_integer,
     name: String.t,
@@ -387,11 +454,10 @@ defmodule Pbuf.Tests.Child do
     data2: binary,
     data3: binary
   }
-
+  
   @spec new(Enum.t) :: t
-  def new(data \\ []) do
-    struct(__MODULE__, data)
-  end
+  def new(data \\ []), do: struct(__MODULE__, data)
+  
   @spec encode_to_iodata!(t | map) :: iodata
   def encode_to_iodata!(data) do
     alias Elixir.Pbuf.Encoder
@@ -411,35 +477,45 @@ case data.data3 do
       end,
     ]
   end
+
   @spec encode!(t | map) :: binary
   def encode!(data) do
     :erlang.iolist_to_binary(encode_to_iodata!(data))
   end
+
   @spec decode!(binary) :: t
   def decode!(data) do
     Decoder.decode!(__MODULE__, data)
   end
+
   @spec decode(binary) :: {:ok, t} | :error
   def decode(data) do
     Decoder.decode(__MODULE__, data)
   end
+  
+  
   def decode(acc, <<8, data::binary>>) do
     Decoder.field(:uint32, :id, acc, data)
   end
+  
   def decode(acc, <<18, data::binary>>) do
     Decoder.field(:string, :name, acc, data)
   end
+  
   def decode(acc, <<26, data::binary>>) do
     Decoder.field(:bytes, :data1, acc, data)
   end
+  
   def decode(acc, <<34, data::binary>>) do
     Decoder.field(:bytes, :data2, acc, data)
   end
+  
   def decode(acc, <<42, data::binary>>) do
     Decoder.field(:bytes, :data3, acc, data)
   end
-
+  
   import Bitwise, only: [bsr: 2, band: 2]
+  
   # failed to decode, either this is an unknown tag (which we can skip), or
   # it is a wrong type (which is an error)
   def decode(acc, data) do
@@ -456,27 +532,38 @@ case data.data3 do
         }
         {:error, err}
     end
-  end
-
+    
+   end
+  
   def __finalize_decode__(args) do
     struct = Elixir.Enum.reduce(args, %__MODULE__{}, fn
-        {:data3, v}, acc -> Map.put(acc, :data3, Elixir.Jason.decode!(v, [keys: :atoms]))
-        {:data2, v}, acc -> Map.put(acc, :data2, Elixir.Jason.decode!(v, []))
+      
+      
+      {:data3, v}, acc -> Map.put(acc, :data3, Elixir.Jason.decode!(v, [keys: :atoms]))
+      {:data2, v}, acc -> Map.put(acc, :data2, Elixir.Jason.decode!(v, []))
+      
+      
+      
       {k, v}, acc -> Map.put(acc, k, v)
     end)
     struct
   end
 end
+
 defmodule Pbuf.Tests.EverythingType do
   @moduledoc false
   @type t :: :EVERYTHING_TYPE_UNKNOWN | 0 | :EVERYTHING_TYPE_SAND | 1 | :EVERYTHING_TYPE_SPICE | 2
+
   @spec to_int(t | non_neg_integer) :: integer
   def to_int(:EVERYTHING_TYPE_SAND), do: 1
   def to_int(1), do: 1
+  
   def to_int(:EVERYTHING_TYPE_SPICE), do: 2
   def to_int(2), do: 2
+  
   def to_int(:EVERYTHING_TYPE_UNKNOWN), do: 0
   def to_int(0), do: 0
+  
   def to_int(invalid) do
     raise Pbuf.Encoder.Error,
       type: __MODULE__,
@@ -484,6 +571,7 @@ defmodule Pbuf.Tests.EverythingType do
       tag: nil,
       message: "#{inspect(invalid)} is not a valid enum value for #{__MODULE__}"
   end
+
   @spec from_int(integer) :: t
   def from_int(1), do: :EVERYTHING_TYPE_SAND
   def from_int(2), do: :EVERYTHING_TYPE_SPICE

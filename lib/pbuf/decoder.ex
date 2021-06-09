@@ -180,9 +180,9 @@ defmodule Pbuf.Decoder do
     {[{name, value} | acc], data}
   end
 
-  @spec oneof_field(atom, {Keyword.t, binary}, fun | nil) :: {Keyword.t, binary}
-  def oneof_field(name, data, fun \\ nil)
-  def oneof_field(_name, {{:error, _} = err, _data}, _fun) do
+  @spec oneof_field(atom, number, {Keyword.t, binary}, fun | nil) :: {Keyword.t, binary}
+
+  def oneof_field(_name, _, {{:error, _} = err, _data}, _fun) do
     err
   end
 

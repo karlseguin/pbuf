@@ -120,27 +120,27 @@ defmodule Google.Protobuf.Value do
   end
   
   def decode(acc, <<8, data::binary>>) do
-    Decoder.oneof_field(:kind, Decoder.enum_field(Google.Protobuf.NullValue, :null_value, acc, data))
+    Decoder.oneof_field(:kind, 0, Decoder.enum_field(Google.Protobuf.NullValue, :null_value, acc, data), nil)
   end
   
   def decode(acc, <<17, data::binary>>) do
-    Decoder.oneof_field(:kind, Decoder.field(:double, :number_value, acc, data))
+    Decoder.oneof_field(:kind, 0, Decoder.field(:double, :number_value, acc, data), nil)
   end
   
   def decode(acc, <<26, data::binary>>) do
-    Decoder.oneof_field(:kind, Decoder.field(:string, :string_value, acc, data))
+    Decoder.oneof_field(:kind, 0, Decoder.field(:string, :string_value, acc, data), nil)
   end
   
   def decode(acc, <<32, data::binary>>) do
-    Decoder.oneof_field(:kind, Decoder.field(:bool, :bool_value, acc, data))
+    Decoder.oneof_field(:kind, 0, Decoder.field(:bool, :bool_value, acc, data), nil)
   end
   
   def decode(acc, <<42, data::binary>>) do
-    Decoder.oneof_field(:kind, Decoder.struct_field(Google.Protobuf.Struct, :struct_value, acc, data))
+    Decoder.oneof_field(:kind, 0, Decoder.struct_field(Google.Protobuf.Struct, :struct_value, acc, data), nil)
   end
   
   def decode(acc, <<50, data::binary>>) do
-    Decoder.oneof_field(:kind, Decoder.struct_field(Google.Protobuf.ListValue, :list_value, acc, data))
+    Decoder.oneof_field(:kind, 0, Decoder.struct_field(Google.Protobuf.ListValue, :list_value, acc, data), nil)
   end
 
   # failed to decode, either this is an unknown tag (which we can skip), or

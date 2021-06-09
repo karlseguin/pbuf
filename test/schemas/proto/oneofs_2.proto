@@ -8,4 +8,7 @@ message OneOfTwo {
     int32 a = 1;
     int32 b = 2;
   }
+  oneof json {
+    bytes value = 3 [(json_field) = 1];
+  }
 }

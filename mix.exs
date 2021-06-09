@@ -1,13 +1,13 @@
 defmodule Pbuf.MixProject do
   use Mix.Project
 
-  @version "0.1.14"
+  @version "0.1.15"
 
   def project do
     [
       app: :pbuf,
       deps: deps(),
-      elixir: "~> 1.8",
+      elixir: "~> 1.12",
       version: @version,
       escript: escript(),
       elixirc_paths: paths(Mix.env),
@@ -40,7 +40,7 @@ defmodule Pbuf.MixProject do
       {:jason, ">= 1.2.2"},
       {:benchee, "~> 1.0.1", only: :test},
       {:protobuf, "~> 0.7.1", only: [:test]},
-      {:ex_doc, "~> 0.22.6", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.24.2", only: :dev, runtime: false}
     ]
   end
 end

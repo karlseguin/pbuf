@@ -180,20 +180,29 @@ defmodule Pbuf.Decoder do
     {[{name, value} | acc], data}
   end
 
-  @spec oneof_field(atom, {Keyword.t, binary}) :: {Keyword.t, binary}
-  def oneof_field(_name, {{:error, _} = err, _data}) do
+  @spec oneof_field(atom, {Keyword.t, binary}, fun | nil) :: {Keyword.t, binary}
+  def oneof_field(name, data, fun \\ nil)
+  def oneof_field(_name, {{:error, _} = err, _data}, _fun) do
     err
   end
 
-  def oneof_field(name, 0, {acc, data}) do
+  def oneof_field(name, 0, {acc, data}, fun) do
     # pop the last k=>v added to our acc, which is the hidden oneof field
     # and replace it with a the same value, but with our exposed key names
-    [choice | acc] = acc
+    [{type, value} = choice | acc] = acc
+    choice = case fun == nil do
+      true -> choice
+      false -> {type, fun.(value)}
+    end
     {[{name, choice} | acc], data}
   end
 
-  def oneof_field(name, _, {acc, data}) do
+  def oneof_field(name, _, {acc, data}, fun) do
     [{field, value} | acc] = acc
+    value = case fun == nil do
+      true -> value
+      false -> fun.(value)
+    end
     {[{field, {name, value}} | acc], data}
   end
 

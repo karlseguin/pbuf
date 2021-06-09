@@ -96,6 +96,17 @@ defmodule Pbuf.Tests.Integration do
     assert oneof.choice == %{b: 4}
   end
 
+  test "oneof with json encoding value" do
+    oneof = OneOfZero.decode!(OneOfZero.encode!(OneOfZero.new(json: {:value, %{over: 9000}})))
+    assert oneof.json == {:value, %{"over" => 9000}}
+
+    oneof = OneOfOne.decode!(OneOfOne.encode!(OneOfOne.new(json: %{__type: :value, value: %{over: 9000}})))
+    assert oneof.json == %{__type: :value, value: %{"over" => 9000}}
+
+    oneof = OneOfTwo.decode!(OneOfTwo.encode!(OneOfTwo.new(json: %{value: %{over: 9001}})))
+    assert oneof.json == %{value: %{"over" => 9001}}
+  end
+
   # decode using both our own library and Protobuf as a sanity check
   defp encode_decode(struct) do
     encoded = Pbuf.encode!(struct)

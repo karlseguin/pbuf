@@ -4,11 +4,13 @@ defmodule OneOfTwo do
   
   @derive Jason.Encoder
   defstruct [
-    choice: nil
+    choice: nil,
+    json: nil
   ]
 
   @type t :: %__MODULE__{
-    choice: map | {:a, integer} | {:b, integer}
+    choice: map | {:a, integer} | {:b, integer},
+    json: map | {:value, binary}
   }
   
   @spec new(Enum.t) :: t
@@ -20,6 +22,11 @@ defmodule OneOfTwo do
     [
       Encoder.oneof_field(:a, data.choice, 2, fn v -> Encoder.field(:int32, v, <<8>>) end),
       Encoder.oneof_field(:b, data.choice, 2, fn v -> Encoder.field(:int32, v, <<16>>) end),
+      Encoder.oneof_field(:value, data.json, 2, fn v -> 
+case v do
+        <<>> -> []
+        value -> Encoder.field(:bytes, Elixir.Jason.encode!(value), <<26>>)
+      end end),
     ]
   end
 
@@ -40,11 +47,15 @@ defmodule OneOfTwo do
   
   
   def decode(acc, <<8, data::binary>>) do
-    Decoder.oneof_field(:choice, 2, Decoder.field(:int32, :a, acc, data))
+    Decoder.oneof_field(:choice, 2, Decoder.field(:int32, :a, acc, data), nil)
   end
   
   def decode(acc, <<16, data::binary>>) do
-    Decoder.oneof_field(:choice, 2, Decoder.field(:int32, :b, acc, data))
+    Decoder.oneof_field(:choice, 2, Decoder.field(:int32, :b, acc, data), nil)
+  end
+  
+  def decode(acc, <<26, data::binary>>) do
+    Decoder.oneof_field(:json, 2, Decoder.field(:bytes, :value, acc, data), fn v -> Elixir.Jason.decode!(v, []) end)
   end
   
   import Bitwise, only: [bsr: 2, band: 2]
@@ -55,7 +66,7 @@ defmodule OneOfTwo do
     {prefix, data} = Decoder.varint(data)
     tag = bsr(prefix, 3)
     type = band(prefix, 7)
-    case tag in [1,2] do
+    case tag in [1,2,3] do
       false -> {acc, Decoder.skip(type, data)}
       true ->
         err = %Decoder.Error{
@@ -74,6 +85,7 @@ defmodule OneOfTwo do
       
       
       
+      {:value, {choice, v}}, acc -> Map.put(acc, choice, %{value: v})
       {:b, {choice, v}}, acc -> Map.put(acc, choice, %{b: v})
       {:a, {choice, v}}, acc -> Map.put(acc, choice, %{a: v})
       

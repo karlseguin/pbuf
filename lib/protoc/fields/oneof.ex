@@ -19,7 +19,11 @@ defmodule Pbuf.Protoc.Fields.OneOf do
     encode_fun = "oneof_field(:#{name}, data.#{oneof.name}, #{context.oneof_format}, fn v -> #{pseudo_encode_fun} end)"
 
     pseudo_decode_fun = Map.get(pseudo, :decode_fun)
-    decode_fun = "oneof_field(:#{oneof.name}, #{context.oneof_format}, #{pseudo_decode_fun})"
+    pseudo_decode_field = case pseudo.post_decode do
+     :none -> "nil"
+     {:encoder, {encoder, opts}} -> "fn v -> #{encoder}.decode!(v, #{opts}) end"
+    end
+    decode_fun = "oneof_field(:#{oneof.name}, #{context.oneof_format}, #{pseudo_decode_fun}, #{pseudo_decode_field})"
 
     post_decode = case context.oneof_format do
       1 -> :oneof1

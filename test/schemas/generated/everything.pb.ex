@@ -280,11 +280,11 @@ end
   end
   
   def decode(acc, <<152, 1, data::binary>>) do
-    Decoder.oneof_field(:choice, 0, Decoder.field(:int32, :choice_int32, acc, data))
+    Decoder.oneof_field(:choice, 0, Decoder.field(:int32, :choice_int32, acc, data), nil)
   end
   
   def decode(acc, <<162, 1, data::binary>>) do
-    Decoder.oneof_field(:choice, 0, Decoder.field(:string, :choice_string, acc, data))
+    Decoder.oneof_field(:choice, 0, Decoder.field(:string, :choice_string, acc, data), nil)
   end
   
   def decode(acc, <<170, 1, data::binary>>) do

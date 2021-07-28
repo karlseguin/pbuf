@@ -88,9 +88,9 @@ case data.#{name} do
 
   defp get_post_decode(%{options: options}, false, type) when options != nil and type in [:bytes, :string] do
     case Map.get(options, :json_field, 0) do
-      0 -> :none
       1 -> {:encoder, {Jason, "[]"}}
       2 -> {:encoder, {Jason, "[keys: :atoms]"}}
+      _ -> :none
     end
   end
 

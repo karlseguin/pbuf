@@ -2,7 +2,7 @@ defmodule Pbuf.Tests.Everything do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, except: [:sfixed64, :sint64]}
   defstruct [
     choice: nil,
     bool: false,

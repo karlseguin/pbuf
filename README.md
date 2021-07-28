@@ -200,3 +200,12 @@ Which results in:
 ```
 
 Note that if you assign the `json_field` a value of `2`, keys will be atomified.
+
+#### Json Skip Field
+It's possible to NOT encoding individual fields using `json_field = -1`
+```
+message Something {
+  string id = 1;
+  bytes secret = 2 [(json_field) = -1];
+}
+```

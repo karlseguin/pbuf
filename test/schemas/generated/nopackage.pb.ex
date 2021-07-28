@@ -2,7 +2,7 @@ defmodule A do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     b: nil
   ]
@@ -79,7 +79,7 @@ defmodule A.B do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     c: nil
   ]
@@ -156,7 +156,7 @@ defmodule A.B.C do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     d: 0
   ]

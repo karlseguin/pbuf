@@ -107,6 +107,17 @@ defmodule Pbuf.Tests.Integration do
     assert oneof.json == %{value: %{"over" => 9001}}
   end
 
+  test "json encoding" do
+    e = Everything.new(bool: true, int32: 1, int64: 3, sint64: 4, sfixed32: 5, sfixed64: 6)
+    e = e |> Jason.encode!() |> Jason.decode!(keys: :atoms)
+    assert Map.has_key?(e, :sint64) == false
+    assert Map.has_key?(e, :sfixed64) == false
+
+    assert Map.has_key?(e, :bool) == true
+    assert Map.has_key?(e, :int32) == true
+    assert Map.has_key?(e, :sfixed32) == true
+  end
+
   # decode using both our own library and Protobuf as a sanity check
   defp encode_decode(struct) do
     encoded = Pbuf.encode!(struct)

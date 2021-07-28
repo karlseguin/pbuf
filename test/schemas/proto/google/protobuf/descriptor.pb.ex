@@ -2,7 +2,7 @@ defmodule Google.Protobuf.FileDescriptorSet do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     file: []
   ]
@@ -81,7 +81,7 @@ defmodule Google.Protobuf.FileDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     name: nil,
     package: nil,
@@ -249,7 +249,7 @@ defmodule Google.Protobuf.DescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     name: nil,
     field: [],
@@ -405,7 +405,7 @@ defmodule Google.Protobuf.DescriptorProto.ExtensionRange do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     start: nil,
     end: nil,
@@ -496,7 +496,7 @@ defmodule Google.Protobuf.DescriptorProto.ReservedRange do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     start: nil,
     end: nil
@@ -580,7 +580,7 @@ defmodule Google.Protobuf.ExtensionRangeOptions do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     uninterpreted_option: []
   ]
@@ -659,7 +659,7 @@ defmodule Google.Protobuf.FieldDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     name: nil,
     extendee: nil,
@@ -917,7 +917,7 @@ defmodule Google.Protobuf.OneofDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     name: nil,
     options: nil
@@ -1001,7 +1001,7 @@ defmodule Google.Protobuf.EnumDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     name: nil,
     value: [],
@@ -1112,7 +1112,7 @@ defmodule Google.Protobuf.EnumDescriptorProto.EnumReservedRange do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     start: nil,
     end: nil
@@ -1196,7 +1196,7 @@ defmodule Google.Protobuf.EnumValueDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     name: nil,
     number: nil,
@@ -1287,7 +1287,7 @@ defmodule Google.Protobuf.ServiceDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     name: nil,
     method: [],
@@ -1380,7 +1380,7 @@ defmodule Google.Protobuf.MethodDescriptorProto do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     name: nil,
     input_type: nil,
@@ -1492,7 +1492,7 @@ defmodule Google.Protobuf.FileOptions do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     java_package: nil,
     java_outer_classname: nil,
@@ -1740,7 +1740,7 @@ defmodule Google.Protobuf.MessageOptions do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     message_set_wire_format: nil,
     no_standard_descriptor_accessor: nil,
@@ -1847,7 +1847,7 @@ defmodule Google.Protobuf.FieldOptions do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     ctype: :STRING,
     packed: nil,
@@ -2026,7 +2026,7 @@ defmodule Google.Protobuf.OneofOptions do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     uninterpreted_option: []
   ]
@@ -2105,7 +2105,7 @@ defmodule Google.Protobuf.EnumOptions do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     allow_alias: nil,
     deprecated: nil,
@@ -2198,7 +2198,7 @@ defmodule Google.Protobuf.EnumValueOptions do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     deprecated: nil,
     uninterpreted_option: []
@@ -2284,7 +2284,7 @@ defmodule Google.Protobuf.ServiceOptions do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     deprecated: nil,
     uninterpreted_option: []
@@ -2370,7 +2370,7 @@ defmodule Google.Protobuf.MethodOptions do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     deprecated: nil,
     idempotency_level: :IDEMPOTENCY_UNKNOWN,
@@ -2492,7 +2492,7 @@ defmodule Google.Protobuf.UninterpretedOption do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     name: [],
     identifier_value: nil,
@@ -2613,7 +2613,7 @@ defmodule Google.Protobuf.UninterpretedOption.NamePart do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     name_part: nil,
     is_extension: nil
@@ -2697,7 +2697,7 @@ defmodule Google.Protobuf.SourceCodeInfo do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     location: []
   ]
@@ -2776,7 +2776,7 @@ defmodule Google.Protobuf.SourceCodeInfo.Location do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     path: [],
     span: [],
@@ -2883,7 +2883,7 @@ defmodule Google.Protobuf.GeneratedCodeInfo do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     annotation: []
   ]
@@ -2962,7 +2962,7 @@ defmodule Google.Protobuf.GeneratedCodeInfo.Annotation do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     path: [],
     source_file: nil,

@@ -12,11 +12,11 @@ message Everything {
   uint32 uint32 = 4;
   uint64 uint64 = 5;
   sint32 sint32 = 6;
-  sint64 sint64 = 7;
+  sint64 sint64 = 7 [(json_field) = -1];;
   fixed32 fixed32 = 8;
   fixed64 fixed64 = 9;
   sfixed32 sfixed32 = 10;
-  sfixed64 sfixed64 = 11;
+  sfixed64 sfixed64 = 11 [(json_field) = -1];
   float float = 12;
   double double = 13;
   string string = 14;

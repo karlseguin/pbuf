@@ -52,6 +52,7 @@ case data.#{name} do
       typespec: typespec,
       post_decode: post_decode,
       encode_fun: encode_fun,
+      json?: json?(desc, repeated, type),
       decode_fun: "Decoder.#{decode_fun}(#{decode_type}, :#{name}, acc, data)",
     }
   end
@@ -96,4 +97,10 @@ case data.#{name} do
   defp get_post_decode(_desc, _repeated, _type) do
     :none
   end
+
+  defp json?(%{options: options}, false, _type) when options != nil do
+    Map.get(options, :json_field, 0) != -1
+  end
+
+  defp json?(_, _, _), do: true
 end

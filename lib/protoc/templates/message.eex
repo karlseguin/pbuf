@@ -19,7 +19,7 @@ defmodule <%= context.namespace %><%= name %> do
     last_index = Enum.count(hidden_oneofs) - 1
   %>
 
-  <%= if Keyword.get(options, :json) do %>@derive Jason.Encoder<% end %>
+  <%= if Keyword.get(options, :json) != false do %>@derive {Jason.Encoder, <%= Keyword.get(options, :json)%>}<% end %>
   defstruct [
   <%= for {field, i} <- hidden_oneofs do %>  <%= field.name %>: <%= field.default %><%= if_neq(i, last_index, ",") %>
   <% end %>]

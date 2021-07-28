@@ -87,7 +87,12 @@ defmodule Pbuf.Protoc do
     name = message.name
     fields = generate_fields(message.field, context)
     context = Context.fields(context, fields)
+
     options = Keyword.merge([json: true], parse_message_options(message.options))
+    options = case options[:json] do
+      true -> Keyword.put(options, :json, derive_jason(fields))
+      false -> options
+    end
     acc = [acc, trim_template(Template.message(name, fields, enums, context, options))]
 
     message.nested_type
@@ -116,7 +121,22 @@ defmodule Pbuf.Protoc do
   end
 
   defp parse_message_options(opts) do
-    [json: Map.get(opts, :json_message, 1) == 1]
+    case Map.get(opts, :json_message, 1) do
+      1 -> [json: true]
+      _ -> [json: false]
+    end
+  end
+
+  defp derive_jason(fields) do
+    except = Enum.reduce(fields, [], fn
+      %{json?: false} = f, acc -> [":#{f.name}" | acc]
+      _, acc -> acc
+    end)
+
+    case Enum.empty?(except) do
+      true -> "[]"
+      false -> "except: [" <> Enum.join(except, ", ") <> "]"
+    end
   end
 
   def capitalize_first(word) do

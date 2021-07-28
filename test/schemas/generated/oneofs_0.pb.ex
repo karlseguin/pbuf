@@ -2,7 +2,7 @@ defmodule OneOfZero do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     choice: nil,
     json: nil

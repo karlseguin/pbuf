@@ -2,7 +2,7 @@ defmodule Pbuf.Tests.Sub.User do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     id: 0,
     status: :USER_STATUS_UNKNOWN,
@@ -93,7 +93,7 @@ defmodule Pbuf.Tests.Sub.User.Name do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     first: "",
     last: ""

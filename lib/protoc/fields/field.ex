@@ -7,6 +7,7 @@ defmodule Pbuf.Protoc.Field do
     hidden: false,
     oneof_index: nil,
     post_decode: :none,
+    json?: true,
   ]
 
   @type t :: %__MODULE__{

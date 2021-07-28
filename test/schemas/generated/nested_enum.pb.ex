@@ -2,7 +2,7 @@ defmodule Pbuf.Tests.Root do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
   ]
 
@@ -62,7 +62,7 @@ defmodule Pbuf.Tests.Root.Child do
   @moduledoc false
   alias Pbuf.Decoder
   
-  @derive Jason.Encoder
+  @derive {Jason.Encoder, []}
   defstruct [
     xe: :UNKNOWN
   ]

@@ -1,26 +1,32 @@
 defmodule Sanity.Pbuf.Tests.EverythingType do
   @moduledoc false
   use Protobuf, enum: true, syntax: :proto3
-
   @type t :: integer | :EVERYTHING_TYPE_UNKNOWN | :EVERYTHING_TYPE_SAND | :EVERYTHING_TYPE_SPICE
 
   field :EVERYTHING_TYPE_UNKNOWN, 0
+
   field :EVERYTHING_TYPE_SAND, 1
+
   field :EVERYTHING_TYPE_SPICE, 2
 end
 
 defmodule Sanity.Pbuf.Tests.Everything.Corpus do
   @moduledoc false
   use Protobuf, enum: true, syntax: :proto3
-
   @type t :: integer | :UNIVERSAL | :WEB | :IMAGES | :LOCAL | :NEWS | :PRODUCTS | :VIDEO
 
   field :UNIVERSAL, 0
+
   field :WEB, 1
+
   field :IMAGES, 2
+
   field :LOCAL, 3
+
   field :NEWS, 4
+
   field :PRODUCTS, 5
+
   field :VIDEO, 6
 end
 
@@ -32,6 +38,7 @@ defmodule Sanity.Pbuf.Tests.Everything.Map1Entry do
           key: String.t(),
           value: integer
         }
+
   defstruct [:key, :value]
 
   field :key, 1, type: :string
@@ -46,6 +53,7 @@ defmodule Sanity.Pbuf.Tests.Everything.Map2Entry do
           key: integer,
           value: float | :infinity | :negative_infinity | :nan
         }
+
   defstruct [:key, :value]
 
   field :key, 1, type: :int64
@@ -60,6 +68,7 @@ defmodule Sanity.Pbuf.Tests.Everything.Map3Entry do
           key: non_neg_integer,
           value: Sanity.Pbuf.Tests.Child.t() | nil
         }
+
   defstruct [:key, :value]
 
   field :key, 1, type: :uint32
@@ -114,6 +123,7 @@ defmodule Sanity.Pbuf.Tests.Everything do
           map2: %{integer => float | :infinity | :negative_infinity | :nan},
           map3: %{non_neg_integer => Sanity.Pbuf.Tests.Child.t() | nil}
         }
+
   defstruct [
     :choice,
     :bool,
@@ -216,6 +226,7 @@ defmodule Sanity.Pbuf.Tests.Child do
           data2: binary,
           data3: binary
         }
+
   defstruct [:id, :name, :data1, :data2, :data3]
 
   field :id, 1, type: :uint32

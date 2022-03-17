@@ -140,7 +140,7 @@ defmodule Pbuf.Protoc do
   end
 
   def capitalize_first(word) do
-    {char, rest} = String.Casing.titlecase_once(word, :default)
+    {char, rest} = String.Unicode.titlecase_once(word, :default)
     char <> rest
   end
 

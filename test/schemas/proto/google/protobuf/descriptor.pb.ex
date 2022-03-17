@@ -670,7 +670,8 @@ defmodule Google.Protobuf.FieldDescriptorProto do
     default_value: nil,
     options: nil,
     oneof_index: nil,
-    json_name: nil
+    json_name: nil,
+    proto3_optional: nil
   ]
 
   @type t :: %__MODULE__{
@@ -683,7 +684,8 @@ defmodule Google.Protobuf.FieldDescriptorProto do
     default_value: String.t,
     options: Google.Protobuf.FieldOptions.t,
     oneof_index: integer,
-    json_name: String.t
+    json_name: String.t,
+    proto3_optional: boolean
   }
   
 defmodule Label do
@@ -821,6 +823,7 @@ end
       Encoder.field(:struct, data.options, <<66>>),
       Encoder.field(:int32, data.oneof_index, <<72>>),
       Encoder.field(:string, data.json_name, <<82>>),
+      Encoder.field(:bool, data.proto3_optional, <<136, 1>>),
     ]
   end
 
@@ -880,6 +883,10 @@ end
     Decoder.field(:string, :json_name, acc, data)
   end
   
+  def decode(acc, <<136, 1, data::binary>>) do
+    Decoder.field(:bool, :proto3_optional, acc, data)
+  end
+  
   import Bitwise, only: [bsr: 2, band: 2]
   
   # failed to decode, either this is an unknown tag (which we can skip), or
@@ -888,7 +895,7 @@ end
     {prefix, data} = Decoder.varint(data)
     tag = bsr(prefix, 3)
     type = band(prefix, 7)
-    case tag in [1,2,3,4,5,6,7,8,9,10] do
+    case tag in [1,2,3,4,5,6,7,8,9,10,17] do
       false -> {acc, Decoder.skip(type, data)}
       true ->
         err = %Decoder.Error{
